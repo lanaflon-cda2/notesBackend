@@ -59,6 +59,10 @@ public class Cours implements Serializable {
     @Column(columnDefinition = "int default 1")
     private int active;
     
+    @XmlTransient
+    @ManyToOne
+    private Departement departement;
+       
     public Cours(){
         
     }
@@ -114,11 +118,18 @@ public class Cours implements Serializable {
     public void setUniteEnseignements(List<UniteEnseignement> uniteEnseignements) {
         this.uniteEnseignements = uniteEnseignements;
     }
-    
+
+    public Departement getDepartement() {
+        return departement;
+    }
+
+    public void setDepartement(Departement departement) {
+        this.departement = departement;
+    }
+
     @Override
     public String toString() {
-        return "Cours{" + "id=" + id + ", version=" + version + ", intitule=" + intitule + ", typeCours=" + typeCours + ", active=" + active + '}';
-    }
-    
+        return "Cours{" + "id=" + id + ", version=" + version + ", intitule=" + intitule + ", typeCours=" + typeCours + ", uniteEnseignements=" + uniteEnseignements + ", active=" + active + ", departement=" + departement + '}';
+    }      
     
 }
