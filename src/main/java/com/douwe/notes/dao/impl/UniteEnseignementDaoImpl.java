@@ -7,7 +7,6 @@ import com.douwe.notes.entities.AnneeAcademique;
 import com.douwe.notes.entities.Cours;
 import com.douwe.notes.entities.CoursUEAnnee;
 import com.douwe.notes.entities.CoursUEAnnee_;
-import com.douwe.notes.entities.Cours_;
 import com.douwe.notes.entities.Credit;
 import com.douwe.notes.entities.Credit_;
 import com.douwe.notes.entities.Niveau;

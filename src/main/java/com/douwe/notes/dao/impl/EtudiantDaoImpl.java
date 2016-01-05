@@ -6,8 +6,6 @@ import com.douwe.notes.dao.IEtudiantDao;
 import com.douwe.notes.entities.AnneeAcademique;
 import com.douwe.notes.entities.AnneeAcademique_;
 import com.douwe.notes.entities.Cours;
-import com.douwe.notes.entities.CoursUEAnnee;
-import com.douwe.notes.entities.CoursUEAnnee_;
 import com.douwe.notes.entities.Departement;
 import com.douwe.notes.entities.Departement_;
 import com.douwe.notes.entities.Etudiant;
