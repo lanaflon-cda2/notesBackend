@@ -58,8 +58,7 @@ public class Cours implements Serializable {
     @XmlTransient
     @Column(columnDefinition = "int default 1")
     private int active;
-    
-    @XmlTransient
+        
     @ManyToOne
     private Departement departement;
        
