@@ -62,8 +62,7 @@ public class Cours implements Serializable {
     @XmlTransient
     @Column(columnDefinition = "int default 1")
     private int active;
-    
-   
+
     @ManyToOne
     @JoinColumn(name = "DEPARTEMENT_ID")
     private Departement departement;
