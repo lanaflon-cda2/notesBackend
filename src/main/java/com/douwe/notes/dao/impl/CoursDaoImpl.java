@@ -53,11 +53,16 @@ public class CoursDaoImpl extends GenericDao<Cours, Long> implements ICoursDao {
         CriteriaBuilder cb = getManager().getCriteriaBuilder();
         CriteriaQuery<Cours> cq = cb.createQuery(Cours.class);
         Root<CoursUEAnnee> coursUERoot = cq.from(CoursUEAnnee.class);
+        Root<Cours> courRoot = cq.from(Cours.class);
         Root<Programme> programmeRoot = cq.from(Programme.class);
         List<Predicate> predicates = new ArrayList<Predicate>();
         predicates.add(cb.equal(coursUERoot.get(CoursUEAnnee_.anneeAcademique), academique));
         predicates.add(cb.equal(programmeRoot.get(Programme_.anneeAcademique), academique));
         predicates.add(cb.equal(programmeRoot.get(Programme_.parcours), parcours));
+        /**
+         * This is where i am
+         */
+        predicates.add(cb.equal(courRoot.get(Cours_.departement), parcours.getOption().getDepartement()));
         predicates.add(cb.equal(programmeRoot.get(Programme_.uniteEnseignement), coursUERoot.get(CoursUEAnnee_.uniteEnseignement)));
         Path<Cours> coursPath = coursUERoot.get(CoursUEAnnee_.cours);
         if (semestre != null) {
@@ -94,11 +99,13 @@ public class CoursDaoImpl extends GenericDao<Cours, Long> implements ICoursDao {
     public List<Cours> findByParcours(Parcours parcours) throws DataAccessException {
         CriteriaBuilder cb = getManager().getCriteriaBuilder();
         CriteriaQuery<Cours> cq = cb.createQuery(Cours.class);
+        Root<Cours> coursRoot = cq.from(Cours.class);
         Root<UniteEnseignement> uniteRoot = cq.from(UniteEnseignement.class);
         ListJoin<UniteEnseignement, Cours> hello = uniteRoot.join(UniteEnseignement_.cours);
         Path<Parcours> parcoursPath = uniteRoot.get(UniteEnseignement_.parcours);
         cq.where(cb.and(cb.equal(parcoursPath, parcours), 
-                cb.ge(uniteRoot.get(UniteEnseignement_.active), 1)));
+                cb.ge(uniteRoot.get(UniteEnseignement_.active), 1),
+                cb.equal(coursRoot.get(Cours_.departement), parcours.getOption().getDepartement())));
         cq.select(hello);
         cq.distinct(true);
         cq.orderBy(cb.asc(hello.get(Cours_.intitule)));

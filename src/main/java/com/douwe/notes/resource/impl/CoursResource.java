@@ -47,6 +47,7 @@ public class CoursResource implements ICoursResource {
     @Override
     public Cours createCours(Cours cours) {
         try {
+            System.out.println("J'insere le cours \n**************** \n " + cours);
             return coursService.saveOrUpdateCours(cours);
         } catch (ServiceException ex) {
             Logger.getLogger(CoursResource.class.getName()).log(Level.SEVERE, null, ex);

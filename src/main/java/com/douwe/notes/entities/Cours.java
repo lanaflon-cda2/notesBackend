@@ -8,10 +8,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -35,6 +38,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQuery(name = "Cours.findByIntitule",query = "SELECT c FROM Cours c WHERE c.intitule like :param"),
 //@NamedQuery(name = "Cours.findByUE",query = "select co from Cours co, UniteEnseignement ue JOIN ue.courses c_e where ue.id = :idParam and c_e.id =co.id")
 })
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"DEPARTEMENTD_ID","INTITULE"}))
 public class Cours implements Serializable {
     
     @Id
@@ -45,7 +49,7 @@ public class Cours implements Serializable {
     @XmlTransient
     private int version;
     
-    @Column(unique = true)
+    @Column(name = "INTITULE")
     private String intitule;
     
     @ManyToOne(optional = false)
@@ -59,8 +63,9 @@ public class Cours implements Serializable {
     @Column(columnDefinition = "int default 1")
     private int active;
     
-    @XmlTransient
+   
     @ManyToOne
+    @JoinColumn(name = "DEPARTEMENT_ID")
     private Departement departement;
        
     public Cours(){
