@@ -107,7 +107,7 @@ public class CoursResource implements ICoursResource {
     @Override
     public Cours findByIntitule(String intitule) {
         try {
-            Cours cours = coursService.findByIntitule(intitule);
+            Cours cours = coursService.findByIntituleAndDepartement(intitule, null);
             if (cours == null) {
                 throw new WebApplicationException(Response.Status.NOT_FOUND);
             }

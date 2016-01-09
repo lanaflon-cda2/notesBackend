@@ -3,12 +3,14 @@ package com.douwe.notes.service.impl;
 import com.douwe.generic.dao.DataAccessException;
 import com.douwe.notes.dao.IAnneeAcademiqueDao;
 import com.douwe.notes.dao.ICoursDao;
+import com.douwe.notes.dao.IDepartementDao;
 import com.douwe.notes.dao.INiveauDao;
 import com.douwe.notes.dao.IOptionDao;
 import com.douwe.notes.dao.IParcoursDao;
 import com.douwe.notes.dao.IUniteEnseignementDao;
 import com.douwe.notes.entities.AnneeAcademique;
 import com.douwe.notes.entities.Cours;
+import com.douwe.notes.entities.Departement;
 import com.douwe.notes.entities.Niveau;
 import com.douwe.notes.entities.Option;
 import com.douwe.notes.entities.Parcours;
@@ -42,6 +44,9 @@ public class CoursServiceImpl implements ICoursService {
     
     @Inject
     private IOptionDao optionDao;
+    
+    @Inject
+    private IDepartementDao departementDao;
             
     
     @Inject
@@ -94,6 +99,15 @@ public class CoursServiceImpl implements ICoursService {
     public void setOptionDao(IOptionDao optionDao) {
         this.optionDao = optionDao;
     }
+
+    public IDepartementDao getDepartementDao() {
+        return departementDao;
+    }
+
+    public void setDepartementDao(IDepartementDao departementDao) {
+        this.departementDao = departementDao;
+    }
+    
     
 
     @Override
@@ -147,9 +161,10 @@ public class CoursServiceImpl implements ICoursService {
     }
 
     @Override
-    public Cours findByIntitule(String intitule) throws ServiceException {
+    public Cours findByIntituleAndDepartement(String intitule, Long departementId) throws ServiceException {
         try {
-            Cours cours = coursDao.findByIntitule(intitule);
+            Departement departement = departementDao.findById(departementId);
+            Cours cours = coursDao.findByIntituleAndDepartement(intitule, departement);
             return cours;
 
         } catch (DataAccessException ex) {

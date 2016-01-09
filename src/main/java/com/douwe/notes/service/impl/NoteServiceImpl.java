@@ -3,6 +3,7 @@ package com.douwe.notes.service.impl;
 import com.douwe.generic.dao.DataAccessException;
 import com.douwe.notes.dao.IAnneeAcademiqueDao;
 import com.douwe.notes.dao.ICoursDao;
+import com.douwe.notes.dao.IDepartementDao;
 import com.douwe.notes.dao.IEtudiantDao;
 import com.douwe.notes.dao.IEvaluationDao;
 import com.douwe.notes.dao.IEvaluationDetailsDao;
@@ -13,6 +14,7 @@ import com.douwe.notes.dao.ISemestreDao;
 import com.douwe.notes.dao.IUniteEnseignementDao;
 import com.douwe.notes.entities.AnneeAcademique;
 import com.douwe.notes.entities.Cours;
+import com.douwe.notes.entities.Departement;
 import com.douwe.notes.entities.Etudiant;
 import com.douwe.notes.entities.Evaluation;
 import com.douwe.notes.entities.EvaluationDetails;
@@ -85,6 +87,9 @@ public class NoteServiceImpl implements INoteService {
 
     @Inject
     private IOptionDao optionDao;
+    
+    @Inject
+    private IDepartementDao departementDao;
 
     public INoteDao getNoteDao() {
         return noteDao;
@@ -166,6 +171,16 @@ public class NoteServiceImpl implements INoteService {
         this.optionDao = optionDao;
     }
 
+    public IDepartementDao getDepartementDao() {
+        return departementDao;
+    }
+
+    public void setDepartementDao(IDepartementDao departementDao) {
+        this.departementDao = departementDao;
+    }
+
+    
+    
     @Override
     public Note saveOrUpdateNote(Note note) throws ServiceException {
         try {
@@ -333,7 +348,7 @@ public class NoteServiceImpl implements INoteService {
         return result;
     }
 
-    private Note insertNote(String etudiantMatricule, String nomEtudiant, String codeEvaluation, String coursIntitule, Long anneeId, double valeur, int session) {
+    private Note insertNote(String etudiantMatricule, String nomEtudiant, String codeEvaluation, String coursIntitule, Long anneeId, double valeur, int session, Long departementId) {
 
         try {
             Etudiant etudiant;
@@ -344,8 +359,10 @@ public class NoteServiceImpl implements INoteService {
             }
 
             Evaluation eval = evaluationDao.findByCode(codeEvaluation);
+            
+            Departement departement = departementDao.findById(departementId);
 
-            Cours cours = coursDao.findByIntitule(coursIntitule);
+            Cours cours = coursDao.findByIntituleAndDepartement(coursIntitule, departement);
 
             AnneeAcademique academique = academiqueDao.findById(anneeId);
 

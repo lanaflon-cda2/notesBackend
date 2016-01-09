@@ -10,6 +10,7 @@ import com.douwe.notes.entities.CoursUEAnnee_;
 import com.douwe.notes.entities.Cours_;
 import com.douwe.notes.entities.Credit;
 import com.douwe.notes.entities.Credit_;
+import com.douwe.notes.entities.Departement;
 import com.douwe.notes.entities.Parcours;
 import com.douwe.notes.entities.Programme;
 import com.douwe.notes.entities.Programme_;
@@ -44,8 +45,13 @@ public class CoursDaoImpl extends GenericDao<Cours, Long> implements ICoursDao {
     }
 
     @Override
-    public Cours findByIntitule(String intitule) throws DataAccessException {
-        return (Cours) (getManager().createNamedQuery("Cours.findByIntitule").setParameter("param", intitule).getSingleResult());
+    public Cours findByIntituleAndDepartement(String intitule, Departement departement) throws DataAccessException {
+        //return (Cours) (getManager().createNamedQuery("Cours.findByIntitule").setParameter("param", intitule).getSingleResult());
+        CriteriaBuilder cb = getManager().getCriteriaBuilder();
+        CriteriaQuery<Cours> cq = cb.createQuery(Cours.class);
+        Root<Cours> coursRoot = cq.from(Cours.class);
+        cq.where(cb.and(cb.like(coursRoot.get(Cours_.intitule), intitule), cb.equal(coursRoot.get(Cours_.departement), departement)));
+        return getManager().createQuery(cq).getSingleResult();
     }
 
     @Override

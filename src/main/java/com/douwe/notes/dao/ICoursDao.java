@@ -20,7 +20,7 @@ public interface ICoursDao extends IDao<Cours, Long>{
     
     public List<Cours> findAllActive() throws DataAccessException;
     
-    public Cours findByIntitule(String intitule) throws DataAccessException;
+    public Cours findByIntituleAndDepartement(String intitule, com.douwe.notes.entities.Departement departement) throws DataAccessException;
     
     public List<Cours> findByParcoursAnnee(Parcours parcours, AnneeAcademique academique, Semestre semestre) throws DataAccessException;
     
