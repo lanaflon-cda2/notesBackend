@@ -36,7 +36,7 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <version>4.3.10.Final</version>
-<!--            <scope>provided</scope>-->
+            <!--            <scope>provided</scope>-->
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
@@ -62,6 +62,11 @@
             <version>4.0</version>
             <scope>system</scope>
             <systemPath>${glassfish.embedded-static-shell.jar}</systemPath>
+        </dependency>-->
+<!--        <dependency>
+            <groupId>org.glassfish.extras</groupId>
+            <artifactId>glassfish-embedded-all</artifactId>
+            <version>3.2-b06</version>
         </dependency>-->
         
         <dependency>

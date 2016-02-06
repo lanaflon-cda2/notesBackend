@@ -6,7 +6,7 @@ import java.io.OutputStream;
  *
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
-public interface IDocumentService {
+public interface IDocumentFacadeService {
     
     public String produirePv(Long niveauId, Long optionId, Long coursId, Long academiqueId, int session,OutputStream stream)throws ServiceException;
     

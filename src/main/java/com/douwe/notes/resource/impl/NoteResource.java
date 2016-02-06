@@ -12,7 +12,7 @@ import com.douwe.notes.projection.NoteTransfer;
 import com.douwe.notes.resource.INoteResource;
 import com.douwe.notes.service.IAnneeAcademiqueService;
 import com.douwe.notes.service.ICoursService;
-import com.douwe.notes.service.IDocumentService;
+import com.douwe.notes.service.IDocumentFacadeService;
 import com.douwe.notes.service.INiveauService;
 import com.douwe.notes.service.INoteService;
 import com.douwe.notes.service.IOptionService;
@@ -61,7 +61,7 @@ public class NoteResource implements INoteResource {
     private INiveauService niveauService;
 
     @EJB
-    private IDocumentService documentService;
+    private IDocumentFacadeService documentService;
 
     @EJB
     private INoteService noteService;
@@ -106,11 +106,11 @@ public class NoteResource implements INoteResource {
         this.niveauService = niveauService;
     }
 
-    public IDocumentService getDocumentService() {
+    public IDocumentFacadeService getDocumentService() {
         return documentService;
     }
 
-    public void setDocumentService(IDocumentService documentService) {
+    public void setDocumentService(IDocumentFacadeService documentService) {
         this.documentService = documentService;
     }
 

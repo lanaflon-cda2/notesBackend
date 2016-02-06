@@ -48,8 +48,4 @@ public class MoyenneTrashData {
         this.semestre = semestre;
     }
     
-    
-    
-    
-    
 }

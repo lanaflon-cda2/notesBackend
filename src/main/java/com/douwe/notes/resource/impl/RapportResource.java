@@ -1,7 +1,7 @@
 package com.douwe.notes.resource.impl;
 
 import com.douwe.notes.resource.IRapportResource;
-import com.douwe.notes.service.IDocumentService;
+import com.douwe.notes.service.IDocumentFacadeService;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.PageSize;
@@ -23,15 +23,15 @@ import javax.ws.rs.core.StreamingOutput;
 public class RapportResource implements IRapportResource {
 
     @EJB
-    private IDocumentService documentService;
+    private IDocumentFacadeService documentService;
 
     String filename = new String();
 
-    public IDocumentService getDocumentService() {
+    public IDocumentFacadeService getDocumentService() {
         return documentService;
     }
 
-    public void setDocumentService(IDocumentService documentService) {
+    public void setDocumentService(IDocumentFacadeService documentService) {
         this.documentService = documentService;
     }
 

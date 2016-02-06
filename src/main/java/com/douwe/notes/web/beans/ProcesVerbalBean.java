@@ -9,7 +9,7 @@ import com.douwe.notes.entities.Option;
 import com.douwe.notes.entities.Session;
 import com.douwe.notes.service.IAnneeAcademiqueService;
 import com.douwe.notes.service.ICoursService;
-import com.douwe.notes.service.IDocumentService;
+import com.douwe.notes.service.IDocumentFacadeService;
 import com.douwe.notes.service.IDepartementService;
 import com.douwe.notes.service.INiveauService;
 import com.douwe.notes.service.IParcoursService;
@@ -57,7 +57,7 @@ public class ProcesVerbalBean {
     @EJB
     private INiveauService niveauService;
     @EJB
-    private IDocumentService documentService;
+    private IDocumentFacadeService documentService;
 
     private StreamedContent fichier;
 
@@ -304,11 +304,11 @@ public class ProcesVerbalBean {
         this.idO = idO;
     }
 
-    public IDocumentService getDocumentService() {
+    public IDocumentFacadeService getDocumentService() {
         return documentService;
     }
 
-    public void setDocumentService(IDocumentService documentService) {
+    public void setDocumentService(IDocumentFacadeService documentService) {
         this.documentService = documentService;
     }
 

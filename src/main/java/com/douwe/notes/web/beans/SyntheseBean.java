@@ -6,7 +6,7 @@ import com.douwe.notes.entities.AnneeAcademique;
 import com.douwe.notes.entities.Departement;
 import com.douwe.notes.entities.Niveau;
 import com.douwe.notes.entities.Option;
-import com.douwe.notes.service.IDocumentService;
+import com.douwe.notes.service.IDocumentFacadeService;
 import com.douwe.notes.service.IAnneeAcademiqueService;
 import com.douwe.notes.service.ISemestreService;
 import com.douwe.notes.service.IDepartementService;
@@ -33,7 +33,7 @@ public class SyntheseBean {
 
     private List<AnneeAcademique> anneeAcademiques;
         @EJB
-    private IDocumentService documentService;
+    private IDocumentFacadeService documentService;
     @EJB
     private INoteService noteService;
     @EJB
