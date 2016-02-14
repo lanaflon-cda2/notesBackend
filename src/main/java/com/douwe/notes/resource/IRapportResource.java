@@ -15,10 +15,6 @@ import javax.ws.rs.core.Response;
 public interface IRapportResource {
 
     @GET
-    @Produces("text/pdf")
-    Response test() throws Exception;
-
-    @GET
     @Path(value = "pv/{niveauid : \\d+}/{optionid : \\d+}/{coursid : \\d+}/{anneeid : \\d+}/{session : \\d+}")
     @Produces("text/pdf")
     Response produirePv(@PathParam(value = "niveauid") long niveauid, @PathParam(value = "optionid") long optionid, @PathParam(value = "coursid") long coursid, @PathParam(value = "anneeid") long anneeid, @PathParam(value = "session") int session);
@@ -36,8 +32,13 @@ public interface IRapportResource {
     @GET
     @Path(value = "relevet/{niveauid : \\d+}/{optionid : \\d+}/{anneeid : \\d+}")
     @Produces("text/pdf")
-    Response produireRelevet(@PathParam(value = "niveauid") long niveauid, @PathParam(value = "optionid") long optionid, @PathParam(value = "anneeid") long anneeid);
+    Response produireRelevetParcours(@PathParam(value = "niveauid") long niveauid, @PathParam(value = "optionid") long optionid, @PathParam(value = "anneeid") long anneeid);
 
+    @GET
+    @Path(value = "relevet/{niveauid : \\d+}/{optionid : \\d+}/{anneeid : \\d+}/{etudiantid : \\d+}")
+    @Produces("text/pdf")
+    Response produireRelevetEtudiant(@PathParam(value = "niveauid") long niveauid, @PathParam(value = "optionid") long optionid, @PathParam(value = "anneeid") long anneeid, @PathParam(value = "etudiantid") long etudiantid);
+    
     @GET
     @Path(value = "synthese/annual")
     @Produces("text/pdf")

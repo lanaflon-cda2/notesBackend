@@ -10,6 +10,6 @@ import javax.ejb.Local;
 @Local
 public interface IRelevetDocument {
     
-    public void produireRelevet(Long niveauId, Long optionId, Long anneeId, OutputStream stream);
+    public void produireRelevet(Long niveauId, Long optionId, Long anneeId, OutputStream stream, Long etudiantId);
     
 }

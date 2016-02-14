@@ -21,9 +21,12 @@ import com.douwe.notes.entities.Niveau;
 import com.douwe.notes.entities.Option;
 import com.douwe.notes.entities.Semestre;
 import com.douwe.notes.entities.Session;
+import com.douwe.notes.entities.UniteEnseignement;
 import com.douwe.notes.projection.MoyenneTrashData;
+import com.douwe.notes.projection.MoyenneUniteEnseignement;
 import com.douwe.notes.projection.UEnseignementCredit;
 import com.douwe.notes.service.INoteService;
+import com.douwe.notes.service.ServiceException;
 import com.douwe.notes.service.document.IRelevetDocument;
 import com.douwe.notes.service.impl.DocumentServiceImpl;
 import com.itextpdf.text.BaseColor;
@@ -230,7 +233,7 @@ public class RelevetDocument implements IRelevetDocument {
     }
 
     @Override
-    public void produireRelevet(Long niveauId, Long optionId, Long anneeId, OutputStream stream) {
+    public void produireRelevet(Long niveauId, Long optionId, Long anneeId, OutputStream stream, Long etudiantId) {
 
         try {
             Document doc = new Document();
@@ -243,24 +246,23 @@ public class RelevetDocument implements IRelevetDocument {
             Niveau n = niveauDao.findById(niveauId);
             Option o = optionDao.findById(optionId);
             AnneeAcademique a = academiqueDao.findById(anneeId);
-            common.produceDocumentHeader(doc, null, n, o, a, null, null, null, true);
-            Font font = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
-            doc.add(new Phrase("\n"));
-            StringBuilder str = new StringBuilder();
+            List<Semestre> semestres = semestreDao.findByNiveau(n);
 
-            str.append("RELEVE DE NOTES / ACADEMIC TRANSCRIPT             ");
-            str.append("N°");
-            str.append("/_______/");
-            str.append("INFOTEL/");
-            str.append("DAACR/");
-            str.append("DISS\n");
-            Phrase phrase = new Phrase(str.toString(), font);
-            doc.add(phrase);
-            // doc.add(new Chunk("\n"));
-            produireRelevetHeader(null, null, null, null, doc);
-            produceRelevetTable(doc, null, null, null, null);
-            doc.add(new Chunk("\n"));
-            produceRelevetFooter(doc);
+            //Liste des ues du semestre 1
+            List<UniteEnseignement> uniteEns1 = uniteEnsDao.findByUniteNiveauOptionSemestre(n, o, semestres.get(0), a);
+//            System.out.println("J'ai pris ======= " + uniteEns1.size());
+//            for (UniteEnseignement uniteEns11 : uniteEns1) {
+//                System.out.println(uniteEns11);
+//            }
+            List<UniteEnseignement> uniteEns2 = uniteEnsDao.findByUniteNiveauOptionSemestre(n, o, semestres.get(1), a);
+             List<UEnseignementCredit> ues1 = uniteEnsDao.findByNiveauOptionSemestre(n, o, semestres.get(0), a);
+            List<UEnseignementCredit> ues2 = uniteEnsDao.findByNiveauOptionSemestre(n, o, semestres.get(1), a);
+            List<Etudiant> etudiants = etudiantDao.listeEtudiantParDepartementEtNiveau(o.getDepartement(), a, n, o);
+            for (Etudiant etudiant : etudiants) {
+                produceRelevetEtudiant(doc,etudiant, n,  o,  a, semestres, uniteEns1, uniteEns2, ues1, ues2);
+                doc.newPage();
+            }
+            
 
             doc.close();
         } catch (DataAccessException ex) {
@@ -269,6 +271,39 @@ public class RelevetDocument implements IRelevetDocument {
             Logger.getLogger(DocumentServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
             Logger.getLogger(DocumentServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void produceRelevetEtudiant(Document doc, Etudiant e, Niveau n, Option o, AnneeAcademique a,List<Semestre> semestres, List<UniteEnseignement> uniteEns1, List<UniteEnseignement> uniteEns2, List<UEnseignementCredit> ues1, List<UEnseignementCredit> ues2){
+        try {
+            common.produceDocumentHeader(doc, null, n, o, a, null, null, null, true);
+            produceRelevetTitle(doc, o.getDepartement());
+            // doc.add(new Chunk("\n"));
+            produireRelevetHeader(e, o.getDepartement(), n, o, doc);
+            produceRelevetTable(doc,e ,n , o, a, semestres,uniteEns1,uniteEns2, ues1, ues2);
+            doc.add(new Chunk("\n"));
+            produceRelevetFooter(doc);
+        } catch (Exception ex) {
+            Logger.getLogger(RelevetDocument.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void produceRelevetTitle(Document doc, Departement departement) {
+        try {
+            Font font = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
+            doc.add(new Phrase("\n"));
+            StringBuilder str = new StringBuilder();
+            
+            str.append("RELEVE DE NOTES / ACADEMIC TRANSCRIPT             ");
+            str.append("N°");
+            str.append("/_______/");
+            str.append(departement.getCode());
+            str.append("DAACR/");
+            str.append("DISS\n");
+            Phrase phrase = new Phrase(str.toString(), font);
+            doc.add(phrase);
+        } catch (DocumentException ex) {
+            Logger.getLogger(RelevetDocument.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -292,9 +327,9 @@ public class RelevetDocument implements IRelevetDocument {
             table.setWidthPercentage(100);
 
             Phrase cyclef = new Phrase("Cycle : ", french2);
-            Phrase valuecyclef = new Phrase("Ingénieur des travaux en Informatique et Télécommunication" + "\n", french);
+            Phrase valuecyclef = new Phrase( n.getCycle().getDiplomeFr() + " en " + o.getDepartement().getFrenchDescription()+ "\n", french);
             Phrase cyclee = new Phrase("cycle : ", english2);
-            Phrase valuecyclee = new Phrase("Bachelor in Enginneering degree in Computer science and telecommunication", english);
+            Phrase valuecyclee = new Phrase(n.getCycle().getDiplomeEn() + " en " + o.getDepartement().getEnglishDescription()+ "\n", english);
             Phrase cycle = new Phrase();
             cycle.add(cyclef);
             cycle.add(valuecyclef);
@@ -306,7 +341,7 @@ public class RelevetDocument implements IRelevetDocument {
             table.addCell(cell1);
 
             Phrase niveauf = new Phrase("Niveau : ", french2);
-            Phrase valueniveauf = new Phrase("Licence 1" + "\n", french);
+            Phrase valueniveauf = new Phrase(n.getCode() + "\n", french);
             Phrase niveaue = new Phrase("Level", english2);
             Phrase niveau = new Phrase();
             niveau.add(niveauf);
@@ -317,9 +352,9 @@ public class RelevetDocument implements IRelevetDocument {
             table.addCell(cell2);
 
             Phrase spf = new Phrase(new Chunk("Spécialité : ", french2));
-            Phrase valuespf = new Phrase(new Chunk("Informatique et Télécommunications" + "\n", french));
+            Phrase valuespf = new Phrase(new Chunk(o.getDepartement().getFrenchDescription() + "\n", french));
             Phrase spe = new Phrase(new Chunk("Speciality : ", english2));
-            Phrase valuespe = new Phrase(new Chunk("Computer Science and Telecommunications", english));
+            Phrase valuespe = new Phrase(new Chunk(o.getDepartement().getEnglishDescription(), english));
 
             /*         cell3.addElement(new Chunk("Spécialité : ", french2));
              cell3.addElement(new Chunk("Informatique et Télécommunications" + "\n", french));
@@ -337,7 +372,7 @@ public class RelevetDocument implements IRelevetDocument {
             table.addCell(cell3);
 
             Phrase nomf = new Phrase(new Chunk("Nom(s) et Prénom(s) :", french2));
-            Phrase valuenomf = new Phrase(new Chunk("ROYKEN IS ROY" + "\n", french));
+            Phrase valuenomf = new Phrase(new Chunk(e.getNom() + "\n", french));
             Phrase nome = new Phrase(new Chunk("Name and surename", english2));
             Phrase nom = new Phrase();
             nom.add(nomf);
@@ -349,7 +384,7 @@ public class RelevetDocument implements IRelevetDocument {
             table.addCell(cell4);
 
             Phrase matf = new Phrase(new Chunk("Matricule : ", french2));
-            Phrase valuematf = new Phrase(new Chunk("18Z764S" + "\n", french));
+            Phrase valuematf = new Phrase(new Chunk(e.getMatricule() + "\n", french));
             Phrase mate = new Phrase(new Chunk("Registration number", english2));
             Phrase matricule = new Phrase();
             matricule.add(matf);
@@ -360,7 +395,14 @@ public class RelevetDocument implements IRelevetDocument {
             table.addCell(cell5);
 
             Phrase datef = new Phrase(new Chunk("Né(e) le : ", french2));
-            Phrase valuedatef = new Phrase(new Chunk("45/76/2018" + "\n", french));
+            System.out.println(e);
+            Phrase valuedatef;
+            if(e.getDateDeNaissance() != null){
+                valuedatef = new Phrase(new Chunk(e.getDateDeNaissance().toString() + "\n", french));
+            }
+            else{
+                valuedatef = new Phrase(new Chunk("Unknown" + "\n", french));
+            }
             Phrase datee = new Phrase(new Chunk("Born on", english2));
             Phrase date = new Phrase();
             date.add(datef);
@@ -371,7 +413,13 @@ public class RelevetDocument implements IRelevetDocument {
             table.addCell(cell6);
 
             Phrase lieuf = new Phrase(new Chunk("à : ", french2));
-            Phrase valuelieuf = new Phrase(new Chunk("sofo wètchè" + "\n", french));
+            Phrase valuelieuf;
+            if(e.getLieuDeNaissance() != null){
+                valuelieuf = new Phrase(new Chunk(e.getLieuDeNaissance() + "\n", french));
+            }
+            else{
+                valuelieuf = new Phrase(new Chunk("unknown place" + "\n", french));
+            }
             Phrase lieue = new Phrase(new Chunk("at", english2));
             Phrase lieu = new Phrase();
             lieu.add(lieuf);
@@ -382,7 +430,7 @@ public class RelevetDocument implements IRelevetDocument {
             table.addCell(cell7);
 
             Phrase sexef = new Phrase(new Chunk("Sexe : ", french2));
-            Phrase valuesexef = new Phrase(new Chunk("Masculin" + "\n", french));
+            Phrase valuesexef = new Phrase(new Chunk(e.getGenre().toString() + "\n", french));
             Phrase sexee = new Phrase(new Chunk("Sexe", english2));
             Phrase sexe = new Phrase();
             sexe.add(lieuf);
@@ -404,15 +452,11 @@ public class RelevetDocument implements IRelevetDocument {
         }
     }
 
-    public void produceRelevetTable(Document doc, Etudiant e, Niveau n, Option o, AnneeAcademique a) {
+    private void produceRelevetTable(Document doc, Etudiant e, Niveau n, Option o, AnneeAcademique a,List<Semestre> semestres, List<UniteEnseignement> uniteEns1, List<UniteEnseignement> uniteEns2,List<UEnseignementCredit> ues1, List<UEnseignementCredit> ues2 ) {
         try {
-            List<Semestre> semestres = semestreDao.findByNiveau(n);
-
-            //Liste des ues du semestre 1
-           // List<UEnseignementCredit> ues1 = uniteEnsDao.findByNiveauOptionSemestre(n, o, semestres.get(0), a);
-            //List<UEnseignementCredit> ues2 = uniteEnsDao.findByNiveauOptionSemestre(n, o, semestres.get(1), a);
-            List<UEnseignementCredit> ues1 = getTrash1();
-            List<UEnseignementCredit> ues2 = getTrash2();
+            
+            //List<UEnseignementCredit> ues1 = getTrash1();
+            //List<UEnseignementCredit> ues2 = getTrash2();
             Font bf = new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD);
             Font bf1 = new Font(Font.FontFamily.TIMES_ROMAN, 6);
             Font bf12 = new Font(Font.FontFamily.TIMES_ROMAN, 5);
@@ -440,10 +484,11 @@ public class RelevetDocument implements IRelevetDocument {
             table.addCell(DocumentUtil.createDefaultBodyCell("Grade", bf, false));
             table.addCell(DocumentUtil.createDefaultBodyCell("Semestre", bf, false));
             table.addCell(DocumentUtil.createDefaultBodyCell("Session", bf, false));
-
-//            Map<String, MoyenneUniteEnseignement> notes = noteService.listeNoteUniteEnseignement(e.getMatricule(), n.getId(), o.getId(), semestres.get(0).getId(), a.getId());
-            Map<String, MoyenneTrashData> notes = getTrash3();
-            System.out.println("code à : " + notes.containsKey("ITEL 110"));
+            
+            Map<String, MoyenneUniteEnseignement> notes1 = noteService.listeNoteUniteEnseignement(e.getMatricule(), a.getId(), uniteEns1);
+            Map<String, MoyenneUniteEnseignement> notes2 = noteService.listeNoteUniteEnseignement(e.getMatricule(), a.getId(), uniteEns2);
+            //Map<String, MoyenneTrashData> notes = getTrash3();
+            //System.out.println("code à : " + notes.containsKey("ITEL 110"));
 
             /* table.addCell(createSyntheseDefaultBodyCell(String.valueOf(i++), bf1, false, true));
              table.addCell(createSyntheseDefaultBodyCell(e.getNom(), bf1, false, false));
@@ -477,8 +522,10 @@ public class RelevetDocument implements IRelevetDocument {
              */
             for (UEnseignementCredit ue : ues1) {
                 System.out.println("code : " + ue.getCodeUE());
-                MoyenneTrashData mue = notes.get(ue.getCodeUE());
-
+                //MoyenneTrashData mue = notes.get(ue.getCodeUE());
+                System.out.println("tooooooooo     "+notes1.get(ue.getCodeUE()));
+                MoyenneUniteEnseignement mue = notes1.get(ue.getCodeUE());
+                System.out.println(mue);
                 Double value = mue.getMoyenne();
                 produit += value * ue.getCredit();
                 nombreCredit += ue.getCredit();
@@ -496,7 +543,8 @@ public class RelevetDocument implements IRelevetDocument {
 
             }
             for (UEnseignementCredit ue : ues2) {
-                MoyenneTrashData mue = notes.get(ue.getCodeUE());
+                //MoyenneTrashData mue = notes.get(ue.getCodeUE());
+                 MoyenneUniteEnseignement mue = notes2.get(ue.getCodeUE());
                 Double value = mue.getMoyenne();
                 nombreCredit += ue.getCredit();
                 produit += value * ue.getCredit();
@@ -557,7 +605,7 @@ public class RelevetDocument implements IRelevetDocument {
 
         } catch (DocumentException ex) {
             Logger.getLogger(DocumentServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (DataAccessException ex) {
+        } catch (ServiceException ex) {
             Logger.getLogger(RelevetDocument.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

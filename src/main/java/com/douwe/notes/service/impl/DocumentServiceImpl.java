@@ -64,8 +64,8 @@ public class DocumentServiceImpl implements IDocumentFacadeService {
     }
 
     @Override
-    public void produireRelevet(Long niveauId, Long optionId, Long anneeId, OutputStream stream) {
-        relevetDocument.produireRelevet(niveauId, optionId, anneeId, stream);
+    public void produireRelevet(Long niveauId, Long optionId, Long anneeId, OutputStream stream, Long etudinatid) {
+        relevetDocument.produireRelevet(niveauId, optionId, anneeId, stream, null);
     }
 
 }

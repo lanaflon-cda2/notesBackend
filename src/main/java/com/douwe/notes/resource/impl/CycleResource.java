@@ -57,6 +57,8 @@ public class CycleResource implements ICycleResource{
             Cycle c = cycleService.findCycleById(id);
             if(c != null){
                 c.setNom(cycle.getNom());
+                c.setDiplomeEn(cycle.getDiplomeEn());
+                c.setDiplomeFr(cycle.getDiplomeFr());
                 return cycleService.saveOrUpdateCycle(c);
             }
             return null;

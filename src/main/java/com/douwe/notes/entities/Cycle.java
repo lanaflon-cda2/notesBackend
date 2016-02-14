@@ -42,6 +42,12 @@ public class Cycle implements Serializable {
     @Column (unique = true)
     private String nom;
     
+    @Column(unique = true)
+    private String diplomeFr;
+    
+    @Column(unique = true)
+    private String diplomeEn;
+    
     @OneToMany(mappedBy = "cycle")
     @XmlTransient
     private List<Niveau> niveaux;
@@ -69,6 +75,24 @@ public class Cycle implements Serializable {
     public void setNom(String nom) {
         this.nom = nom;
     }
+
+    public String getDiplomeFr() {
+        return diplomeFr;
+    }
+
+    public void setDiplomeFr(String diplomeFr) {
+        this.diplomeFr = diplomeFr;
+    }
+
+    public String getDiplomeEn() {
+        return diplomeEn;
+    }
+
+    public void setDiplomeEn(String diplomeEn) {
+        this.diplomeEn = diplomeEn;
+    }
+    
+    
 
     @JsonIgnore
     public List<Niveau> getNiveaux() {

@@ -36,36 +36,6 @@ public class RapportResource implements IRapportResource {
     }
 
     @Override
-    public Response test() throws Exception {
-        StreamingOutput stream = new StreamingOutput() {
-            @Override
-            public void write(OutputStream output) throws IOException, WebApplicationException {
-                try {
-                    buildDocument(output);
-                } catch (Exception e) {
-                    throw new WebApplicationException(e);
-                }
-            }
-        };
-
-        //return Response.ok()
-        return Response.ok(stream).header("Content-Disposition",
-                "attachment; filename=toto.pdf").build();
-    }
-
-    // Cette méthode pourrait bien etre dans une autre classe carrement
-    private void buildDocument(OutputStream out) throws Exception {
-        Document doc = new Document(PageSize.A4);
-        PdfWriter.getInstance(doc, out);
-        doc.open();
-        Paragraph p = new Paragraph("Hello world my friend");
-        p.setAlignment(Element.ALIGN_CENTER);
-        doc.add(p);
-        doc.add(new Paragraph("Vraiment de mieux en mieux"));
-        doc.close();
-    }
-
-    @Override
     public Response produirePv(final long niveauid, final long optionid, final long coursid, final long anneeid, final int session) {
 
         StreamingOutput stream = new StreamingOutput() {
@@ -133,11 +103,8 @@ public class RapportResource implements IRapportResource {
             @Override
             public void write(OutputStream output) throws IOException, WebApplicationException {
                 try {
-                    //buildDocument(output);
-                    //    filename = documentService.produireSyntheseSemestrielle(niveauid, optionid, anneeid, semestreId, output);
                     filename = documentService.produireSynthese(niveauid, optionid, anneeid, null, output);
 
-                    //fil
                 } catch (Exception e) {
                     throw new WebApplicationException(e);
                 }
@@ -148,16 +115,12 @@ public class RapportResource implements IRapportResource {
     }
 
     @Override
-    public Response produireRelevet(final long niveauid, final long optionid, final long anneeid) {
+    public Response produireRelevetParcours(final long niveauid, final long optionid, final long anneeid) {
         StreamingOutput stream = new StreamingOutput() {
             @Override
             public void write(OutputStream output) throws IOException, WebApplicationException {
                 try {
-                    //buildDocument(output);
-                    //    filename = documentService.produireSyntheseSemestrielle(niveauid, optionid, anneeid, semestreId, output);
-                    documentService.produireRelevet(niveauid, optionid, anneeid, output);
-
-                    //fil
+                    documentService.produireRelevet(niveauid, optionid, anneeid, output, null);
                 } catch (Exception e) {
                     throw new WebApplicationException(e);
                 }
@@ -168,14 +131,14 @@ public class RapportResource implements IRapportResource {
     }
 
 //    @Override
-//    public Response produireRelevet(final long niveauid,final long optionid, final long anneeid) {
+//    public Response produireRelevetParcours(final long niveauid,final long optionid, final long anneeid) {
 //        StreamingOutput stream = new StreamingOutput() {
 //            @Override
 //            public void write(OutputStream output) throws IOException, WebApplicationException {
 //                try {
 //                    //buildDocument(output);
 //                //    filename = documentService.produireSyntheseSemestrielle(niveauid, optionid, anneeid, semestreId, output);
-//                     documentService.produireRelevet(niveauid, optionid, anneeid, output);
+//                     documentService.produireRelevetParcours(niveauid, optionid, anneeid, output);
 //            
 //                    //fil
 //                } catch (Exception e) {
@@ -186,5 +149,22 @@ public class RapportResource implements IRapportResource {
 //        return Response.ok(stream).header("Content-Disposition",
 //                "attachment; filename="+filename+"relevet.pdf").build();
 //    }
+
+   
+    @Override
+    public Response produireRelevetEtudiant(final long niveauid, final long optionid, final long anneeid, final long etudiantid) {
+        StreamingOutput stream = new StreamingOutput() {
+            @Override
+            public void write(OutputStream output) throws IOException, WebApplicationException {
+                try {
+                    documentService.produireRelevet(niveauid, optionid, anneeid, output, etudiantid);
+                } catch (Exception e) {
+                    throw new WebApplicationException(e);
+                }
+            }
+        };
+        return Response.ok(stream).header("Content-Disposition",
+                "attachment; filename=" + filename + "relevet.pdf").build();
+    }
 
 }
