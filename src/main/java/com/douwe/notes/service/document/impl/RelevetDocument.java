@@ -487,39 +487,6 @@ public class RelevetDocument implements IRelevetDocument {
             
             Map<String, MoyenneUniteEnseignement> notes1 = noteService.listeNoteUniteEnseignement(e.getMatricule(), a.getId(), uniteEns1);
             Map<String, MoyenneUniteEnseignement> notes2 = noteService.listeNoteUniteEnseignement(e.getMatricule(), a.getId(), uniteEns2);
-            //Map<String, MoyenneTrashData> notes = getTrash3();
-            //System.out.println("code à : " + notes.containsKey("ITEL 110"));
-
-            /* table.addCell(createSyntheseDefaultBodyCell(String.valueOf(i++), bf1, false, true));
-             table.addCell(createSyntheseDefaultBodyCell(e.getNom(), bf1, false, false));
-             table.addCell(createSyntheseDefaultBodyCell(e.getMatricule(), bf1, false, true));
-             */
-            /*            for (UEnseignementCredit ue : ues1) {
-             MoyenneUniteEnseignement mue = notes.get(ue.getCodeUE());
-             Double value = mue.getMoyenne();
-             table.addCell(createSyntheseDefaultBodyCell(ue.getCodeUE(), bf1, true, true));
-             table.addCell(createSyntheseDefaultBodyCell(ue.getIntituleUE(), bf1, true, true));
-             table.addCell(createSyntheseDefaultBodyCell(String.valueOf(ue.getCredit()), bf1, true, true));
-             table.addCell(createSyntheseDefaultBodyCell(String.format("%.2f", value), bf1, true, true));
-             table.addCell(createSyntheseDefaultBodyCell("3,4", bf1, true, true));
-             table.addCell(createSyntheseDefaultBodyCell(transformNoteGrade(value), bf1, true, true));
-             table.addCell(createSyntheseDefaultBodyCell("I(2023)", bf1, true, true));
-             table.addCell(createSyntheseDefaultBodyCell("II", bf1, true, true));
-
-             }
-             for (UEnseignementCredit ue : ues2) {
-             MoyenneUniteEnseignement mue = notes.get(ue.getCodeUE());
-             Double value = mue.getMoyenne();
-             table.addCell(createSyntheseDefaultBodyCell(ue.getCodeUE(), bf1, true, true));
-             table.addCell(createSyntheseDefaultBodyCell(ue.getIntituleUE(), bf1, true, true));
-             table.addCell(createSyntheseDefaultBodyCell(String.valueOf(ue.getCredit()), bf1, true, true));
-             table.addCell(createSyntheseDefaultBodyCell(String.format("%.2f", value), bf1, true, true));
-             table.addCell(createSyntheseDefaultBodyCell("3,4", bf1, true, true));
-             table.addCell(createSyntheseDefaultBodyCell(transformNoteGrade(value), bf1, true, true));
-             table.addCell(createSyntheseDefaultBodyCell("I(2023)", bf1, true, true));
-             table.addCell(createSyntheseDefaultBodyCell("II", bf1, true, true));
-             }            
-             */
             for (UEnseignementCredit ue : ues1) {
                 System.out.println("code : " + ue.getCodeUE());
                 //MoyenneTrashData mue = notes.get(ue.getCodeUE());
@@ -680,73 +647,6 @@ public class RelevetDocument implements IRelevetDocument {
         return cell;
     }
 
-    private List<UEnseignementCredit> getTrash1() {
-        List<UEnseignementCredit> result = new ArrayList<UEnseignementCredit>();
-        result.add(new UEnseignementCredit("ITEL 110", "Mathematiques 1", 4));
-        result.add(new UEnseignementCredit("ITEL 111", "Circuit Logique 1", 4));
-        result.add(new UEnseignementCredit("ITEL 112", "Electronique de Base", 4));
-        result.add(new UEnseignementCredit("ITEL 113", "Circuits Electriques", 2));
-        result.add(new UEnseignementCredit("ITEL 114", "Electromagnetisme", 4));
-        result.add(new UEnseignementCredit("ITEL 115", "Algorithme et Programmation", 6));
-        result.add(new UEnseignementCredit("ITEL 116", "Mecanique du Point Materiel", 2));
-        result.add(new UEnseignementCredit("ITEL 117", "Communication Technique 1", 4));
-        return result;
-    }
-
-    private List<UEnseignementCredit> getTrash2() {
-        List<UEnseignementCredit> result = new ArrayList<UEnseignementCredit>();
-        result.add(new UEnseignementCredit("ITEL 120", "Mathématiques 2", 4));
-        result.add(new UEnseignementCredit("ITEL 121", "Circuits Logiques 2", 4));
-        result.add(new UEnseignementCredit("ITEL 122", "Système d’Exploitation 1", 4));
-        result.add(new UEnseignementCredit("ITEL 123", "Programmation Avancée en C", 2));
-        result.add(new UEnseignementCredit("ITEL 124", "Programmation et Technologies Web", 4));
-        result.add(new UEnseignementCredit("ITEL 125", "Électromagnétisme 2", 4));
-        result.add(new UEnseignementCredit("ITEL 126", "Dessin Technique et Fabrication Mécanique", 2));
-        result.add(new UEnseignementCredit("ITEL 127", "Communication Technique II", 4));
-        result.add(new UEnseignementCredit("ITEL 128", "Stage", 2));
-        return result;
-    }
-
-    private Map<String, MoyenneTrashData> getTrash3() {
-
-        Map<String, MoyenneTrashData> result = new HashMap<String, MoyenneTrashData>();
-        MoyenneTrashData data1 = new MoyenneTrashData(12.14, Session.normale, new Semestre("1"));
-        result.put("ITEL 110", data1);
-        MoyenneTrashData data2 = new MoyenneTrashData(13.20, Session.normale, new Semestre("1"));
-        result.put("ITEL 111", data2);
-        MoyenneTrashData data3 = new MoyenneTrashData(13.75, Session.normale, new Semestre("1"));
-        result.put("ITEL 112", data3);
-        MoyenneTrashData data4 = new MoyenneTrashData(11.30, Session.normale, new Semestre("1"));
-        result.put("ITEL 113", data4);
-        MoyenneTrashData data5 = new MoyenneTrashData(14.01, Session.normale, new Semestre("1"));
-        result.put("ITEL 114", data5);
-        MoyenneTrashData data6 = new MoyenneTrashData(10.20, Session.normale, new Semestre("1"));
-        result.put("ITEL 115", data6);
-        MoyenneTrashData data7 = new MoyenneTrashData(16.65, Session.normale, new Semestre("1"));
-        result.put("ITEL 116", data7);
-        MoyenneTrashData data8 = new MoyenneTrashData(10.05, Session.normale, new Semestre("1"));
-        result.put("ITEL 117", data8);
-        MoyenneTrashData data9 = new MoyenneTrashData(11.46, Session.rattrapage, new Semestre("II"));
-        result.put("ITEL 120", data9);
-        MoyenneTrashData data10 = new MoyenneTrashData(12.30, Session.normale, new Semestre("II"));
-        result.put("ITEL 121", data10);
-        MoyenneTrashData data11 = new MoyenneTrashData(11.55, Session.normale, new Semestre("II"));
-        result.put("ITEL 122", data11);
-        MoyenneTrashData data12 = new MoyenneTrashData(10.19, Session.normale, new Semestre("II"));
-        result.put("ITEL 123", data12);
-        MoyenneTrashData data13 = new MoyenneTrashData(12.60, Session.rattrapage, new Semestre("II"));
-        result.put("ITEL 124", data13);
-        MoyenneTrashData data14 = new MoyenneTrashData(11.18, Session.rattrapage, new Semestre("II"));
-        result.put("ITEL 125", data14);
-        MoyenneTrashData data15 = new MoyenneTrashData(11.05, Session.normale, new Semestre("II"));
-        result.put("ITEL 126", data15);
-        MoyenneTrashData data16 = new MoyenneTrashData(16.00, Session.normale, new Semestre("II"));
-        result.put("ITEL 127", data16);
-        MoyenneTrashData data17 = new MoyenneTrashData(16.00, Session.normale, new Semestre("II"));
-        result.put("ITEL 128", data17);
-        return result;
-    }
-
     public class Watermark extends PdfPageEventHelper {
 
         protected Phrase watermark = new Phrase("ORIGINAL", new Font(Font.FontFamily.HELVETICA, 70, Font.BOLDITALIC, new BaseColor(254, 248, 108)));
@@ -756,6 +656,11 @@ public class RelevetDocument implements IRelevetDocument {
             PdfContentByte canvas = writer.getDirectContentUnder();
             ColumnText.showTextAligned(canvas, Element.ALIGN_CENTER, watermark, 298, 421, 45);
         }
+    }
+    
+    private int[] computeRank(List<Etudiant> etudiants, List<Semestre> semestres, List<UniteEnseignement> uniteEns1, List<UniteEnseignement> uniteEns2, List<UEnseignementCredit> ues1, List<UEnseignementCredit> ues2){
+        
+        return null;
     }
 
 }
