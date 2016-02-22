@@ -24,6 +24,7 @@ import com.douwe.notes.entities.Session;
 import com.douwe.notes.entities.UniteEnseignement;
 import com.douwe.notes.projection.MoyenneTrashData;
 import com.douwe.notes.projection.MoyenneUniteEnseignement;
+import com.douwe.notes.projection.RelevetEtudiantNotesInfos;
 import com.douwe.notes.projection.UEnseignementCredit;
 import com.douwe.notes.service.INoteService;
 import com.douwe.notes.service.ServiceException;
@@ -45,6 +46,7 @@ import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -255,14 +257,13 @@ public class RelevetDocument implements IRelevetDocument {
 //                System.out.println(uniteEns11);
 //            }
             List<UniteEnseignement> uniteEns2 = uniteEnsDao.findByUniteNiveauOptionSemestre(n, o, semestres.get(1), a);
-             List<UEnseignementCredit> ues1 = uniteEnsDao.findByNiveauOptionSemestre(n, o, semestres.get(0), a);
+            List<UEnseignementCredit> ues1 = uniteEnsDao.findByNiveauOptionSemestre(n, o, semestres.get(0), a);
             List<UEnseignementCredit> ues2 = uniteEnsDao.findByNiveauOptionSemestre(n, o, semestres.get(1), a);
             List<Etudiant> etudiants = etudiantDao.listeEtudiantParDepartementEtNiveau(o.getDepartement(), a, n, o);
             for (Etudiant etudiant : etudiants) {
-                produceRelevetEtudiant(doc,etudiant, n,  o,  a, semestres, uniteEns1, uniteEns2, ues1, ues2);
+                produceRelevetEtudiant(doc, etudiant, n, o, a, semestres, uniteEns1, uniteEns2, ues1, ues2);
                 doc.newPage();
             }
-            
 
             doc.close();
         } catch (DataAccessException ex) {
@@ -273,14 +274,14 @@ public class RelevetDocument implements IRelevetDocument {
             Logger.getLogger(DocumentServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    private void produceRelevetEtudiant(Document doc, Etudiant e, Niveau n, Option o, AnneeAcademique a,List<Semestre> semestres, List<UniteEnseignement> uniteEns1, List<UniteEnseignement> uniteEns2, List<UEnseignementCredit> ues1, List<UEnseignementCredit> ues2){
+
+    private void produceRelevetEtudiant(Document doc, Etudiant e, Niveau n, Option o, AnneeAcademique a, List<Semestre> semestres, List<UniteEnseignement> uniteEns1, List<UniteEnseignement> uniteEns2, List<UEnseignementCredit> ues1, List<UEnseignementCredit> ues2) {
         try {
             common.produceDocumentHeader(doc, null, n, o, a, null, null, null, true);
             produceRelevetTitle(doc, o.getDepartement());
             // doc.add(new Chunk("\n"));
             produireRelevetHeader(e, o.getDepartement(), n, o, doc);
-            produceRelevetTable(doc,e ,n , o, a, semestres,uniteEns1,uniteEns2, ues1, ues2);
+            produceRelevetTable(doc, e, n, o, a, semestres, uniteEns1, uniteEns2, ues1, ues2);
             doc.add(new Chunk("\n"));
             produceRelevetFooter(doc);
         } catch (Exception ex) {
@@ -293,7 +294,7 @@ public class RelevetDocument implements IRelevetDocument {
             Font font = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
             doc.add(new Phrase("\n"));
             StringBuilder str = new StringBuilder();
-            
+
             str.append("RELEVE DE NOTES / ACADEMIC TRANSCRIPT             ");
             str.append("N°");
             str.append("/_______/");
@@ -327,9 +328,9 @@ public class RelevetDocument implements IRelevetDocument {
             table.setWidthPercentage(100);
 
             Phrase cyclef = new Phrase("Cycle : ", french2);
-            Phrase valuecyclef = new Phrase( n.getCycle().getDiplomeFr() + " en " + o.getDepartement().getFrenchDescription()+ "\n", french);
+            Phrase valuecyclef = new Phrase(n.getCycle().getDiplomeFr() + " en " + o.getDepartement().getFrenchDescription() + "\n", french);
             Phrase cyclee = new Phrase("cycle : ", english2);
-            Phrase valuecyclee = new Phrase(n.getCycle().getDiplomeEn() + " en " + o.getDepartement().getEnglishDescription()+ "\n", english);
+            Phrase valuecyclee = new Phrase(n.getCycle().getDiplomeEn() + " en " + o.getDepartement().getEnglishDescription() + "\n", english);
             Phrase cycle = new Phrase();
             cycle.add(cyclef);
             cycle.add(valuecyclef);
@@ -397,10 +398,18 @@ public class RelevetDocument implements IRelevetDocument {
             Phrase datef = new Phrase(new Chunk("Né(e) le : ", french2));
             System.out.println(e);
             Phrase valuedatef;
-            if(e.getDateDeNaissance() != null){
-                valuedatef = new Phrase(new Chunk(e.getDateDeNaissance().toString() + "\n", french));
-            }
-            else{
+            if (e.getDateDeNaissance() != null) {
+                Calendar ca = Calendar.getInstance();
+                int year = ca.get(Calendar.YEAR);
+                if (e.isValidDate()) {
+                    int day = ca.get(Calendar.DATE);
+                    int month = ca.get(Calendar.MONTH);
+                    valuedatef = new Phrase(new Chunk(day + "/" + month + "/" + year + "\n", french));
+                } else {
+                    valuedatef = new Phrase(new Chunk("vers " + year + "\n", french));
+                }
+
+            } else {
                 valuedatef = new Phrase(new Chunk("Unknown" + "\n", french));
             }
             Phrase datee = new Phrase(new Chunk("Born on", english2));
@@ -414,10 +423,9 @@ public class RelevetDocument implements IRelevetDocument {
 
             Phrase lieuf = new Phrase(new Chunk("à : ", french2));
             Phrase valuelieuf;
-            if(e.getLieuDeNaissance() != null){
+            if (e.getLieuDeNaissance() != null) {
                 valuelieuf = new Phrase(new Chunk(e.getLieuDeNaissance() + "\n", french));
-            }
-            else{
+            } else {
                 valuelieuf = new Phrase(new Chunk("unknown place" + "\n", french));
             }
             Phrase lieue = new Phrase(new Chunk("at", english2));
@@ -452,16 +460,16 @@ public class RelevetDocument implements IRelevetDocument {
         }
     }
 
-    private void produceRelevetTable(Document doc, Etudiant e, Niveau n, Option o, AnneeAcademique a,List<Semestre> semestres, List<UniteEnseignement> uniteEns1, List<UniteEnseignement> uniteEns2,List<UEnseignementCredit> ues1, List<UEnseignementCredit> ues2 ) {
+    private void produceRelevetTable(Document doc, Etudiant e, Niveau n, Option o, AnneeAcademique a, List<Semestre> semestres, List<UniteEnseignement> uniteEns1, List<UniteEnseignement> uniteEns2, List<UEnseignementCredit> ues1, List<UEnseignementCredit> ues2) {
         try {
-            
+
             //List<UEnseignementCredit> ues1 = getTrash1();
             //List<UEnseignementCredit> ues2 = getTrash2();
             Font bf = new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD);
             Font bf1 = new Font(Font.FontFamily.TIMES_ROMAN, 6);
             Font bf12 = new Font(Font.FontFamily.TIMES_ROMAN, 5);
-            int taille1 = ues1.size();
-            int taille2 = ues2.size();
+//            int taille1 = ues1.size();
+//            int taille2 = ues2.size();
             int nombreCredit = 0;
             int nombreCreditValide = 0;
             double produit = 0.0; /*produit : credit * moyenne */
@@ -484,13 +492,13 @@ public class RelevetDocument implements IRelevetDocument {
             table.addCell(DocumentUtil.createDefaultBodyCell("Grade", bf, false));
             table.addCell(DocumentUtil.createDefaultBodyCell("Semestre", bf, false));
             table.addCell(DocumentUtil.createDefaultBodyCell("Session", bf, false));
-            
+
             Map<String, MoyenneUniteEnseignement> notes1 = noteService.listeNoteUniteEnseignement(e.getMatricule(), a.getId(), uniteEns1);
             Map<String, MoyenneUniteEnseignement> notes2 = noteService.listeNoteUniteEnseignement(e.getMatricule(), a.getId(), uniteEns2);
             for (UEnseignementCredit ue : ues1) {
                 System.out.println("code : " + ue.getCodeUE());
                 //MoyenneTrashData mue = notes.get(ue.getCodeUE());
-                System.out.println("tooooooooo     "+notes1.get(ue.getCodeUE()));
+                System.out.println("tooooooooo     " + notes1.get(ue.getCodeUE()));
                 MoyenneUniteEnseignement mue = notes1.get(ue.getCodeUE());
                 System.out.println(mue);
                 Double value = mue.getMoyenne();
@@ -511,7 +519,7 @@ public class RelevetDocument implements IRelevetDocument {
             }
             for (UEnseignementCredit ue : ues2) {
                 //MoyenneTrashData mue = notes.get(ue.getCodeUE());
-                 MoyenneUniteEnseignement mue = notes2.get(ue.getCodeUE());
+                MoyenneUniteEnseignement mue = notes2.get(ue.getCodeUE());
                 Double value = mue.getMoyenne();
                 nombreCredit += ue.getCredit();
                 produit += value * ue.getCredit();
@@ -657,10 +665,54 @@ public class RelevetDocument implements IRelevetDocument {
             ColumnText.showTextAligned(canvas, Element.ALIGN_CENTER, watermark, 298, 421, 45);
         }
     }
-    
-    private int[] computeRank(List<Etudiant> etudiants, List<Semestre> semestres, List<UniteEnseignement> uniteEns1, List<UniteEnseignement> uniteEns2, List<UEnseignementCredit> ues1, List<UEnseignementCredit> ues2){
-        
-        return null;
+
+    private Map<String, RelevetEtudiantNotesInfos> computeRank(List<Etudiant> etudiants, List<Semestre> semestres, List<UniteEnseignement> uniteEns1, List<UniteEnseignement> uniteEns2, List<UEnseignementCredit> ues1, List<UEnseignementCredit> ues2, AnneeAcademique a) {
+        Map<String, RelevetEtudiantNotesInfos> result = new HashMap<String, RelevetEtudiantNotesInfos>();
+        for (Etudiant e : etudiants) {
+            RelevetEtudiantNotesInfos infos = new RelevetEtudiantNotesInfos();
+            double produit = 0;
+            double moyenne = 0;
+            int nombreCredit = 0;
+            int nombreCreditValide = 0;
+            try {
+
+                Map<String, MoyenneUniteEnseignement> notes1 = noteService.listeNoteUniteEnseignement(e.getMatricule(), a.getId(), uniteEns1);
+                Map<String, MoyenneUniteEnseignement> notes2 = noteService.listeNoteUniteEnseignement(e.getMatricule(), a.getId(), uniteEns2);
+                Map<String, Double> notes = new HashMap<String, Double>();
+                for (UEnseignementCredit ue : ues1) {
+                    MoyenneUniteEnseignement mue = notes1.get(ue.getCodeUE());
+                    System.out.println(mue);
+                    Double value = mue.getMoyenne();
+                    notes.put(ue.getCodeUE(), value);
+                    produit += value * ue.getCredit();
+                    nombreCredit += ue.getCredit();
+                    if (value >= 10) {
+                        nombreCreditValide += ue.getCredit();
+                    }
+                }
+
+                for (UEnseignementCredit ue : ues2) {
+                    //MoyenneTrashData mue = notes.get(ue.getCodeUE());
+                    MoyenneUniteEnseignement mue = notes2.get(ue.getCodeUE());
+                    Double value = mue.getMoyenne();
+                    nombreCredit += ue.getCredit();
+                    notes.put(ue.getCodeUE(), value);
+                    produit += value * ue.getCredit();
+                    if (value >= 10) {
+                        nombreCreditValide += ue.getCredit();
+                    }
+                }
+                infos.setNotes(notes);
+                infos.setNombreCreditValides(nombreCreditValide);
+                infos.setMoyenne((produit * 1.0) / nombreCredit);
+                result.put(e.getMatricule(), infos);
+                // Je ne sais toujours pas comment obtenir le rang
+            } catch (ServiceException ex) {
+                Logger.getLogger(RelevetDocument.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return result;
     }
 
 }
