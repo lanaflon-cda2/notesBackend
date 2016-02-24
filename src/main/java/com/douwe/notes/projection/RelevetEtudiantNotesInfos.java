@@ -1,5 +1,6 @@
 package com.douwe.notes.projection;
 
+import com.douwe.notes.entities.Session;
 import java.util.Map;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -20,6 +21,8 @@ public class RelevetEtudiantNotesInfos {
     private int nombreCreditValides;
     
     Map<String, Double> notes;
+    
+    Map<String, Session> sessions;
 
     public double getMoyenne() {
         return moyenne;
@@ -52,7 +55,16 @@ public class RelevetEtudiantNotesInfos {
     public void setNotes(Map<String, Double> notes) {
         this.notes = notes;
     }
-    
+
+    public Map<String, Session> getSessions() {
+        return sessions;
+    }
+
+    public void setSessions(Map<String, Session> sessions) {
+        this.sessions = sessions;
+    }
+
+   
     
     
 }
