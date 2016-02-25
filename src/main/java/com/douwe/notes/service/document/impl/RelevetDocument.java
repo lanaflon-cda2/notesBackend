@@ -674,7 +674,7 @@ public class RelevetDocument implements IRelevetDocument {
                 Map<String, Session> sessions = new HashMap<String, Session>();
                 for (UEnseignementCredit ue : ues1) {
                     MoyenneUniteEnseignement mue = notes1.get(ue.getCodeUE());
-                    System.out.println(mue);
+                   // System.out.println(mue);
                     Double value = mue.getMoyenne();
                     Session session = mue.getSession();
                     notes.put(ue.getCodeUE(), value);

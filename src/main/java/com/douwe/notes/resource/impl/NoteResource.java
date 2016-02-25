@@ -161,11 +161,11 @@ public class NoteResource implements INoteResource {
         try {
             Note note1 = service.findNoteById(id);
             if (note1 != null) {
-                note1.setAnneeAcademique(note.getAnneeAcademique());
-                note1.setCours(note.getCours());
-                note1.setEtudiant(note.getEtudiant());
-                note1.setEvaluation(note.getEvaluation());
-                note1.setSession(note.getSession());
+               // note1.setAnneeAcademique(note.getAnneeAcademique());
+               // note1.setCours(note.getCours());
+                //note1.setEtudiant(note.getEtudiant());
+                //note1.setEvaluation(note.getEvaluation());
+                //note1.setSession(note.getSession());
                 note1.setValeur(note.getValeur());
                 return service.saveOrUpdateNote(note1);
             }
@@ -301,6 +301,16 @@ public class NoteResource implements INoteResource {
             throw new WebApplicationException(400);
         }
         return result;
+    }
+
+    @Override
+    public Note getNoteEtudiantByEvaluation(Long etudiantId, Long evaluationId, Long coursId, Long anneeId, int session) {
+        try {
+            return noteService.getNoteEtudiantByEvaluation(etudiantId, evaluationId, coursId, anneeId, session);
+        } catch (ServiceException ex) {
+            Logger.getLogger(NoteResource.class.getName()).log(Level.SEVERE, null, ex);
+            throw new WebApplicationException(400);
+        }
     }
 
 }

@@ -643,4 +643,33 @@ public class NoteServiceImpl implements INoteService {
         }
     }
 
+    @Override
+    public Note getNoteEtudiantByEvaluation(Long etudiantId, Long evaluationId, Long coursId, Long anneeId, int session) throws ServiceException {
+        try {
+            Etudiant etudiant = etudiantDao.findById(etudiantId);
+            if(etudiant == null){
+                throw new ServiceException("L'etudiant demandé est introuvable");
+            }
+            Evaluation evaluation = evaluationDao.findById(evaluationId);
+            if(evaluation == null){
+                throw new ServiceException("L'evaluation demandée est introuvable");
+            }
+            Cours cours = coursDao.findById(coursId);
+            if(cours == null){
+                throw new ServiceException("Le cours demandé est introuvable");
+            }
+            AnneeAcademique academique = academiqueDao.findById(anneeId);
+            if(academique == null){
+                throw new ServiceException("L'année demand est introuvable");
+            }
+            
+            Session s = Session.values()[session];
+            return noteDao.getNoteCours(etudiant, evaluation, cours, academique, s);
+                    
+        } catch (DataAccessException ex) {
+            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new ServiceException("Impossible d'effectuer le traitement");
+        }
+    }
+
 }

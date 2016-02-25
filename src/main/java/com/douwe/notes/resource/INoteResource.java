@@ -97,6 +97,11 @@ public interface INoteResource {
     OutputStream produirePv();
     
     @GET
+    @Path(value = "{etudiantId : \\d+}/{evaluationId : \\d+}/{coursid : \\d+}/{anneeid : \\d+}/{session : \\d+}")
+    @Produces(value = "application/json")
+    Note getNoteEtudiantByEvaluation(@PathParam(value = "etudiantId") Long etudiantId, @PathParam(value = "evaluationId") Long evaluationId, @PathParam(value = "coursId") Long coursId, @PathParam(value = "anneeId") Long anneeId, @PathParam(value = "session") int session);
+    
+    @GET
     @Path(value = "/salut/{matricule}/{coursId: \\d+}/{anneeId: \\d+}")
     @Produces(value = "application/json")
     EtudiantNotes noteEtudiant(@PathParam(value = "matricule")String matricule, @PathParam(value = "coursId")long coursId, @PathParam(value = "anneeId")long anneeId);

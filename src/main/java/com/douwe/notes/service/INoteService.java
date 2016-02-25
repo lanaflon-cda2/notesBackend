@@ -31,6 +31,8 @@ public interface INoteService {
     
     public List<Note> getAllNotes() throws ServiceException;
     
+    public Note getNoteEtudiantByEvaluation(Long etudiantId, Long evaluationId, Long coursId,Long anneeId, int session) throws ServiceException;
+    
     public List<EtudiantNotes> getAllNotesEtudiants(Niveau niveau, Option option, Cours cours, UniteEnseignement ue, AnneeAcademique academique, Session session) throws ServiceException;
     
     //public List<EtudiantNotes> getAllNotesEtudiants(Niveau niveau, Option option, Cours cours) throws ServiceException;

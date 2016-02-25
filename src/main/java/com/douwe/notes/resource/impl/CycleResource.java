@@ -18,13 +18,10 @@ import javax.ws.rs.Path;
 @Path("/cycles")
 public class CycleResource implements ICycleResource{
 
-    @EJB
-    private IInsfrastructureService infranstructureService;
-    
-  
-    @EJB
+   @EJB
     private ICycleService cycleService;
     
+    @Override
     public Cycle createCycle(Cycle cycle) {
         try {
             return cycleService.saveOrUpdateCycle(cycle);
@@ -34,6 +31,7 @@ public class CycleResource implements ICycleResource{
         }
     }
 
+    @Override
     public List<Cycle> getAllCycle() {
         try {
             return cycleService.getAllCycles();
@@ -43,6 +41,7 @@ public class CycleResource implements ICycleResource{
         }
     }
 
+    @Override
     public Cycle getCycle(long id) {
         try {
             return cycleService.findCycleById(id);
@@ -52,6 +51,7 @@ public class CycleResource implements ICycleResource{
         }
     }
 
+    @Override
     public Cycle updateCycle(long id, Cycle cycle) {
         try {
             Cycle c = cycleService.findCycleById(id);
@@ -68,20 +68,13 @@ public class CycleResource implements ICycleResource{
         }
     }
 
+    @Override
     public void deleteCycle(long id) {
         try {
             cycleService.deleteCycle(id);
         } catch (ServiceException ex) {
             Logger.getLogger(CycleResource.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    public IInsfrastructureService getInfranstructureService() {
-        return infranstructureService;
-    }
-
-    public void setInfranstructureService(IInsfrastructureService infranstructureService) {
-        this.infranstructureService = infranstructureService;
     }
 
     public ICycleService getCycleService() {
