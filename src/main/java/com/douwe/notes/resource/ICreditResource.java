@@ -51,5 +51,5 @@ public interface ICreditResource {
     @GET
     @Path(value = "{id : \\d+}")
     @Produces(value = "application/json")
-    Credit getCredit(long id);
+    Credit getCredit(@PathParam(value = "id")long id);
 }

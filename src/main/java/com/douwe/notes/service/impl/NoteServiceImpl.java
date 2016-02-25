@@ -654,6 +654,7 @@ public class NoteServiceImpl implements INoteService {
             if(evaluation == null){
                 throw new ServiceException("L'evaluation demandée est introuvable");
             }
+            System.out.println("\n =====  L'id du cours est :" + coursId + "======\n");
             Cours cours = coursDao.findById(coursId);
             if(cours == null){
                 throw new ServiceException("Le cours demandé est introuvable");

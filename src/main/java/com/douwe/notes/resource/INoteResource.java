@@ -51,6 +51,11 @@ public interface INoteResource {
     @DELETE
     @Path(value = "{id : \\d+}")
     void deleteNote(@PathParam(value = "id") long id);
+    
+    @GET
+    @Path(value = "{etudiantId : \\d+}/{evaluationId : \\d+}/{coursId : \\d+}/{anneeId : \\d+}/{session : \\d+}")
+    @Produces(value = "application/json")
+    Note getNoteEtudiantByEvaluation(@PathParam(value = "etudiantId") Long etudiantId, @PathParam(value = "evaluationId") Long evaluationId, @PathParam(value = "coursId") Long coursId, @PathParam(value = "anneeId") Long anneeId, @PathParam(value = "session") int session);
 
     @POST
     @Path("import")
@@ -87,7 +92,7 @@ public interface INoteResource {
     
     // Debut mes tests. A supprimer a la fin bien sur
     @GET
-    @Path(value = "{niveauid : \\d+}/{optionid : \\d+}/{coursid : \\d+}/{anneeid : \\d+}/{session : \\d+}")
+    @Path(value = "affiche/{niveauid : \\d+}/{optionid : \\d+}/{coursid : \\d+}/{anneeid : \\d+}/{session : \\d+}")
     @Produces(value = "application/json")
     String afficher(@PathParam(value = "niveauid") long niveauid, @PathParam(value = "optionid") long optionid, @PathParam(value = "coursid") long coursid, @PathParam(value = "anneeid") long anneeid, @PathParam(value = "session") int session);
     
@@ -96,10 +101,7 @@ public interface INoteResource {
     @Produces(value = "application/json")
     OutputStream produirePv();
     
-    @GET
-    @Path(value = "{etudiantId : \\d+}/{evaluationId : \\d+}/{coursid : \\d+}/{anneeid : \\d+}/{session : \\d+}")
-    @Produces(value = "application/json")
-    Note getNoteEtudiantByEvaluation(@PathParam(value = "etudiantId") Long etudiantId, @PathParam(value = "evaluationId") Long evaluationId, @PathParam(value = "coursId") Long coursId, @PathParam(value = "anneeId") Long anneeId, @PathParam(value = "session") int session);
+    
     
     @GET
     @Path(value = "/salut/{matricule}/{coursId: \\d+}/{anneeId: \\d+}")
