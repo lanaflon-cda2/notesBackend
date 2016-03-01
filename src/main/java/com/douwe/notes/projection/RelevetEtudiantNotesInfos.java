@@ -1,5 +1,6 @@
 package com.douwe.notes.projection;
 
+import com.douwe.notes.entities.Semestre;
 import com.douwe.notes.entities.Session;
 import java.util.Map;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -16,11 +17,17 @@ public class RelevetEtudiantNotesInfos {
     
     private double moyenne;
     
+    private double moyenneMgp;
+    
     private int rang;
     
     private int nombreCreditValides;
     
-    Map<String, Double> notes;
+    private Map<String, Double> notes;
+    
+    private Map<String, Double> mgp;
+    
+    private Map<String, String> semestres;
     
     Map<String, Session> sessions;
 
@@ -62,6 +69,30 @@ public class RelevetEtudiantNotesInfos {
 
     public void setSessions(Map<String, Session> sessions) {
         this.sessions = sessions;
+    }
+
+    public double getMoyenneMgp() {
+        return moyenneMgp;
+    }
+
+    public void setMoyenneMgp(double moyenneMgp) {
+        this.moyenneMgp = moyenneMgp;
+    }
+
+    public Map<String, Double> getMgp() {
+        return mgp;
+    }
+
+    public void setMgp(Map<String, Double> mgp) {
+        this.mgp = mgp;
+    }
+
+    public Map<String, String> getSemestres() {
+        return semestres;
+    }
+
+    public void setSemestres(Map<String, String> semestres) {
+        this.semestres = semestres;
     }
 
    

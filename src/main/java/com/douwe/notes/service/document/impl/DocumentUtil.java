@@ -52,6 +52,65 @@ public class DocumentUtil {
 
     }
     
+    public static double transformNoteMgp(double note) {
+        double notep = note * 5;
+        if (notep <= 100 && notep >= 80) {
+            return 4;
+        }
+        if (notep < 80 && notep >= 75) {
+            return 3.7;
+        }
+        if (notep < 75 && notep >= 70) {
+            return 3.3;
+        }
+        if (notep < 70 && notep >= 65) {
+            return 3.0;
+        }
+        if (notep < 65 && notep >= 60) {
+            return 2.7;
+        }
+        if (notep < 60 && notep >= 55) {
+            return 2.3;
+        }
+        if (notep < 55 && notep >= 50) {
+            return 2.0;
+        }
+        if (notep < 50 && notep >= 45) {
+            return 1.7;
+        }
+        if (notep < 45 && notep >= 40) {
+            return 1.3;
+        }
+        if (note < 40 && note >= 35) {
+            return 1.0;
+        }
+        
+
+        return 0;
+
+    }
+    
+    public static String transformNoteMention(double note) {
+        if (note <= 20 && note >= 16) {
+            return "Très bien";
+        }
+        if (note < 16 && note >= 14) {
+            return "Bien";
+        }
+        if (note < 14 && note >= 12) {
+            return "Assez bien";
+        }
+        if (note < 12 && note >= 10) {
+            return "Passable";
+        }
+        if (note < 10 && note >= 7) {
+            return "Insuffisant";
+        }
+
+        return "Echec";
+
+    }
+    
     public static String sessionToString(Session session) {
         if (session == Session.normale) {
             return "1";

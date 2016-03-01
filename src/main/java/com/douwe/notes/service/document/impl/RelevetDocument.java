@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -258,10 +259,7 @@ public class RelevetDocument implements IRelevetDocument {
 
             //Liste des ues du semestre 1
             List<UniteEnseignement> uniteEns1 = uniteEnsDao.findByUniteNiveauOptionSemestre(n, o, semestres.get(0), a);
-//            System.out.println("J'ai pris ======= " + uniteEns1.size());
-//            for (UniteEnseignement uniteEns11 : uniteEns1) {
-//                System.out.println(uniteEns11);
-//            }
+
             List<UniteEnseignement> uniteEns2 = uniteEnsDao.findByUniteNiveauOptionSemestre(n, o, semestres.get(1), a);
             List<UEnseignementCredit> ues1 = uniteEnsDao.findByNiveauOptionSemestre(n, o, semestres.get(0), a);
             List<UEnseignementCredit> ues2 = uniteEnsDao.findByNiveauOptionSemestre(n, o, semestres.get(1), a);
@@ -307,7 +305,7 @@ public class RelevetDocument implements IRelevetDocument {
             str.append("N°");
             str.append("/_______/");
             str.append(departement.getCode());
-            str.append("DAACR/");
+            str.append("/DAACR/");
             str.append("DISS\n");
             Phrase phrase = new Phrase(str.toString(), font);
             doc.add(phrase);
@@ -408,6 +406,7 @@ public class RelevetDocument implements IRelevetDocument {
             Phrase valuedatef;
             if (e.getDateDeNaissance() != null) {
                 Calendar ca = Calendar.getInstance();
+                ca.setTime(e.getDateDeNaissance());
                 int year = ca.get(Calendar.YEAR);
                 if (e.isValidDate()) {
                     int day = ca.get(Calendar.DATE);
@@ -499,6 +498,9 @@ public class RelevetDocument implements IRelevetDocument {
 
             Map<String, Double> notes = infos.getNotes();
             Map<String, Session> sessions = infos.getSessions();
+            Map<String, Double> mgp = infos.getMgp();
+            Map<String, String> semtrs = infos.getSemestres();
+            
             for (UEnseignementCredit ue : ues1) {
 
                 Double value = notes.get(ue.getCodeUE());
@@ -506,12 +508,13 @@ public class RelevetDocument implements IRelevetDocument {
                 nombreCredit += ue.getCredit();
                 Session session = sessions.get(ue.getCodeUE());
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(ue.getCodeUE(), bf1, false, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(ue.getIntituleUE(), bf1, false, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(ue.getIntituleUE(), bf1, false, false));
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(ue.getCredit()), bf1, false, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", value), bf1, false, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell("3,4", bf1, false, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(mgp.get(ue.getCodeUE())), bf1, false, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.transformNoteGrade(value), bf1, false, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell("I(2023)", bf1, false, true));
+                
+                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(semtrs.get(ue.getCodeUE()), bf1, false, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.sessionToString(session), bf1, false, true));
 
             }
@@ -520,12 +523,13 @@ public class RelevetDocument implements IRelevetDocument {
                 nombreCredit += ue.getCredit();
                 Session session = sessions.get(ue.getCodeUE());
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(ue.getCodeUE(), bf1, false, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(ue.getIntituleUE(), bf1, false, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(ue.getIntituleUE(), bf1, false, false));
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(ue.getCredit()), bf1, false, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", value), bf1, false, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell("3,4", bf1, false, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(mgp.get(ue.getCodeUE())), bf1, false, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.transformNoteGrade(value), bf1, false, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell("I(2023)", bf1, false, true));
+                
+                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(semtrs.get(ue.getCodeUE()), bf1, false, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.sessionToString(session), bf1, false, true));
             }
             PdfPCell cell = new PdfPCell();
@@ -560,10 +564,10 @@ public class RelevetDocument implements IRelevetDocument {
             table2.addCell(DocumentUtil.createRelevetFootBodyCell(String.valueOf(infos.getRang()), bf, false, 1, 1));
             table2.addCell(DocumentUtil.createRelevetFootBodyCell(String.valueOf(infos.getNombreCreditValides()), bf, false, 1, 1));
             table2.addCell(DocumentUtil.createRelevetFootBodyCell(String.format("%.2f", infos.getMoyenne()), bf, false, 1, 1));
-            table2.addCell(DocumentUtil.createRelevetFootBodyCell("2,70", bf, false, 1, 1));
+            table2.addCell(DocumentUtil.createRelevetFootBodyCell(String.valueOf(infos.getMoyenneMgp()), bf, false, 1, 1));
             table2.addCell(DocumentUtil.createRelevetFootBodyCell(DocumentUtil.transformNoteGrade(infos.getMoyenne()), bf, false, 1, 1));
-            table2.addCell(DocumentUtil.createRelevetFootBodyCell("AD", bf, false, 1, 1));
-            table2.addCell(DocumentUtil.createRelevetFootBodyCell("ASSEZ-Bien", bf, false, 2, 2));
+            table2.addCell(DocumentUtil.createRelevetFootBodyCell((infos.getMoyenne() >= 10)? "AD":"RD", bf, false, 1, 1));
+            table2.addCell(DocumentUtil.createRelevetFootBodyCell(DocumentUtil.transformNoteMention(infos.getMoyenne()), bf, false, 2, 2));
 
             cell.addElement(table2);
             cell.setColspan(8);
@@ -663,6 +667,7 @@ public class RelevetDocument implements IRelevetDocument {
         for (Etudiant e : etudiants) {
             RelevetEtudiantNotesInfos infos = new RelevetEtudiantNotesInfos();
             double produit = 0;
+            double produitMgp = 0;
             double moyenne = 0;
             int nombreCredit = 0;
             int nombreCreditValide = 0;
@@ -671,15 +676,26 @@ public class RelevetDocument implements IRelevetDocument {
                 Map<String, MoyenneUniteEnseignement> notes1 = noteService.listeNoteUniteEnseignement(e.getMatricule(), a.getId(), uniteEns1);
                 Map<String, MoyenneUniteEnseignement> notes2 = noteService.listeNoteUniteEnseignement(e.getMatricule(), a.getId(), uniteEns2);
                 Map<String, Double> notes = new HashMap<String, Double>();
+                Map<String, Double> mgp = new HashMap<String, Double>();
                 Map<String, Session> sessions = new HashMap<String, Session>();
+                Map<String, String> semes = new HashMap<String, String>();
                 for (UEnseignementCredit ue : ues1) {
-                    MoyenneUniteEnseignement mue = notes1.get(ue.getCodeUE());
+                    MoyenneUniteEnseignement mue = notes1.get(ue.getCodeUE()); 
                    // System.out.println(mue);
                     Double value = mue.getMoyenne();
+                    Double noteMgp = DocumentUtil.transformNoteMgp(value);
                     Session session = mue.getSession();
+                    mgp.put(ue.getCodeUE(), noteMgp);
+                    Semestre semestre = semestres.get(0);
+                    Calendar ca = Calendar.getInstance();
+                    ca.setTime(a.getDebut());
+                    int year = ca.get(Calendar.YEAR);
+                    String sem = semestreToRoman(semestre)+"("+String.valueOf(year)+")";
+                    semes.put(ue.getCodeUE(), sem);
                     notes.put(ue.getCodeUE(), value);
                     sessions.put(ue.getCodeUE(), session);
                     produit += value * ue.getCredit();
+                    produitMgp += noteMgp * ue.getCredit();
                     nombreCredit += ue.getCredit();
                     if (value >= 10) {
                         nombreCreditValide += ue.getCredit();
@@ -690,19 +706,32 @@ public class RelevetDocument implements IRelevetDocument {
                     //MoyenneTrashData mue = notes.get(ue.getCodeUE());
                     MoyenneUniteEnseignement mue = notes2.get(ue.getCodeUE());
                     Double value = mue.getMoyenne();
+                    Double noteMgp = DocumentUtil.transformNoteMgp(value);
                     Session session = mue.getSession();
                     nombreCredit += ue.getCredit();
                     notes.put(ue.getCodeUE(), value);
+                    mgp.put(ue.getCodeUE(), noteMgp);
+                    Semestre semestre = semestres.get(1);
+                    Calendar ca = Calendar.getInstance();
+                    ca.setTime(a.getFin());
+                    int year = ca.get(Calendar.YEAR);
+                    String sem = semestreToRoman(semestre)+"("+String.valueOf(year)+")";
+                    semes.put(ue.getCodeUE(), sem);
+                    
                     sessions.put(ue.getCodeUE(), session);
                     produit += value * ue.getCredit();
+                    produitMgp += noteMgp * ue.getCredit();
                     if (value >= 10) {
                         nombreCreditValide += ue.getCredit();
                     }
                 }
                 infos.setNotes(notes);
+                infos.setMgp(mgp);
                 infos.setSessions(sessions);
-                infos.setNombreCreditValides(nombreCreditValide);
-                infos.setMoyenne((produit * 1.0) / nombreCredit);
+                infos.setSemestres(semes);
+                infos.setNombreCreditValides(nombreCreditValide);                     
+                infos.setMoyenneMgp((Math.round(((produitMgp * 1.0) / nombreCredit) * 100.0) / 100.0));
+                infos.setMoyenne((Math.round(((produit * 1.0) / nombreCredit) * 100.0) / 100.0));
                 resultTmp.put(e.getMatricule(), infos);
                 // Je ne sais toujours pas comment obtenir le rang
             } catch (ServiceException ex) {
@@ -734,7 +763,7 @@ public class RelevetDocument implements IRelevetDocument {
             public int compare(Map.Entry<String, RelevetEtudiantNotesInfos> o1,
                     Map.Entry<String, RelevetEtudiantNotesInfos> o2) {
                 //return (o1.getValue()).compareTo(o2.getValue());
-                return Double.compare(o2.getValue().getMoyenne(), o1.getValue().getMoyenne());
+                return Double.compare(o2.getValue().getMoyenneMgp(), o1.getValue().getMoyenneMgp());
             }
         });
 
