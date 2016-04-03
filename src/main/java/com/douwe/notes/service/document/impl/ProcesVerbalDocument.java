@@ -337,7 +337,7 @@ public class ProcesVerbalDocument implements IProcesVerbalDocument{
             }
             double moyenne = note.getMoyenne();
             table.addCell(DocumentUtil.createDefaultBodyCell(String.format("%.2f", moyenne), bf12, false));
-            table.addCell(DocumentUtil.createDefaultBodyCell(DocumentUtil.transformNoteGrade(moyenne), bf12, false));
+            table.addCell(DocumentUtil.createDefaultBodyCell(DocumentUtil.transformNoteGradeUE(moyenne), bf12, false));
             if (moyenne > max) {
                 max = moyenne;
             }

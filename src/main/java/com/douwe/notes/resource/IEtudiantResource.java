@@ -66,7 +66,5 @@ public interface IEtudiantResource {
     @Path("import")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public ImportationResult importEtudiant(@FormDataParam("fichier") InputStream fichier, @FormDataParam("fichier") FormDataContentDisposition fileDisposition,@FormDataParam("annee")Long annee);
-
-
-    
+   
 }

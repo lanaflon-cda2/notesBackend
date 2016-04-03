@@ -520,7 +520,7 @@ public class RelevetDocument implements IRelevetDocument {
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(ue.getCredit()), bf1, false, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", value), bf1, false, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(mgp.get(ue.getCodeUE())), bf1, false, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.transformNoteGrade(value), bf1, false, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.transformNoteGradeUE(value), bf1, false, true));
 
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(semtrs.get(ue.getCodeUE()), bf1, false, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.sessionToString(session), bf1, false, true));
@@ -535,7 +535,7 @@ public class RelevetDocument implements IRelevetDocument {
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(ue.getCredit()), bf1, false, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", value), bf1, false, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(mgp.get(ue.getCodeUE())), bf1, false, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.transformNoteGrade(value), bf1, false, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.transformNoteGradeUE(value), bf1, false, true));
 
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(semtrs.get(ue.getCodeUE()), bf1, false, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.sessionToString(session), bf1, false, true));
@@ -573,9 +573,9 @@ public class RelevetDocument implements IRelevetDocument {
             table2.addCell(DocumentUtil.createRelevetFootBodyCell(String.valueOf(infos.getNombreCreditValides()), bf, false, 1, 1));
             table2.addCell(DocumentUtil.createRelevetFootBodyCell(String.format("%.2f", infos.getMoyenne()), bf, false, 1, 1));
             table2.addCell(DocumentUtil.createRelevetFootBodyCell(String.valueOf(infos.getMoyenneMgp()), bf, false, 1, 1));
-            table2.addCell(DocumentUtil.createRelevetFootBodyCell(DocumentUtil.transformNoteGrade(infos.getMoyenne()), bf, false, 1, 1));
+            table2.addCell(DocumentUtil.createRelevetFootBodyCell(DocumentUtil.transformMoyenneMgpToGradeRelevet(infos.getMoyenneMgp()), bf, false, 1, 1));
             table2.addCell(DocumentUtil.createRelevetFootBodyCell((infos.getMoyenne() >= 10) ? "AD" : "RD", bf, false, 1, 1));
-            table2.addCell(DocumentUtil.createRelevetFootBodyCell(DocumentUtil.transformNoteMention(infos.getMoyenne()), bf, false, 2, 2));
+            table2.addCell(DocumentUtil.createRelevetFootBodyCell(DocumentUtil.transformMoyenneMgpToMentionRelevet(infos.getMoyenneMgp()), bf, false, 2, 2));
 
             cell.addElement(table2);
             cell.setColspan(8);
@@ -692,7 +692,7 @@ public class RelevetDocument implements IRelevetDocument {
                     MoyenneUniteEnseignement mue = notes1.get(ue.getCodeUE());
                     // System.out.println(mue);
                     Double value = mue.getMoyenne();
-                    Double noteMgp = DocumentUtil.transformNoteMgp(value);
+                    Double noteMgp = DocumentUtil.transformNoteMgpUE(value);
                     Session session = mue.getSession();
                     mgp.put(ue.getCodeUE(), noteMgp);
                     Semestre semestre = semestres.get(0);
@@ -715,7 +715,7 @@ public class RelevetDocument implements IRelevetDocument {
                     //MoyenneTrashData mue = notes.get(ue.getCodeUE());
                     MoyenneUniteEnseignement mue = notes2.get(ue.getCodeUE());
                     Double value = mue.getMoyenne();
-                    Double noteMgp = DocumentUtil.transformNoteMgp(value);
+                    Double noteMgp = DocumentUtil.transformNoteMgpUE(value);
                     Session session = mue.getSession();
                     nombreCredit += ue.getCredit();
                     notes.put(ue.getCodeUE(), value);
