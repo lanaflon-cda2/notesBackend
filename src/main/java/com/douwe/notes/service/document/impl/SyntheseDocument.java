@@ -51,7 +51,8 @@ import javax.inject.Inject;
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
 @Stateless
-public class SyntheseDocument implements ISyntheseDocument{
+public class SyntheseDocument implements ISyntheseDocument {
+
     @EJB
     private INoteService noteService;
 
@@ -94,7 +95,7 @@ public class SyntheseDocument implements ISyntheseDocument{
 
     @Inject
     private IUniteEnseignementDao uniteEnsDao;
-    
+
     @Inject
     private DocumentCommon common;
 
@@ -222,18 +223,17 @@ public class SyntheseDocument implements ISyntheseDocument{
     public void setCommon(DocumentCommon common) {
         this.common = common;
     }
-    
 
     @Override
     public String produireSynthese(Long niveauId, Long optionId, Long academiqueId, Long semestreId, OutputStream stream) throws ServiceException {
-       if (semestreId == null) {
+        if (semestreId == null) {
             produireSyntheseAnnuelle(stream, niveauId, optionId, academiqueId);
         } else {
             produireSyntheseSemestrielle(niveauId, optionId, academiqueId, semestreId, stream);
         }
         return null;
     }
-    
+
     private String produireSyntheseSemestrielle(Long niveauId, Long optionId, Long academiqueId, Long semestreId, OutputStream stream) {
         Document doc = null;
         try {
@@ -293,7 +293,7 @@ public class SyntheseDocument implements ISyntheseDocument{
             Font bf = new Font(Font.FontFamily.TIMES_ROMAN, 9, Font.BOLD);
             Font title = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
             Font bf1 = new Font(Font.FontFamily.TIMES_ROMAN, 10);
-            Paragraph parag = new Paragraph(String.format("SYNTHESE DU %s. %s, %s, %s.\n ANNÉE ACADÉMIQUE %s", 
+            Paragraph parag = new Paragraph(String.format("SYNTHESE DU %s. %s, %s, %s.\n ANNÉE ACADÉMIQUE %s",
                     s.getIntitule().toUpperCase(),
                     o.getDepartement().getCode().toUpperCase(),
                     o.getDescription().toUpperCase(),
@@ -363,7 +363,7 @@ public class SyntheseDocument implements ISyntheseDocument{
                     double sumMoyenne = 0.0; //sumMoyenne /30 renvoie à la moyenne trimestrielle
                     int nbrCreditValide = 0; // le nombre de crédits validés  
                     // TODO I need to figure out how to speed this computation
-                    Map<String, MoyenneUniteEnseignement> notes = noteService.listeNoteUniteEnseignement(etudiant.getMatricule(), a.getId(), totos);
+                    Map<String, MoyenneUniteEnseignement> notes = noteService.listeNoteUniteEnseignement(etudiant.getMatricule(), a.getId(),annee.getId(), totos);
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(i++), bf1, false, true));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(etudiant.getNom(), bf1, false, false));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(etudiant.getMatricule(), bf1, false, true));
@@ -392,169 +392,168 @@ public class SyntheseDocument implements ISyntheseDocument{
         }
 
     }
-    
+
     private void produireSyntheseAnnueleBody(Document doc, Niveau n, Option o, AnneeAcademique a) {
         try {
             doc.add(new Phrase("\n"));
             boolean firstPage = true;
-            List<AnneeAcademique>  annees = academiqueDao.findAllYearWthNote(a, n, o, null);
+            List<AnneeAcademique> annees = academiqueDao.findAllYearWthNote(a, n, o, null);
             List<Semestre> semestres = semestreDao.findByNiveau(n);
             for (AnneeAcademique annee : annees) {
-                List<Etudiant> etudiants = etudiantDao.listeEtudiantAvecNotes(annee, a,n, o, null);
-                if(etudiants.isEmpty()){
+                if (!firstPage) {
+                    doc.newPage();
+                }
+                List<Etudiant> etudiants = etudiantDao.listeEtudiantAvecNotes(annee, a, n, o, null);
+                if (etudiants.isEmpty()) {
                     continue;
                 }
                 //Liste des ues du semestre 1
-            List<UEnseignementCredit> ues1 = uniteEnsDao.findByNiveauOptionSemestre(n, o, semestres.get(0), annee);
-            
+                List<UEnseignementCredit> ues1 = uniteEnsDao.findByNiveauOptionSemestre(n, o, semestres.get(0), annee);
 
-            //Liste des ues du semestre 2
-            List<UEnseignementCredit> ues2 = uniteEnsDao.findByNiveauOptionSemestre(n, o, semestres.get(1), annee);
-            
-            int creditSem1 = common.computeTotalCredit(ues1);
-            
-            int creditSem2 = common.computeTotalCredit(ues2);
+                //Liste des ues du semestre 2
+                List<UEnseignementCredit> ues2 = uniteEnsDao.findByNiveauOptionSemestre(n, o, semestres.get(1), annee);
+
+                int creditSem1 = common.computeTotalCredit(ues1);
+
+                int creditSem2 = common.computeTotalCredit(ues2);
 
             // La liste des étudiants du parcours
-            //Parcours p = parcoursDao.findByNiveauOption(n, o);
-            Font bf = new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD);
-            Font bf1 = new Font(Font.FontFamily.TIMES_ROMAN, 6);
-            Font bf12 = new Font(Font.FontFamily.TIMES_ROMAN, 5);
-            Font title = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
-            Paragraph parag = new Paragraph(String.format("SYNTHESE ANNUELLE. %s, %s, %s.\n ANNÉE ACADÉMIQUE %s", 
-                    o.getDepartement().getCode().toUpperCase(),
-                    o.getDescription().toUpperCase(),
-                    n.getCode().toUpperCase(),
-                    a.toString()), title);
-            parag.setAlignment(Element.ALIGN_CENTER);
-            parag.setSpacingAfter(10f);
-            doc.add(parag);
+                //Parcours p = parcoursDao.findByNiveauOption(n, o);
+                Font bf = new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD);
+                Font bf1 = new Font(Font.FontFamily.TIMES_ROMAN, 6);
+                Font bf12 = new Font(Font.FontFamily.TIMES_ROMAN, 5);
+                Font title = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
+                Paragraph parag = new Paragraph(String.format("SYNTHESE ANNUELLE. %s, %s, %s.\n ANNÉE ACADÉMIQUE %s",
+                        o.getDepartement().getCode().toUpperCase(),
+                        o.getDescription().toUpperCase(),
+                        n.getCode().toUpperCase(),
+                        a.toString()), title);
+                parag.setAlignment(Element.ALIGN_CENTER);
+                parag.setSpacingAfter(10f);
+                doc.add(parag);
             //List<Etudiant> etudiants = etudiantDao.listeEtudiantParDepartementEtParcours(o.getDepartement(), a, p);
-            
-            int taille1 = ues1.size();
-            int taille2 = ues2.size();
-            float relativeWidths[];
-            relativeWidths = new float[11 + taille1 + taille2];
-            relativeWidths[0] = 1;
-            relativeWidths[1] = 10;
-            relativeWidths[2] = 3;
-            for (int i = 0; i < taille1 + taille2 + 8; i++) {
-                relativeWidths[3 + i] = 2;
-            }
-            PdfPTable table = new PdfPTable(relativeWidths);
-            if(!firstPage){
-                doc.newPage();
-            }
-            firstPage = false;
-            table.setWidthPercentage(100);
 
-            table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
-            table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
-            table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
-            PdfPCell cell = new PdfPCell(new Phrase("Synthese I", bf));
-            cell.setColspan(taille1 + 3);
-            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(cell);
+                int taille1 = ues1.size();
+                int taille2 = ues2.size();
+                float relativeWidths[];
+                relativeWidths = new float[11 + taille1 + taille2];
+                relativeWidths[0] = 1;
+                relativeWidths[1] = 10;
+                relativeWidths[2] = 3;
+                for (int i = 0; i < taille1 + taille2 + 8; i++) {
+                    relativeWidths[3 + i] = 2;
+                }
+                PdfPTable table = new PdfPTable(relativeWidths);
+                
+                firstPage = false;
+                table.setWidthPercentage(100);
 
-            PdfPCell cell1 = new PdfPCell(new Phrase("Synthese II", bf));
-            cell1.setColspan(taille2 + 3);
-            cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(cell1);
-            table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
-            table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
+                PdfPCell cell = new PdfPCell(new Phrase("Synthese I", bf));
+                cell.setColspan(taille1 + 3);
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                table.addCell(cell);
 
-            table.getDefaultCell().setBorderColor(BaseColor.BLACK);
-            table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("No", bf, false));
-            table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Noms et Prénoms", bf, false));
-            table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Matricule", bf, false));
-            for (UEnseignementCredit ue : ues1) {
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(ue.getIntituleUE(), bf, false));
-            }
-            table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Moyenne I", bf, true));
-            table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Crédits "+semestres.get(0).getIntitule()+" validés", bf, true));
-            table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("% crédits "+semestres.get(0).getIntitule()+" validés", bf, true));
-            for (UEnseignementCredit ue : ues2) {
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(ue.getIntituleUE(), bf, false));
-            }
+                PdfPCell cell1 = new PdfPCell(new Phrase("Synthese II", bf));
+                cell1.setColspan(taille2 + 3);
+                cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+                table.addCell(cell1);
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
 
-            table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Moyenne II", bf, true));
-            table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Crédits "+semestres.get(1).getIntitule()+" validés", bf, true));
-            table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("% crédits "+semestres.get(1).getIntitule()+" validés", bf, true));
-            table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Moyenne annuelle", bf, false));
-            table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("% annuel de crédit validés", bf, false));
-            table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
-            table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
-            table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
-            for (UEnseignementCredit ue : ues1) {
-                table.addCell(DocumentUtil.createDefaultBodyCell(String.valueOf(ue.getCredit()), bf, true));
-            }
-            table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
-            table.addCell(DocumentUtil.createDefaultBodyCell(String.valueOf(creditSem1), bf, true));
-            table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
-            for (UEnseignementCredit ue : ues2) {
-                table.addCell(DocumentUtil.createDefaultBodyCell(String.valueOf(ue.getCredit()), bf, true));
-            }
-            table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
-            table.addCell(DocumentUtil.createDefaultBodyCell(String.valueOf(creditSem2), bf, true));
-            table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
-            table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
-            table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
-            //   table.addCell(createDefaultBodyCell("", bf, true));
-
-            int i = 1;
-            List<UniteEnseignement> uniteEns1 = uniteEnsDao.findByUniteNiveauOptionSemestre(n, o, semestres.get(0), annee);
-            List<UniteEnseignement> uniteEns2 = uniteEnsDao.findByUniteNiveauOptionSemestre(n, o, semestres.get(1), annee);
-            for (Etudiant etudiant : etudiants) {
-
-                double sumMoyenne1 = 0.0; // (sumMoyenne /nombreCredit1) renvoie à la moyenne trimestrielle
-                int nbrCreditValide1 = 0; // le nombre de  crédits validés
-                int nbrCreditValide2 = 0;
-                double sumMoyenne2 = 0;
-                Map<String, MoyenneUniteEnseignement> notes = noteService.listeNoteUniteEnseignement(etudiant.getMatricule(), a.getId(), uniteEns1);
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(i++), bf1, false, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(etudiant.getNom(), bf1, false, false));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(etudiant.getMatricule(), bf1, false, true));
+                table.getDefaultCell().setBorderColor(BaseColor.BLACK);
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("No", bf, false));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Noms et Prénoms", bf, false));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Matricule", bf, false));
                 for (UEnseignementCredit ue : ues1) {
-                    // Double value = enue.getNote().get(ue.getCodeUE());
-                    //Double value = notes.get(ue)
-                    MoyenneUniteEnseignement mue = notes.get(ue.getCodeUE());
-                    Double value = mue.getMoyenne();
-                    sumMoyenne1 += value * ue.getCredit();
-                    if (value >= 10) {
-                        nbrCreditValide1 += ue.getCredit();
-                    }
-                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell((value == null) ? "" : String.format("%.2f", value), bf1, false, true));
+                    table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(ue.getIntituleUE(), bf, false));
                 }
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", Math.ceil(sumMoyenne1 * 100 / creditSem1) / 100), bf1, true, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(nbrCreditValide1), bf1, true, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", (((nbrCreditValide1 * 1.0 / creditSem1)) * 100)), bf1, true, true));
-
-                // Le second semestre
-                Map<String, MoyenneUniteEnseignement> notes2 = noteService.listeNoteUniteEnseignement(etudiant.getMatricule(), a.getId(), uniteEns2);
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Moyenne I", bf, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Crédits " + semestres.get(0).getIntitule() + " validés", bf, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("% crédits " + semestres.get(0).getIntitule() + " validés", bf, true));
                 for (UEnseignementCredit ue : ues2) {
-                    MoyenneUniteEnseignement mue = notes2.get(ue.getCodeUE());
-                    double value = 0;
-                    if (mue != null) {
-                        value = mue.getMoyenne();
-                        sumMoyenne2 += value * ue.getCredit();
-                        if (value >= 10) {
-                            nbrCreditValide2 += ue.getCredit();
-                        }
-                    }
-                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell((value == 0) ? "" : String.format("%.2f", value), bf1, false, true));
+                    table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(ue.getIntituleUE(), bf, false));
                 }
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", (sumMoyenne2 / creditSem2)), bf1, true, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(nbrCreditValide2), bf1, true, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", (((nbrCreditValide2 * 1.0 / creditSem2)) * 100)), bf1, true, true));
 
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", ((sumMoyenne1 + sumMoyenne2) / (creditSem1 + creditSem2))), bf1, true, true));
-                // table.addCell(createSyntheseDefaultBodyCell(String.valueOf(nbrCreditValide), bf1, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", ((((nbrCreditValide1 + nbrCreditValide2) * 1.0 / (creditSem1 + creditSem2))) * 100)), bf1, true, true));
-            }
-            doc.add(table);
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Moyenne II", bf, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Crédits " + semestres.get(1).getIntitule() + " validés", bf, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("% crédits " + semestres.get(1).getIntitule() + " validés", bf, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Moyenne annuelle", bf, false));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("% annuel de crédit validés", bf, false));
+                table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
+                table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
+                table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
+                for (UEnseignementCredit ue : ues1) {
+                    table.addCell(DocumentUtil.createDefaultBodyCell(String.valueOf(ue.getCredit()), bf, true));
+                }
+                table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
+                table.addCell(DocumentUtil.createDefaultBodyCell(String.valueOf(creditSem1), bf, true));
+                table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
+                for (UEnseignementCredit ue : ues2) {
+                    table.addCell(DocumentUtil.createDefaultBodyCell(String.valueOf(ue.getCredit()), bf, true));
+                }
+                table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
+                table.addCell(DocumentUtil.createDefaultBodyCell(String.valueOf(creditSem2), bf, true));
+                table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
+                table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
+                table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
+                //   table.addCell(createDefaultBodyCell("", bf, true));
+
+                int i = 1;
+                List<UniteEnseignement> uniteEns1 = uniteEnsDao.findByUniteNiveauOptionSemestre(n, o, semestres.get(0), annee);
+                List<UniteEnseignement> uniteEns2 = uniteEnsDao.findByUniteNiveauOptionSemestre(n, o, semestres.get(1), annee);
+                for (Etudiant etudiant : etudiants) {
+
+                    double sumMoyenne1 = 0.0; // (sumMoyenne /nombreCredit1) renvoie à la moyenne trimestrielle
+                    int nbrCreditValide1 = 0; // le nombre de  crédits validés
+                    int nbrCreditValide2 = 0;
+                    double sumMoyenne2 = 0;
+                    Map<String, MoyenneUniteEnseignement> notes = noteService.listeNoteUniteEnseignement(etudiant.getMatricule(), a.getId(), annee.getId(), uniteEns1);
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(i++), bf1, false, true));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(etudiant.getNom(), bf1, false, false));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(etudiant.getMatricule(), bf1, false, true));
+                    for (UEnseignementCredit ue : ues1) {
+                    // Double value = enue.getNote().get(ue.getCodeUE());
+                        //Double value = notes.get(ue)
+                        MoyenneUniteEnseignement mue = notes.get(ue.getCodeUE());
+                        Double value = mue.getMoyenne();
+                        sumMoyenne1 += value * ue.getCredit();
+                        if (value >= 10) {
+                            nbrCreditValide1 += ue.getCredit();
+                        }
+                        table.addCell(DocumentUtil.createSyntheseDefaultBodyCell((value == null) ? "" : String.format("%.2f", value), bf1, false, true));
+                    }
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", Math.ceil(sumMoyenne1 * 100 / creditSem1) / 100), bf1, true, true));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(nbrCreditValide1), bf1, true, true));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", (((nbrCreditValide1 * 1.0 / creditSem1)) * 100)), bf1, true, true));
+
+                    // Le second semestre
+                    Map<String, MoyenneUniteEnseignement> notes2 = noteService.listeNoteUniteEnseignement(etudiant.getMatricule(), a.getId(), annee.getId(), uniteEns2);
+                    for (UEnseignementCredit ue : ues2) {
+                        MoyenneUniteEnseignement mue = notes2.get(ue.getCodeUE());
+                        double value = 0;
+                        if (mue != null) {
+                            value = mue.getMoyenne();
+                            sumMoyenne2 += value * ue.getCredit();
+                            if (value >= 10) {
+                                nbrCreditValide2 += ue.getCredit();
+                            }
+                        }
+                        table.addCell(DocumentUtil.createSyntheseDefaultBodyCell((value == 0) ? "" : String.format("%.2f", value), bf1, false, true));
+                    }
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", (sumMoyenne2 / creditSem2)), bf1, true, true));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(nbrCreditValide2), bf1, true, true));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", (((nbrCreditValide2 * 1.0 / creditSem2)) * 100)), bf1, true, true));
+
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", ((sumMoyenne1 + sumMoyenne2) / (creditSem1 + creditSem2))), bf1, true, true));
+                    // table.addCell(createSyntheseDefaultBodyCell(String.valueOf(nbrCreditValide), bf1, true));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", ((((nbrCreditValide1 + nbrCreditValide2) * 1.0 / (creditSem1 + creditSem2))) * 100)), bf1, true, true));
+                }
+                doc.add(table);
             }
 
-            
         } catch (DocumentException ex) {
             Logger.getLogger(DocumentServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } catch (DataAccessException ex) {
@@ -564,5 +563,4 @@ public class SyntheseDocument implements ISyntheseDocument{
         }
     }
 
-    
 }

@@ -1,5 +1,6 @@
 package com.douwe.notes.service;
 
+import com.douwe.notes.entities.Cours;
 import com.douwe.notes.entities.Departement;
 import com.douwe.notes.entities.Option;
 import java.util.List;
@@ -23,6 +24,8 @@ public interface IDepartementService {
     public List<Option> getAllOptions(Departement departement) throws ServiceException;
     
     public Departement findByCode(String code) throws ServiceException;
+    
+    public List<Cours> getAllCours(long id) throws ServiceException;
     
     
 }

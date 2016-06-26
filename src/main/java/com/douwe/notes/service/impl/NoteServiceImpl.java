@@ -462,14 +462,14 @@ public class NoteServiceImpl implements INoteService {
     }
 
     @Override
-    public MoyenneUniteEnseignement getMoyenneUEEtudiant(String matricule, long ueId, long anneeId) throws ServiceException {
+    public MoyenneUniteEnseignement getMoyenneUEEtudiant(String matricule, long ueId, long anneeId, long aCourantId) throws ServiceException {
         MoyenneUniteEnseignement result = null;
         try {
             UniteEnseignement ue = uniteEnseignementDao.findById(ueId);
             // TODO I need to come back here and figure out something
             AnneeAcademique annee = null;
             if (anneeId > 0) {
-                annee = academiqueDao.findById(anneeId);
+                annee = academiqueDao.findById(aCourantId);
             }
             result = new MoyenneUniteEnseignement(ue.isHasOptionalChoices());
             // TODO I need to find out a way note to issue this query for every studend
@@ -536,7 +536,7 @@ public class NoteServiceImpl implements INoteService {
             AnneeAcademique annee = academiqueDao.findById(anneeId);
             List<UniteEnseignement> liste = uniteEnseignementDao.findByUniteNiveauOptionSemestre(niveau, option, semestre, annee);
             for (UniteEnseignement liste1 : liste) {
-                MoyenneUniteEnseignement res = getMoyenneUEEtudiant(matricule, liste1.getId(), anneeId);
+                MoyenneUniteEnseignement res = getMoyenneUEEtudiant(matricule, liste1.getId(), anneeId, anneeId);
                 result.put(liste1.getCode(), res);
             }
             return result;
@@ -547,11 +547,11 @@ public class NoteServiceImpl implements INoteService {
     }
 
     @Override
-    public Map<String, MoyenneUniteEnseignement> listeNoteUniteEnseignement(String matricule, long anneeId, List<UniteEnseignement> ues) throws ServiceException {
+    public Map<String, MoyenneUniteEnseignement> listeNoteUniteEnseignement(String matricule, long anneeId, long aCourantId,  List<UniteEnseignement> ues) throws ServiceException {
         Map<String, MoyenneUniteEnseignement> result = new HashMap<String, MoyenneUniteEnseignement>();
 
         for (UniteEnseignement liste1 : ues) {
-            MoyenneUniteEnseignement res = getMoyenneUEEtudiant(matricule, liste1.getId(), anneeId);
+            MoyenneUniteEnseignement res = getMoyenneUEEtudiant(matricule, liste1.getId(), anneeId, aCourantId);
             result.put(liste1.getCode(), res);
         }
         return result;

@@ -15,14 +15,12 @@ import com.douwe.notes.dao.IProgrammeDao;
 import com.douwe.notes.dao.ISemestreDao;
 import com.douwe.notes.dao.IUniteEnseignementDao;
 import com.douwe.notes.entities.AnneeAcademique;
-import com.douwe.notes.entities.Departement;
 import com.douwe.notes.entities.Etudiant;
 import com.douwe.notes.entities.Niveau;
 import com.douwe.notes.entities.Option;
 import com.douwe.notes.entities.Semestre;
 import com.douwe.notes.entities.Session;
 import com.douwe.notes.entities.UniteEnseignement;
-import com.douwe.notes.projection.MoyenneTrashData;
 import com.douwe.notes.projection.MoyenneUniteEnseignement;
 import com.douwe.notes.projection.RelevetEtudiantNotesInfos;
 import com.douwe.notes.projection.UEnseignementCredit;
@@ -31,13 +29,16 @@ import com.douwe.notes.service.ServiceException;
 import com.douwe.notes.service.document.IRelevetDocument;
 import com.douwe.notes.service.impl.DocumentServiceImpl;
 import com.douwe.notes.service.util.RomanNumber;
+import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfContentByte;
@@ -45,12 +46,14 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfWriter;
+import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -62,6 +65,7 @@ import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  *
@@ -115,7 +119,18 @@ public class RelevetDocument implements IRelevetDocument {
 
     @Inject
     private DocumentCommon common;
+    
+    private final DateFormat dateFormatter;
+    
+    private final DateFormat anneeFormatter;
 
+    public RelevetDocument() {
+        dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+        anneeFormatter = new SimpleDateFormat("yyyy");
+    }
+
+    
+    
     public IEtudiantDao getEtudiantDao() {
         return etudiantDao;
     }
@@ -292,7 +307,7 @@ public class RelevetDocument implements IRelevetDocument {
     private void produceRelevetEtudiant(Document doc, Etudiant e, Niveau n, Option o, AnneeAcademique a, List<UEnseignementCredit> ues1, List<UEnseignementCredit> ues2, RelevetEtudiantNotesInfos infos) {
         try {
             common.produceDocumentHeader(doc, null, n, o, a, null, null, null, true);
-            produceRelevetTitle(doc, o.getDepartement());
+            produceRelevetTitle(doc, a.getNumeroDebut().toString());
             // doc.add(new Chunk("\n"));
             produireRelevetHeader(e, n, o, doc);
             produceRelevetTable(doc, ues1, ues2, infos);
@@ -303,18 +318,16 @@ public class RelevetDocument implements IRelevetDocument {
         }
     }
 
-    private void produceRelevetTitle(Document doc, Departement departement) {
+    private void produceRelevetTitle(Document doc, String annee) {
         try {
-            Font font = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
+            Font font = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
             doc.add(new Phrase("\n"));
             StringBuilder str = new StringBuilder();
 
             str.append("RELEVE DE NOTES / ACADEMIC TRANSCRIPT             ");
             str.append("N°");
-            str.append("/_______/");
-            str.append(departement.getCode());
-            str.append("/DAACR/");
-            str.append("DISS\n");
+            str.append("________/DISS/DAACR/");
+            str.append(annee);
             Phrase phrase = new Phrase(str.toString(), font);
             doc.add(phrase);
         } catch (DocumentException ex) {
@@ -326,11 +339,11 @@ public class RelevetDocument implements IRelevetDocument {
 
         try {
 
-            Font french = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
-            Font english = new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.BOLDITALIC);
-            Font french2 = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.NORMAL);
-            Font english2 = new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.ITALIC);
-            Font bf1 = new Font(Font.FontFamily.TIMES_ROMAN, 6);
+            Font french = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
+            Font english = new Font(Font.FontFamily.TIMES_ROMAN, 7, Font.BOLDITALIC);
+            Font french2 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.NORMAL);
+            Font english2 = new Font(Font.FontFamily.TIMES_ROMAN, 7, Font.ITALIC);
+            Font bf1 = new Font(Font.FontFamily.TIMES_ROMAN, 7);
             Font bf12 = new Font(Font.FontFamily.TIMES_ROMAN, 5);
 
             float relativeWidths[];
@@ -341,10 +354,10 @@ public class RelevetDocument implements IRelevetDocument {
             PdfPTable table = new PdfPTable(relativeWidths);
             table.setWidthPercentage(100);
 
-            Phrase cyclef = new Phrase("Cycle : ", french2);
+            Phrase cyclef = new Phrase("Cycle: ", french2);
             Phrase valuecyclef = new Phrase(n.getCycle().getDiplomeFr() + " en " + o.getDepartement().getFrenchDescription() + "\n", french);
-            Phrase cyclee = new Phrase("cycle : ", english2);
-            Phrase valuecyclee = new Phrase(n.getCycle().getDiplomeEn() + " en " + o.getDepartement().getEnglishDescription() + "\n", english);
+            Phrase cyclee = new Phrase("cycle: ", english2);
+            Phrase valuecyclee = new Phrase(n.getCycle().getDiplomeEn() + " in " + o.getDepartement().getEnglishDescription() + "\n", english);
             Phrase cycle = new Phrase();
             cycle.add(cyclef);
             cycle.add(valuecyclef);
@@ -355,9 +368,9 @@ public class RelevetDocument implements IRelevetDocument {
             cell1.setBorderColor(BaseColor.WHITE);
             table.addCell(cell1);
 
-            Phrase niveauf = new Phrase("Niveau : ", french2);
+            Phrase niveauf = new Phrase("Niveau: ", french2);
             Phrase valueniveauf = new Phrase(n.getCode() + "\n", french);
-            Phrase niveaue = new Phrase("Level", english2);
+            Phrase niveaue = new Phrase("Level: ", english2);
             Phrase niveau = new Phrase();
             niveau.add(niveauf);
             niveau.add(valueniveauf);
@@ -366,9 +379,9 @@ public class RelevetDocument implements IRelevetDocument {
             cell2.setBorderColor(BaseColor.WHITE);
             table.addCell(cell2);
 
-            Phrase spf = new Phrase(new Chunk("Spécialité : ", french2));
+            Phrase spf = new Phrase(new Chunk("Spécialité: ", french2));
             Phrase valuespf = new Phrase(new Chunk(o.getDepartement().getFrenchDescription() + "\n", french));
-            Phrase spe = new Phrase(new Chunk("Speciality : ", english2));
+            Phrase spe = new Phrase(new Chunk("Speciality: ", english2));
             Phrase valuespe = new Phrase(new Chunk(o.getDepartement().getEnglishDescription(), english));
 
             /*         cell3.addElement(new Chunk("Spécialité : ", french2));
@@ -386,9 +399,9 @@ public class RelevetDocument implements IRelevetDocument {
             cell3.setBorderColor(BaseColor.WHITE);
             table.addCell(cell3);
 
-            Phrase nomf = new Phrase(new Chunk("Nom(s) et Prénom(s) :", french2));
+            Phrase nomf = new Phrase(new Chunk("Nom(s) et Prénom(s): ", french2));
             Phrase valuenomf = new Phrase(new Chunk(e.getNom() + "\n", french));
-            Phrase nome = new Phrase(new Chunk("Name and surename", english2));
+            Phrase nome = new Phrase(new Chunk("Name and surname: ", english2));
             Phrase nom = new Phrase();
             nom.add(nomf);
             nom.add(valuenomf);
@@ -398,9 +411,9 @@ public class RelevetDocument implements IRelevetDocument {
             cell4.setColspan(2);
             table.addCell(cell4);
 
-            Phrase matf = new Phrase(new Chunk("Matricule : ", french2));
+            Phrase matf = new Phrase(new Chunk("Matricule: ", french2));
             Phrase valuematf = new Phrase(new Chunk(e.getMatricule() + "\n", french));
-            Phrase mate = new Phrase(new Chunk("Registration number", english2));
+            Phrase mate = new Phrase(new Chunk("Registration number: ", english2));
             Phrase matricule = new Phrase();
             matricule.add(matf);
             matricule.add(valuematf);
@@ -409,25 +422,19 @@ public class RelevetDocument implements IRelevetDocument {
             cell5.setBorderColor(BaseColor.WHITE);
             table.addCell(cell5);
 
-            Phrase datef = new Phrase(new Chunk("Né(e) le : ", french2));
-            System.out.println(e);
+            Phrase datef = new Phrase(new Chunk("Né(e) le: ", french2));
             Phrase valuedatef;
-            if (e.getDateDeNaissance() != null) {
-                Calendar ca = Calendar.getInstance();
-                ca.setTime(e.getDateDeNaissance());
-                int year = ca.get(Calendar.YEAR);
+            if (e.getDateDeNaissance() != null) { 
                 if (e.isValidDate()) {
-                    int day = ca.get(Calendar.DATE);
-                    int month = ca.get(Calendar.MONTH);
-                    valuedatef = new Phrase(new Chunk(day + "/" + month + "/" + year + "\n", french));
+                    valuedatef = new Phrase(new Chunk(dateFormatter.format(e.getDateDeNaissance()) + "\n", french));
                 } else {
-                    valuedatef = new Phrase(new Chunk("vers " + year + "\n", french));
+                    valuedatef = new Phrase(new Chunk("Vers " + anneeFormatter.format(e.getDateDeNaissance())+ "\n", french));
                 }
 
             } else {
                 valuedatef = new Phrase(new Chunk("Unknown" + "\n", french));
             }
-            Phrase datee = new Phrase(new Chunk("Born on", english2));
+            Phrase datee = new Phrase(new Chunk("Born on: ", english2));
             Phrase date = new Phrase();
             date.add(datef);
             date.add(valuedatef);
@@ -436,14 +443,14 @@ public class RelevetDocument implements IRelevetDocument {
             cell6.setBorderColor(BaseColor.WHITE);
             table.addCell(cell6);
 
-            Phrase lieuf = new Phrase(new Chunk("à : ", french2));
+            Phrase lieuf = new Phrase(new Chunk("à: ", french2));
             Phrase valuelieuf;
             if (e.getLieuDeNaissance() != null) {
                 valuelieuf = new Phrase(new Chunk(e.getLieuDeNaissance() + "\n", french));
             } else {
                 valuelieuf = new Phrase(new Chunk("unknown place" + "\n", french));
             }
-            Phrase lieue = new Phrase(new Chunk("at", english2));
+            Phrase lieue = new Phrase(new Chunk("at: ", english2));
             Phrase lieu = new Phrase();
             lieu.add(lieuf);
             lieu.add(valuelieuf);
@@ -452,9 +459,11 @@ public class RelevetDocument implements IRelevetDocument {
             cell7.setBorderColor(BaseColor.WHITE);
             table.addCell(cell7);
 
-            Phrase sexef = new Phrase(new Chunk("Sexe : ", french2));
-            Phrase valuesexef = new Phrase(new Chunk(e.getGenre().toString() + "\n", french));
-            Phrase sexee = new Phrase(new Chunk("Sexe", english2));
+            Phrase sexef = new Phrase(new Chunk("Sexe: ", french2));
+            String ssexe = e.getGenre().toString();
+            ssexe = ssexe.substring(0,1).toUpperCase()+ ssexe.substring(1);
+            Phrase valuesexef = new Phrase(new Chunk(ssexe + "\n", french));
+            Phrase sexee = new Phrase(new Chunk("Sex: ", english2));
             Phrase sexe = new Phrase();
             sexe.add(sexef);
             sexe.add(valuesexef);
@@ -478,21 +487,15 @@ public class RelevetDocument implements IRelevetDocument {
     private void produceRelevetTable(Document doc, List<UEnseignementCredit> ues1, List<UEnseignementCredit> ues2, RelevetEtudiantNotesInfos infos) {
         try {
 
-            Font bf = new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD);
-            Font bf1 = new Font(Font.FontFamily.TIMES_ROMAN, 6);
+            Font bf = new Font(Font.FontFamily.TIMES_ROMAN, 9, Font.BOLD);
+            Font bf1 = new Font(Font.FontFamily.TIMES_ROMAN, 7);
             Font bf12 = new Font(Font.FontFamily.TIMES_ROMAN, 5);
-            int nombreCredit = 0;
-            int nombreCreditValide = 0;
+            //int nombreCredit = 0;
+            //int nombreCreditValide = 0;
+            boolean aToutValide = true;
             double produit = 0.0; /*produit : credit * moyenne */
 
-            float relativeWidths[];
-            relativeWidths = new float[8];
-            relativeWidths[0] = 3;
-            relativeWidths[1] = 10;
-            relativeWidths[2] = 3;
-            for (int i = 0; i < 5; i++) {
-                relativeWidths[3 + i] = 3;
-            }
+            float relativeWidths[] = {2.5F, 10, 2, 3, 3, 2, 3, 2};
             PdfPTable table = new PdfPTable(relativeWidths);
             table.setWidthPercentage(100);
             table.addCell(DocumentUtil.createDefaultBodyCell("Code UE", bf, false));
@@ -512,12 +515,13 @@ public class RelevetDocument implements IRelevetDocument {
             for (UEnseignementCredit ue : ues1) {
 
                 Double value = notes.get(ue.getCodeUE());
-
-                nombreCredit += ue.getCredit();
+                if (value < 10)
+                    aToutValide = false;
+                //nombreCredit += ue.getCredit();
                 Session session = sessions.get(ue.getCodeUE());
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(ue.getCodeUE(), bf1, false, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(ue.getIntituleUE(), bf1, false, false));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(ue.getCredit()), bf1, false, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(value < 10?"0":String.valueOf(ue.getCredit()), bf1, false, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", value), bf1, false, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(mgp.get(ue.getCodeUE())), bf1, false, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.transformNoteGradeUE(value), bf1, false, true));
@@ -528,11 +532,13 @@ public class RelevetDocument implements IRelevetDocument {
             }
             for (UEnseignementCredit ue : ues2) {
                 Double value = notes.get(ue.getCodeUE());
-                nombreCredit += ue.getCredit();
+                if (value < 10)
+                    aToutValide = false;
+                //nombreCredit += ue.getCredit();
                 Session session = sessions.get(ue.getCodeUE());
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(ue.getCodeUE(), bf1, false, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(ue.getIntituleUE(), bf1, false, false));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(ue.getCredit()), bf1, false, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(value < 10?"0":String.valueOf(ue.getCredit()), bf1, false, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", value), bf1, false, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(mgp.get(ue.getCodeUE())), bf1, false, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.transformNoteGradeUE(value), bf1, false, true));
@@ -552,7 +558,7 @@ public class RelevetDocument implements IRelevetDocument {
             PdfPTable table2 = new PdfPTable(8);
             table2.setWidthPercentage(90);
             table2.addCell(createRelevetFootBodyCell("Rang", bf, false, 1, 1));
-            table2.addCell(createRelevetFootBodyCell("Crédit Capitalisé", bf, false, 1, 1));
+            table2.addCell(createRelevetFootBodyCell("Crédits Capitalisés", bf, false, 1, 1));
             table2.addCell(createRelevetFootBodyCell("Moy /20", bf, false, 1, 1));
             table2.addCell(createRelevetFootBodyCell("Moy / Grad", bf, false, 1, 1));
             table2.addCell(createRelevetFootBodyCell("Grade général", bf, false, 1, 1));
@@ -569,13 +575,13 @@ public class RelevetDocument implements IRelevetDocument {
             /*Les valeurs   */
 
             // Sais pas comment obtenir le rang
-            table2.addCell(DocumentUtil.createRelevetFootBodyCell(String.valueOf(infos.getRang()), bf, false, 1, 1));
+            table2.addCell(DocumentUtil.createRelevetFootBodyCell(aToutValide?String.valueOf(infos.getRang()):"", bf, false, 1, 1));
             table2.addCell(DocumentUtil.createRelevetFootBodyCell(String.valueOf(infos.getNombreCreditValides()), bf, false, 1, 1));
-            table2.addCell(DocumentUtil.createRelevetFootBodyCell(String.format("%.2f", infos.getMoyenne()), bf, false, 1, 1));
-            table2.addCell(DocumentUtil.createRelevetFootBodyCell(String.valueOf(infos.getMoyenneMgp()), bf, false, 1, 1));
-            table2.addCell(DocumentUtil.createRelevetFootBodyCell(DocumentUtil.transformMoyenneMgpToGradeRelevet(infos.getMoyenneMgp()), bf, false, 1, 1));
+            table2.addCell(DocumentUtil.createRelevetFootBodyCell(aToutValide?String.format("%.2f", infos.getMoyenne()):"", bf, false, 1, 1));
+            table2.addCell(DocumentUtil.createRelevetFootBodyCell(aToutValide?String.valueOf(infos.getMoyenneMgp()):"", bf, false, 1, 1));
+            table2.addCell(DocumentUtil.createRelevetFootBodyCell(aToutValide?DocumentUtil.transformMoyenneMgpToGradeRelevet(infos.getMoyenneMgp()):"", bf, false, 1, 1));
             table2.addCell(DocumentUtil.createRelevetFootBodyCell((infos.getMoyenne() >= 10) ? "AD" : "RD", bf, false, 1, 1));
-            table2.addCell(DocumentUtil.createRelevetFootBodyCell(DocumentUtil.transformMoyenneMgpToMentionRelevet(infos.getMoyenneMgp()), bf, false, 2, 2));
+            table2.addCell(DocumentUtil.createRelevetFootBodyCell(aToutValide?DocumentUtil.transformMoyenneMgpToMentionRelevet(infos.getMoyenneMgp()):"", bf, false, 2, 2));
 
             cell.addElement(table2);
             cell.setColspan(8);
@@ -592,10 +598,10 @@ public class RelevetDocument implements IRelevetDocument {
         try {
             // Font frenchFont = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
 
-            Font font1 = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.NORMAL);
-            Font font2 = new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.ITALIC);
-            Font font3 = new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.NORMAL);
-            Font font4 = new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.ITALIC);
+            Font font1 = new Font(Font.FontFamily.TIMES_ROMAN, 9, Font.NORMAL);
+            Font font2 = new Font(Font.FontFamily.TIMES_ROMAN, 7, Font.ITALIC);
+            Font font3 = new Font(Font.FontFamily.TIMES_ROMAN, 5, Font.NORMAL);
+            Font font4 = new Font(Font.FontFamily.TIMES_ROMAN, 5, Font.ITALIC);
 
             float relativewidhts[] = new float[2];
             relativewidhts[0] = 6;
@@ -660,14 +666,35 @@ public class RelevetDocument implements IRelevetDocument {
 
     public class Watermark extends PdfPageEventHelper {
 
-        protected Phrase watermark = new Phrase("ORIGINAL", new Font(Font.FontFamily.HELVETICA, 70, Font.BOLDITALIC, new BaseColor(254, 248, 108)));
+        protected Paragraph pied;
         protected Phrase GPA = new Phrase("GPA = Grade Point Average (moyenne par grade). A = 4 (Excellent / excellent); B = 3 (Bien / good); C = 2 (Moyen / average); D = 1 (Insuffisant / bellow average); E ou F (Echec / fail)", new Font(Font.FontFamily.TIMES_ROMAN, 5, Font.NORMAL, BaseColor.BLACK));
-
+        protected Image anotherWatermark;
+        public Watermark(){
+            try {
+                StringBuilder builder = new StringBuilder("Ce relevé de notes, pour être valide, ne doit contenir ni surcharge, ni rature. Il n'est délivré qu'un seul relevé de notes. Le titulaire devra faire certifier les copies conformes en cas de besoin.");
+                builder.append("\n");
+                builder.append("This academic transcript is only valid when it contains neither overload neither cross off. A single academic transcript is develired only. The holder will have to make certified true copies when necessary.");
+                pied = new Paragraph(builder.toString(), new Font(Font.FontFamily.TIMES_ROMAN, 5, Font.NORMAL, BaseColor.BLACK));
+                URL url = new ClassPathResource("watermark.png").getURL();
+                anotherWatermark = Image.getInstance(url);
+                
+            } catch (IOException ex) {
+                Logger.getLogger(RelevetDocument.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (BadElementException ex) {
+                Logger.getLogger(RelevetDocument.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         @Override
         public void onEndPage(PdfWriter writer, Document document) {
-            PdfContentByte canvas = writer.getDirectContentUnder();
-            ColumnText.showTextAligned(canvas, Element.ALIGN_CENTER, watermark, 298, 421, 45);
-            ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, GPA, 569, 670, 270);
+            try {
+                PdfContentByte canvas = writer.getDirectContentUnder();
+                //ColumnText.showTextAligned(canvas, Element.ALIGN_CENTER, watermark, 298, 421, 45);
+                ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, pied, 40, 50, 0);
+                canvas.addImage(anotherWatermark, anotherWatermark.getWidth(), 0, 0, anotherWatermark.getHeight(), 110, 240);
+                ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, GPA, 569, 670, 270);
+            } catch (DocumentException ex) {
+                Logger.getLogger(RelevetDocument.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -682,8 +709,8 @@ public class RelevetDocument implements IRelevetDocument {
             int nombreCreditValide = 0;
             try {
 
-                Map<String, MoyenneUniteEnseignement> notes1 = noteService.listeNoteUniteEnseignement(e.getMatricule(), a.getId(), uniteEns1);
-                Map<String, MoyenneUniteEnseignement> notes2 = noteService.listeNoteUniteEnseignement(e.getMatricule(), a.getId(), uniteEns2);
+                Map<String, MoyenneUniteEnseignement> notes1 = noteService.listeNoteUniteEnseignement(e.getMatricule(), a.getId(), a.getId(), uniteEns1);
+                Map<String, MoyenneUniteEnseignement> notes2 = noteService.listeNoteUniteEnseignement(e.getMatricule(), a.getId(), a.getId(), uniteEns2);
                 Map<String, Double> notes = new HashMap<String, Double>();
                 Map<String, Double> mgp = new HashMap<String, Double>();
                 Map<String, Session> sessions = new HashMap<String, Session>();
@@ -696,10 +723,7 @@ public class RelevetDocument implements IRelevetDocument {
                     Session session = mue.getSession();
                     mgp.put(ue.getCodeUE(), noteMgp);
                     Semestre semestre = semestres.get(0);
-                    Calendar ca = Calendar.getInstance();
-                    ca.setTime(a.getDebut());
-                    int year = ca.get(Calendar.YEAR);
-                    String sem = semestreToRoman(semestre) + "(" + String.valueOf(year) + ")";
+                    String sem = semestreToRoman(semestre) + "(" + a.toString() + ")";
                     semes.put(ue.getCodeUE(), sem);
                     notes.put(ue.getCodeUE(), value);
                     sessions.put(ue.getCodeUE(), session);
@@ -721,10 +745,7 @@ public class RelevetDocument implements IRelevetDocument {
                     notes.put(ue.getCodeUE(), value);
                     mgp.put(ue.getCodeUE(), noteMgp);
                     Semestre semestre = semestres.get(1);
-                    Calendar ca = Calendar.getInstance();
-                    ca.setTime(a.getFin());
-                    int year = ca.get(Calendar.YEAR);
-                    String sem = semestreToRoman(semestre) + "(" + String.valueOf(year) + ")";
+                    String sem = semestreToRoman(semestre) + "(" + a + ")";
                     semes.put(ue.getCodeUE(), sem);
 
                     sessions.put(ue.getCodeUE(), session);

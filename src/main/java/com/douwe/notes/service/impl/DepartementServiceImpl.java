@@ -1,11 +1,14 @@
 package com.douwe.notes.service.impl;
 
 import com.douwe.generic.dao.DataAccessException;
+import com.douwe.notes.dao.ICoursDao;
 import com.douwe.notes.dao.IDepartementDao;
+import com.douwe.notes.entities.Cours;
 import com.douwe.notes.entities.Departement;
 import com.douwe.notes.entities.Option;
 import com.douwe.notes.service.IDepartementService;
 import com.douwe.notes.service.ServiceException;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +25,9 @@ import javax.inject.Named;
 public class DepartementServiceImpl implements IDepartementService{
     @Inject
     private IDepartementDao departementDao;
+    
+    @Inject
+    private ICoursDao coursDao;
     
     @Override
     public Departement saveOrUpdateDepartement(Departement departement) throws ServiceException{
@@ -70,6 +76,14 @@ public class DepartementServiceImpl implements IDepartementService{
         this.departementDao = departementDao;
     }
 
+    public ICoursDao getCoursDao() {
+        return coursDao;
+    }
+
+    public void setCoursDao(ICoursDao coursDao) {
+        this.coursDao = coursDao;
+    }
+
     @Override
     public Departement findDepartementById(long id) throws ServiceException{
         try {
@@ -99,5 +113,19 @@ public class DepartementServiceImpl implements IDepartementService{
             Logger.getLogger(DepartementServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw  new ServiceException("La ressource demandée est introuvable");
         }
+    }
+
+    @Override
+    public List<Cours> getAllCours(long id) throws ServiceException {
+        try {
+            Departement departement = departementDao.findById(id);
+            if(departement != null){
+                return coursDao.findByDepartement(departement);
+            }
+        } catch (DataAccessException ex) {
+            Logger.getLogger(DepartementServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new ServiceException(ex.getMessage(), ex);
+        }
+        return Collections.EMPTY_LIST;
     }
 }

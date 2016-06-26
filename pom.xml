@@ -96,6 +96,7 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
             <version>4.3.10.Final</version>
+            <scope>compile</scope>
         </dependency> 
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>

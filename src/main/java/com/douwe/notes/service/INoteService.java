@@ -41,11 +41,11 @@ public interface INoteService {
     
     public ImportationResult importNotes(InputStream stream, Long coursId, Long evaluationId, Long anneeId, int session) throws ServiceException;
     
-    MoyenneUniteEnseignement getMoyenneUEEtudiant(String matricule, long ueId, long anneeId) throws ServiceException;
+    MoyenneUniteEnseignement getMoyenneUEEtudiant(String matricule, long ueId, long anneeId, long aCourantId) throws ServiceException;
 
     @Deprecated
     Map<String, MoyenneUniteEnseignement> listeNoteUniteEnseignement(String matricule, long niveauId, long optionId, long semestreId, long anneeId) throws ServiceException;
-    Map<String, MoyenneUniteEnseignement> listeNoteUniteEnseignement(String matricule, long anneeId, List<UniteEnseignement> ues) throws ServiceException;
+    Map<String, MoyenneUniteEnseignement> listeNoteUniteEnseignement(String matricule, long anneeId, long anneeCourant, List<UniteEnseignement> ues) throws ServiceException;
 
     public List<DeliberationItem> listeDeliberation(long niveauId, long optionId, long coursId, long anneeId, int session, double borneInf, boolean infInclusive, double borneSup, boolean supInclusive, double finale)throws ServiceException;
 

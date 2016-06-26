@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "UE.findAllActive", query = "select ue from UniteEnseignement ue where ue.active=1")
 
 })
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"INTITULE","PARCOURS_ID"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"CODE","PARCOURS_ID"}))
 public class UniteEnseignement implements Serializable {
 
     @Id
@@ -48,7 +48,7 @@ public class UniteEnseignement implements Serializable {
     @Column(name = "INTITULE")
     private String intitule;
 
-    @Column(unique = true)
+    @Column(name = "CODE")
     private String code;
 
     @Column

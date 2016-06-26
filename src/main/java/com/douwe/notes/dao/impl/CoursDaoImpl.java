@@ -136,4 +136,13 @@ public class CoursDaoImpl extends GenericDao<Cours, Long> implements ICoursDao {
         return getManager().createQuery(cq).getResultList();
     }
 
+    @Override
+    public List<Cours> findByDepartement(Departement departement)  throws DataAccessException {
+        CriteriaBuilder cb = getManager().getCriteriaBuilder();
+        CriteriaQuery<Cours> cq = cb.createQuery(Cours.class);
+        Root<Cours> coursRoot = cq.from(Cours.class);
+        cq.where(cb.and(cb.equal(coursRoot.get(Cours_.departement), departement), cb.equal(coursRoot.get(Cours_.active), 1)));
+        return getManager().createQuery(cq).getResultList();
+    }
+
 }

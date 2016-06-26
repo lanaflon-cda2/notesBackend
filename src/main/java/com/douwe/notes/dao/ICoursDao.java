@@ -4,6 +4,8 @@ import com.douwe.generic.dao.DataAccessException;
 import com.douwe.generic.dao.IDao;
 import com.douwe.notes.entities.AnneeAcademique;
 import com.douwe.notes.entities.Cours;
+import com.douwe.notes.entities.Departement;
+import com.douwe.notes.entities.Option;
 import com.douwe.notes.entities.Parcours;
 import com.douwe.notes.entities.Semestre;
 import com.douwe.notes.entities.UniteEnseignement;
@@ -29,6 +31,8 @@ public interface ICoursDao extends IDao<Cours, Long>{
     public List<CoursCredit> findCoursCreditByUe(UniteEnseignement ue, AnneeAcademique annee) throws DataAccessException;
 
     public List<Cours> findByParcours(Parcours parcours)  throws DataAccessException;
+
+    public List<Cours> findByDepartement(Departement departement) throws DataAccessException;
     
     
 }

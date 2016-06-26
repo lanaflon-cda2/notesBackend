@@ -58,7 +58,7 @@ public class MoyenneUniteEnseignement {
         if(!annees.isEmpty()){
             result = annees.get(0);
             for (AnneeAcademique annee : annees) {
-                if(result.getDebut().before(annee.getDebut()))
+                if(result.getDebut().after(annee.getDebut()))
                     result = annee;
             }
         }

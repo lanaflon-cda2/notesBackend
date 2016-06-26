@@ -2,7 +2,6 @@ package com.douwe.notes.resource;
 
 import com.douwe.notes.entities.Cours;
 import com.douwe.notes.entities.Evaluation;
-import com.douwe.notes.entities.TypeCours;
 import java.util.List;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;

@@ -1,5 +1,6 @@
 package com.douwe.notes.resource.impl;
 
+import com.douwe.notes.entities.Cours;
 import com.douwe.notes.resource.IDepartementResource;
 import com.douwe.notes.entities.Departement;
 import com.douwe.notes.entities.Option;
@@ -169,6 +170,16 @@ public class DepartementResource implements IDepartementResource {
         } catch (ServiceException ex) {
             Logger.getLogger(DepartementResource.class.getName()).log(Level.SEVERE, null, ex);
             return null;
+        }
+    }
+
+    @Override
+    public List<Cours> getAllCours(long id) {
+        try {
+            return departementService.getAllCours(id);
+        } catch (ServiceException ex) {
+            Logger.getLogger(DepartementResource.class.getName()).log(Level.SEVERE, null, ex);
+            throw  new WebApplicationException(Response.Status.NOT_FOUND);
         }
     }
 }

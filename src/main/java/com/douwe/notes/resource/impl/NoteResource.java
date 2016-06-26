@@ -250,7 +250,7 @@ public class NoteResource implements INoteResource {
     @Override
     public MoyenneUniteEnseignement moyenneEtudiant(String matricule, long ueId, long annee) {
         try {
-            return noteService.getMoyenneUEEtudiant(matricule, ueId, annee);
+            return noteService.getMoyenneUEEtudiant(matricule, ueId, annee, annee);
         } catch (ServiceException ex) {
             Logger.getLogger(NoteResource.class.getName()).log(Level.SEVERE, null, ex);
         }

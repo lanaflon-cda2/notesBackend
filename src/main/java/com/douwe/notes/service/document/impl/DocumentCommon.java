@@ -1,6 +1,5 @@
 package com.douwe.notes.service.document.impl;
 
-import com.douwe.generic.dao.DataAccessException;
 import com.douwe.notes.dao.IEnseignantDao;
 import com.douwe.notes.dao.IParcoursDao;
 import com.douwe.notes.entities.AnneeAcademique;
@@ -25,8 +24,6 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import java.net.URL;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import org.springframework.core.io.ClassPathResource;
