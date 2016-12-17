@@ -48,7 +48,6 @@ import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -119,9 +118,9 @@ public class RelevetDocument implements IRelevetDocument {
 
     @Inject
     private DocumentCommon common;
-    
+
     private final DateFormat dateFormatter;
-    
+
     private final DateFormat anneeFormatter;
 
     public RelevetDocument() {
@@ -129,8 +128,6 @@ public class RelevetDocument implements IRelevetDocument {
         anneeFormatter = new SimpleDateFormat("yyyy");
     }
 
-    
-    
     public IEtudiantDao getEtudiantDao() {
         return etudiantDao;
     }
@@ -343,8 +340,6 @@ public class RelevetDocument implements IRelevetDocument {
             Font english = new Font(Font.FontFamily.TIMES_ROMAN, 7, Font.BOLDITALIC);
             Font french2 = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.NORMAL);
             Font english2 = new Font(Font.FontFamily.TIMES_ROMAN, 7, Font.ITALIC);
-            Font bf1 = new Font(Font.FontFamily.TIMES_ROMAN, 7);
-            Font bf12 = new Font(Font.FontFamily.TIMES_ROMAN, 5);
 
             float relativeWidths[];
             relativeWidths = new float[3];
@@ -424,11 +419,11 @@ public class RelevetDocument implements IRelevetDocument {
 
             Phrase datef = new Phrase(new Chunk("Né(e) le: ", french2));
             Phrase valuedatef;
-            if (e.getDateDeNaissance() != null) { 
+            if (e.getDateDeNaissance() != null) {
                 if (e.isValidDate()) {
                     valuedatef = new Phrase(new Chunk(dateFormatter.format(e.getDateDeNaissance()) + "\n", french));
                 } else {
-                    valuedatef = new Phrase(new Chunk("Vers " + anneeFormatter.format(e.getDateDeNaissance())+ "\n", french));
+                    valuedatef = new Phrase(new Chunk("Vers " + anneeFormatter.format(e.getDateDeNaissance()) + "\n", french));
                 }
 
             } else {
@@ -461,7 +456,7 @@ public class RelevetDocument implements IRelevetDocument {
 
             Phrase sexef = new Phrase(new Chunk("Sexe: ", french2));
             String ssexe = e.getGenre().toString();
-            ssexe = ssexe.substring(0,1).toUpperCase()+ ssexe.substring(1);
+            ssexe = ssexe.substring(0, 1).toUpperCase() + ssexe.substring(1);
             Phrase valuesexef = new Phrase(new Chunk(ssexe + "\n", french));
             Phrase sexee = new Phrase(new Chunk("Sex: ", english2));
             Phrase sexe = new Phrase();
@@ -487,13 +482,11 @@ public class RelevetDocument implements IRelevetDocument {
     private void produceRelevetTable(Document doc, List<UEnseignementCredit> ues1, List<UEnseignementCredit> ues2, RelevetEtudiantNotesInfos infos) {
         try {
 
-            Font bf = new Font(Font.FontFamily.TIMES_ROMAN, 9, Font.BOLD);
-            Font bf1 = new Font(Font.FontFamily.TIMES_ROMAN, 7);
-            Font bf12 = new Font(Font.FontFamily.TIMES_ROMAN, 5);
+            Font bf = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
+            Font bf1 = new Font(Font.FontFamily.TIMES_ROMAN, 8);
             //int nombreCredit = 0;
             //int nombreCreditValide = 0;
             boolean aToutValide = true;
-            double produit = 0.0; /*produit : credit * moyenne */
 
             float relativeWidths[] = {2.5F, 10, 2, 3, 3, 2, 3, 2};
             PdfPTable table = new PdfPTable(relativeWidths);
@@ -513,38 +506,43 @@ public class RelevetDocument implements IRelevetDocument {
             Map<String, String> semtrs = infos.getSemestres();
 
             for (UEnseignementCredit ue : ues1) {
+                if (ue.getCredit() != 0) {
+                    Double value = notes.get(ue.getCodeUE());
+                    if (value < 10) {
+                        aToutValide = false;
+                    }
+                    //nombreCredit += ue.getCredit();
+                    Session session = sessions.get(ue.getCodeUE());
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(ue.getCodeUE(), bf1, false, true));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(ue.getIntituleUE(), bf1, false, false));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(value < 10 ? "0" : String.valueOf(ue.getCredit()), bf1, false, true));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", value), bf1, false, true));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(mgp.get(ue.getCodeUE())), bf1, false, true));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.transformNoteGradeUE(value), bf1, false, true));
 
-                Double value = notes.get(ue.getCodeUE());
-                if (value < 10)
-                    aToutValide = false;
-                //nombreCredit += ue.getCredit();
-                Session session = sessions.get(ue.getCodeUE());
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(ue.getCodeUE(), bf1, false, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(ue.getIntituleUE(), bf1, false, false));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(value < 10?"0":String.valueOf(ue.getCredit()), bf1, false, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", value), bf1, false, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(mgp.get(ue.getCodeUE())), bf1, false, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.transformNoteGradeUE(value), bf1, false, true));
-
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(semtrs.get(ue.getCodeUE()), bf1, false, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.sessionToString(session), bf1, false, true));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(semtrs.get(ue.getCodeUE()), bf1, false, true));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.sessionToString(session), bf1, false, true));
+                }
 
             }
             for (UEnseignementCredit ue : ues2) {
-                Double value = notes.get(ue.getCodeUE());
-                if (value < 10)
-                    aToutValide = false;
-                //nombreCredit += ue.getCredit();
-                Session session = sessions.get(ue.getCodeUE());
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(ue.getCodeUE(), bf1, false, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(ue.getIntituleUE(), bf1, false, false));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(value < 10?"0":String.valueOf(ue.getCredit()), bf1, false, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", value), bf1, false, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(mgp.get(ue.getCodeUE())), bf1, false, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.transformNoteGradeUE(value), bf1, false, true));
+                if (ue.getCredit() != 0) {
+                    Double value = notes.get(ue.getCodeUE());
+                    if (value < 10) {
+                        aToutValide = false;
+                    }
+                    //nombreCredit += ue.getCredit();
+                    Session session = sessions.get(ue.getCodeUE());
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(ue.getCodeUE(), bf1, false, true));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(ue.getIntituleUE(), bf1, false, false));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(value < 10 ? "0" : String.valueOf(ue.getCredit()), bf1, false, true));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", value), bf1, false, true));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(mgp.get(ue.getCodeUE())), bf1, false, true));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.transformNoteGradeUE(value), bf1, false, true));
 
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(semtrs.get(ue.getCodeUE()), bf1, false, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.sessionToString(session), bf1, false, true));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(semtrs.get(ue.getCodeUE()), bf1, false, true));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.sessionToString(session), bf1, false, true));
+                }
             }
             PdfPCell cell = new PdfPCell();
 //                 float relativeWidths2[];
@@ -575,13 +573,13 @@ public class RelevetDocument implements IRelevetDocument {
             /*Les valeurs   */
 
             // Sais pas comment obtenir le rang
-            table2.addCell(DocumentUtil.createRelevetFootBodyCell(aToutValide?String.valueOf(infos.getRang()):"", bf, false, 1, 1));
+            table2.addCell(DocumentUtil.createRelevetFootBodyCell(aToutValide ? String.valueOf(infos.getRang()) : "", bf, false, 1, 1));
             table2.addCell(DocumentUtil.createRelevetFootBodyCell(String.valueOf(infos.getNombreCreditValides()), bf, false, 1, 1));
-            table2.addCell(DocumentUtil.createRelevetFootBodyCell(aToutValide?String.format("%.2f", infos.getMoyenne()):"", bf, false, 1, 1));
-            table2.addCell(DocumentUtil.createRelevetFootBodyCell(aToutValide?String.valueOf(infos.getMoyenneMgp()):"", bf, false, 1, 1));
-            table2.addCell(DocumentUtil.createRelevetFootBodyCell(aToutValide?DocumentUtil.transformMoyenneMgpToGradeRelevet(infos.getMoyenneMgp()):"", bf, false, 1, 1));
+            table2.addCell(DocumentUtil.createRelevetFootBodyCell(aToutValide ? String.format("%.2f", infos.getMoyenne()) : "", bf, false, 1, 1));
+            table2.addCell(DocumentUtil.createRelevetFootBodyCell(aToutValide ? String.valueOf(infos.getMoyenneMgp()) : "", bf, false, 1, 1));
+            table2.addCell(DocumentUtil.createRelevetFootBodyCell(aToutValide ? DocumentUtil.transformMoyenneMgpToGradeRelevet(infos.getMoyenneMgp()) : "", bf, false, 1, 1));
             table2.addCell(DocumentUtil.createRelevetFootBodyCell((infos.getMoyenne() >= 10) ? "AD" : "RD", bf, false, 1, 1));
-            table2.addCell(DocumentUtil.createRelevetFootBodyCell(aToutValide?DocumentUtil.transformMoyenneMgpToMentionRelevet(infos.getMoyenneMgp()):"", bf, false, 2, 2));
+            table2.addCell(DocumentUtil.createRelevetFootBodyCell(aToutValide ? DocumentUtil.transformMoyenneMgpToMentionRelevet(infos.getMoyenneMgp()) : "", bf, false, 2, 2));
 
             cell.addElement(table2);
             cell.setColspan(8);
@@ -669,7 +667,8 @@ public class RelevetDocument implements IRelevetDocument {
         protected Paragraph pied;
         protected Phrase GPA = new Phrase("GPA = Grade Point Average (moyenne par grade). A = 4 (Excellent / excellent); B = 3 (Bien / good); C = 2 (Moyen / average); D = 1 (Insuffisant / bellow average); E ou F (Echec / fail)", new Font(Font.FontFamily.TIMES_ROMAN, 5, Font.NORMAL, BaseColor.BLACK));
         protected Image anotherWatermark;
-        public Watermark(){
+
+        public Watermark() {
             try {
                 StringBuilder builder = new StringBuilder("Ce relevé de notes, pour être valide, ne doit contenir ni surcharge, ni rature. Il n'est délivré qu'un seul relevé de notes. Le titulaire devra faire certifier les copies conformes en cas de besoin.");
                 builder.append("\n");
@@ -677,13 +676,14 @@ public class RelevetDocument implements IRelevetDocument {
                 pied = new Paragraph(builder.toString(), new Font(Font.FontFamily.TIMES_ROMAN, 5, Font.NORMAL, BaseColor.BLACK));
                 URL url = new ClassPathResource("watermark.png").getURL();
                 anotherWatermark = Image.getInstance(url);
-                
+
             } catch (IOException ex) {
                 Logger.getLogger(RelevetDocument.class.getName()).log(Level.SEVERE, null, ex);
             } catch (BadElementException ex) {
                 Logger.getLogger(RelevetDocument.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+
         @Override
         public void onEndPage(PdfWriter writer, Document document) {
             try {

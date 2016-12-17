@@ -19,6 +19,7 @@ import com.douwe.notes.entities.Etudiant;
 import com.douwe.notes.entities.Niveau;
 import com.douwe.notes.entities.Option;
 import com.douwe.notes.entities.Semestre;
+import com.douwe.notes.entities.Session;
 import com.douwe.notes.entities.UniteEnseignement;
 import com.douwe.notes.projection.MoyenneUniteEnseignement;
 import com.douwe.notes.projection.UEnseignementCredit;
@@ -293,6 +294,7 @@ public class SyntheseDocument implements ISyntheseDocument {
             Font bf = new Font(Font.FontFamily.TIMES_ROMAN, 9, Font.BOLD);
             Font title = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
             Font bf1 = new Font(Font.FontFamily.TIMES_ROMAN, 10);
+            Font rattra = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.ITALIC, BaseColor.RED);
             Paragraph parag = new Paragraph(String.format("SYNTHESE DU %s. %s, %s, %s.\n ANNÉE ACADÉMIQUE %s",
                     s.getIntitule().toUpperCase(),
                     o.getDepartement().getCode().toUpperCase(),
@@ -363,19 +365,21 @@ public class SyntheseDocument implements ISyntheseDocument {
                     double sumMoyenne = 0.0; //sumMoyenne /30 renvoie à la moyenne trimestrielle
                     int nbrCreditValide = 0; // le nombre de crédits validés  
                     // TODO I need to figure out how to speed this computation
-                    Map<String, MoyenneUniteEnseignement> notes = noteService.listeNoteUniteEnseignement(etudiant.getMatricule(), a.getId(),annee.getId(), totos);
+                    Map<String, MoyenneUniteEnseignement> notes = noteService.listeNoteUniteEnseignement(etudiant.getMatricule(), a.getId(), annee.getId(), totos);
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(i++), bf1, false, true));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(etudiant.getNom(), bf1, false, false));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(etudiant.getMatricule(), bf1, false, true));
                     for (UEnseignementCredit ue : ues) {
                         MoyenneUniteEnseignement mue = notes.get(ue.getCodeUE());
-                        Double value = mue.getMoyenne();
+
+                        double value = mue.getMoyenne();
                         sumMoyenne += value * ue.getCredit();
                         nombreCredit += ue.getCredit();
                         if (value >= 10) {
                             nbrCreditValide += ue.getCredit();
                         }
-                        table.addCell(DocumentUtil.createSyntheseDefaultBodyCell((value == null) ? "" : String.format("%.2f", value), bf1, false, true));
+                        cell = DocumentUtil.createSyntheseDefaultBodyCell((value == 0) ? "" : String.format("%.2f", value), mue.getSession() == Session.normale ? bf1 : rattra, false, true);
+                        table.addCell(cell);
                     }
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", Math.ceil(sumMoyenne * 100 / nombreCredit) / 100), bf1, true, true));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(nbrCreditValide), bf1, true, true));
@@ -383,6 +387,28 @@ public class SyntheseDocument implements ISyntheseDocument {
                 }
                 doc.add(table);
             }
+            PdfPTable table = new PdfPTable(3);
+            table.setWidthPercentage(95);
+            PdfPCell cell = DocumentUtil.createDefaultHeaderCell("Président", bf);
+            cell.setBorder(0);
+            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+            cell.setBackgroundColor(BaseColor.WHITE);
+            table.addCell(cell);
+            cell = DocumentUtil.createDefaultHeaderCell("Vice-Président", bf);
+            cell.setBorder(0);
+            cell.setBackgroundColor(BaseColor.WHITE);
+            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+            table.addCell(cell);
+            cell = DocumentUtil.createDefaultHeaderCell("Membre(s)", bf);
+            cell.setBorder(0);
+            cell.setBackgroundColor(BaseColor.WHITE);
+            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+            table.addCell(cell);
+            table.setSpacingBefore(15f);
+            table.setSpacingAfter(25f);
+
+            doc.add(table);
+
         } catch (DocumentException ex) {
             Logger.getLogger(DocumentServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } catch (DataAccessException ex) {
@@ -399,6 +425,10 @@ public class SyntheseDocument implements ISyntheseDocument {
             boolean firstPage = true;
             List<AnneeAcademique> annees = academiqueDao.findAllYearWthNote(a, n, o, null);
             List<Semestre> semestres = semestreDao.findByNiveau(n);
+            Font bf = new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD);
+            Font bf1 = new Font(Font.FontFamily.TIMES_ROMAN, 6);
+            Font title = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
+            Font rattra = new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.ITALIC, BaseColor.RED);
             for (AnneeAcademique annee : annees) {
                 if (!firstPage) {
                     doc.newPage();
@@ -417,12 +447,8 @@ public class SyntheseDocument implements ISyntheseDocument {
 
                 int creditSem2 = common.computeTotalCredit(ues2);
 
-            // La liste des étudiants du parcours
+                // La liste des étudiants du parcours
                 //Parcours p = parcoursDao.findByNiveauOption(n, o);
-                Font bf = new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD);
-                Font bf1 = new Font(Font.FontFamily.TIMES_ROMAN, 6);
-                Font bf12 = new Font(Font.FontFamily.TIMES_ROMAN, 5);
-                Font title = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
                 Paragraph parag = new Paragraph(String.format("SYNTHESE ANNUELLE. %s, %s, %s.\n ANNÉE ACADÉMIQUE %s",
                         o.getDepartement().getCode().toUpperCase(),
                         o.getDescription().toUpperCase(),
@@ -431,35 +457,37 @@ public class SyntheseDocument implements ISyntheseDocument {
                 parag.setAlignment(Element.ALIGN_CENTER);
                 parag.setSpacingAfter(10f);
                 doc.add(parag);
-            //List<Etudiant> etudiants = etudiantDao.listeEtudiantParDepartementEtParcours(o.getDepartement(), a, p);
+                //List<Etudiant> etudiants = etudiantDao.listeEtudiantParDepartementEtParcours(o.getDepartement(), a, p);
 
                 int taille1 = ues1.size();
                 int taille2 = ues2.size();
                 float relativeWidths[];
-                relativeWidths = new float[11 + taille1 + taille2];
+                relativeWidths = new float[13 + taille1 + taille2];
                 relativeWidths[0] = 1;
                 relativeWidths[1] = 10;
                 relativeWidths[2] = 3;
-                for (int i = 0; i < taille1 + taille2 + 8; i++) {
+                for (int i = 0; i < taille1 + taille2 + 10; i++) {
                     relativeWidths[3 + i] = 2;
                 }
                 PdfPTable table = new PdfPTable(relativeWidths);
-                
+
                 firstPage = false;
                 table.setWidthPercentage(100);
 
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
-                PdfPCell cell = new PdfPCell(new Phrase("Synthese I", bf));
+                PdfPCell cell = new PdfPCell(new Phrase(semestres.get(0).getIntitule(), bf));
                 cell.setColspan(taille1 + 3);
                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 table.addCell(cell);
 
-                PdfPCell cell1 = new PdfPCell(new Phrase("Synthese II", bf));
+                PdfPCell cell1 = new PdfPCell(new Phrase(semestres.get(1).getIntitule(), bf));
                 cell1.setColspan(taille2 + 3);
                 cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
                 table.addCell(cell1);
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
 
@@ -472,7 +500,9 @@ public class SyntheseDocument implements ISyntheseDocument {
                 }
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Moyenne I", bf, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Crédits " + semestres.get(0).getIntitule() + " validés", bf, true));
+
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("% crédits " + semestres.get(0).getIntitule() + " validés", bf, true));
+
                 for (UEnseignementCredit ue : ues2) {
                     table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(ue.getIntituleUE(), bf, false));
                 }
@@ -481,7 +511,9 @@ public class SyntheseDocument implements ISyntheseDocument {
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Crédits " + semestres.get(1).getIntitule() + " validés", bf, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("% crédits " + semestres.get(1).getIntitule() + " validés", bf, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Moyenne annuelle", bf, false));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Crédits capitalisés", bf, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("% annuel de crédit validés", bf, false));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Décision", bf, true));
                 table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
                 table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
                 table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
@@ -497,6 +529,8 @@ public class SyntheseDocument implements ISyntheseDocument {
                 table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
                 table.addCell(DocumentUtil.createDefaultBodyCell(String.valueOf(creditSem2), bf, true));
                 table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
+                table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
+                table.addCell(DocumentUtil.createDefaultBodyCell(String.valueOf(creditSem1 + creditSem2), bf, true));
                 table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
                 table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
                 //   table.addCell(createDefaultBodyCell("", bf, true));
@@ -515,15 +549,19 @@ public class SyntheseDocument implements ISyntheseDocument {
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(etudiant.getNom(), bf1, false, false));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(etudiant.getMatricule(), bf1, false, true));
                     for (UEnseignementCredit ue : ues1) {
-                    // Double value = enue.getNote().get(ue.getCodeUE());
+                        // Double value = enue.getNote().get(ue.getCodeUE());
                         //Double value = notes.get(ue)
                         MoyenneUniteEnseignement mue = notes.get(ue.getCodeUE());
-                        Double value = mue.getMoyenne();
-                        sumMoyenne1 += value * ue.getCredit();
-                        if (value >= 10) {
-                            nbrCreditValide1 += ue.getCredit();
+                        double value = 0.0;
+                        if (mue != null) {
+                            value = mue.getMoyenne();
+                            sumMoyenne1 += value * ue.getCredit();
+                            if (value >= 10) {
+                                nbrCreditValide1 += ue.getCredit();
+                            }
                         }
-                        table.addCell(DocumentUtil.createSyntheseDefaultBodyCell((value == null) ? "" : String.format("%.2f", value), bf1, false, true));
+
+                        table.addCell(DocumentUtil.createSyntheseDefaultBodyCell((value == 0.0) ? "" : String.format("%.2f", value), (mue.getSession() == Session.normale) ? bf1 : rattra, false, true));
                     }
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", Math.ceil(sumMoyenne1 * 100 / creditSem1) / 100), bf1, true, true));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(nbrCreditValide1), bf1, true, true));
@@ -533,7 +571,7 @@ public class SyntheseDocument implements ISyntheseDocument {
                     Map<String, MoyenneUniteEnseignement> notes2 = noteService.listeNoteUniteEnseignement(etudiant.getMatricule(), a.getId(), annee.getId(), uniteEns2);
                     for (UEnseignementCredit ue : ues2) {
                         MoyenneUniteEnseignement mue = notes2.get(ue.getCodeUE());
-                        double value = 0;
+                        double value = 0.0;
                         if (mue != null) {
                             value = mue.getMoyenne();
                             sumMoyenne2 += value * ue.getCredit();
@@ -541,18 +579,64 @@ public class SyntheseDocument implements ISyntheseDocument {
                                 nbrCreditValide2 += ue.getCredit();
                             }
                         }
-                        table.addCell(DocumentUtil.createSyntheseDefaultBodyCell((value == 0) ? "" : String.format("%.2f", value), bf1, false, true));
+                        table.addCell(DocumentUtil.createSyntheseDefaultBodyCell((value == 0.0) ? "" : String.format("%.2f", value), (mue.getSession() == Session.normale) ? bf1 : rattra, false, true));
                     }
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", (sumMoyenne2 / creditSem2)), bf1, true, true));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(nbrCreditValide2), bf1, true, true));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", (((nbrCreditValide2 * 1.0 / creditSem2)) * 100)), bf1, true, true));
 
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", ((sumMoyenne1 + sumMoyenne2) / (creditSem1 + creditSem2))), bf1, true, true));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(nbrCreditValide1 + nbrCreditValide2), bf1, true, true));
                     // table.addCell(createSyntheseDefaultBodyCell(String.valueOf(nbrCreditValide), bf1, true));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", ((((nbrCreditValide1 + nbrCreditValide2) * 1.0 / (creditSem1 + creditSem2))) * 100)), bf1, true, true));
+                    String decision = "RF";
+                    int totalCredits = nbrCreditValide1 + nbrCreditValide2;
+                    switch(n.getCode()){
+                        case "Licence 1":
+                            if ((totalCredits >= 45) || (nbrCreditValide1 == 30) || (nbrCreditValide2 == 30))
+                                decision = "AD";
+                            break;
+                        case "Licence 2":
+                            if (totalCredits >= 40)
+                                decision = "AD";
+                            break;
+                        case "Licence 3":
+                            if (totalCredits >= 60)
+                                decision = "AD";
+                            break;
+                        case "Master 1":
+                            if ((nbrCreditValide2 == 30) && (totalCredits >= 46))
+                                decision = "AD";
+                            break;
+                        case "Master 2":
+                            if (totalCredits >= 60)
+                                decision = "AD";
+                    }
+                    table.addCell(DocumentUtil.createDefaultBodyCell(decision, bf1, false));
                 }
                 doc.add(table);
             }
+            PdfPTable table = new PdfPTable(3);
+            table.setWidthPercentage(95);
+            PdfPCell cell = DocumentUtil.createDefaultHeaderCell("Président", bf);
+            cell.setBorder(0);
+            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+            cell.setBackgroundColor(BaseColor.WHITE);
+            table.addCell(cell);
+            cell = DocumentUtil.createDefaultHeaderCell("Vice-Président", bf);
+            cell.setBorder(0);
+            cell.setBackgroundColor(BaseColor.WHITE);
+            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+            table.addCell(cell);
+            cell = DocumentUtil.createDefaultHeaderCell("Membre(s)", bf);
+            cell.setBorder(0);
+            cell.setBackgroundColor(BaseColor.WHITE);
+            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+            table.addCell(cell);
+            table.setSpacingBefore(15f);
+            table.setSpacingAfter(25f);
+
+            doc.add(table);
 
         } catch (DocumentException ex) {
             Logger.getLogger(DocumentServiceImpl.class.getName()).log(Level.SEVERE, null, ex);

@@ -87,7 +87,7 @@ public class NoteServiceImpl implements INoteService {
 
     @Inject
     private IOptionDao optionDao;
-    
+
     @Inject
     private IDepartementDao departementDao;
 
@@ -179,8 +179,6 @@ public class NoteServiceImpl implements INoteService {
         this.departementDao = departementDao;
     }
 
-    
-    
     @Override
     public Note saveOrUpdateNote(Note note) throws ServiceException {
         try {
@@ -293,7 +291,6 @@ public class NoteServiceImpl implements INoteService {
             String nom;
             while (row != null) {
                 Etudiant etudiant;
-                System.out.println("Index +++++++ " + index);
                 if (row.getCell(1) != null) {
                     matricule = row.getCell(1).getStringCellValue();
                     etudiant = etudiantDao.findByMatricule(matricule);
@@ -301,37 +298,39 @@ public class NoteServiceImpl implements INoteService {
                      nom = row.getCell(2).getStringCellValue();
                      etudiant = etudiantDao.findByName(nom);
                      }*/
-                    if (row.getCell(3) != null) {
-                        if (row.getCell(3).getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                            Note note = new Note();
-                            note.setValeur(row.getCell(3).getNumericCellValue());
-                            note.setActive(1);
-                            note.setAnneeAcademique(academique);
-                            note.setCours(cours);
-                            note.setEtudiant(etudiant);
-                            note.setEvaluation(evaluation);
-                            if (evaluation.isIsExam()) {
-                                Session s = Session.values()[session];
-                                note.setSession(s);
-                            }
-                            try {
-                                noteDao.create(note);
-                                count++;
-                            } catch (Exception ex) {
-                                ImportationError err = new ImportationError(index, ex.getMessage());
+                    if (etudiant != null) {
+                        if (row.getCell(3) != null) {
+                            if (row.getCell(3).getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                                Note note = new Note();
+                                note.setValeur(row.getCell(3).getNumericCellValue());
+                                note.setActive(1);
+                                note.setAnneeAcademique(academique);
+                                note.setCours(cours);
+                                note.setEtudiant(etudiant);
+                                note.setEvaluation(evaluation);
+                                if (evaluation.isIsExam()) {
+                                    Session s = Session.values()[session];
+                                    note.setSession(s);
+                                }
+                                try {
+                                    noteDao.create(note);
+                                    count++;
+                                } catch (Exception ex) {
+                                    ImportationError err = new ImportationError(index, ex.getMessage());
+                                    erreurs.add(err);
+                                }
+                            } else {
+                                ImportationError err = new ImportationError(index, "Note invalide");
                                 erreurs.add(err);
                             }
                         } else {
-                            ImportationError err = new ImportationError(index, "Note invalide");
-                            erreurs.add(err);
+                        //ImportationError err = new ImportationError(index, "Note indisponible");
+                            //erreurs.add(err);
                         }
                     } else {
-                        ImportationError err = new ImportationError(index, "Note indisponible");
+                        ImportationError err = new ImportationError(index, "Matricule indisponible");
                         erreurs.add(err);
                     }
-                } else {
-                    ImportationError err = new ImportationError(index, "Matricule indisponible");
-                    erreurs.add(err);
                 }
                 row = sheet.getRow(index++);
             }
@@ -359,7 +358,7 @@ public class NoteServiceImpl implements INoteService {
             }
 
             Evaluation eval = evaluationDao.findByCode(codeEvaluation);
-            
+
             Departement departement = departementDao.findById(departementId);
 
             Cours cours = coursDao.findByIntituleAndDepartement(coursIntitule, departement);
@@ -472,7 +471,7 @@ public class NoteServiceImpl implements INoteService {
                 annee = academiqueDao.findById(aCourantId);
             }
             result = new MoyenneUniteEnseignement(ue.isHasOptionalChoices());
-            // TODO I need to find out a way note to issue this query for every studend
+            // TODO I need to find out a way not to issue this query for every student
             List<CoursCredit> liste = coursDao.findCoursCreditByUe(ue, annee);
             for (CoursCredit cours : liste) {
                 EtudiantNotes n = getNoteEtudiant(matricule, cours.getCours().getId(), anneeId);
@@ -481,14 +480,15 @@ public class NoteServiceImpl implements INoteService {
                     result.getSessions().add(n.getSession());
                     result.getNotes().put(cours.getCours().getIntitule(), n.getMoyenne());
                     result.getAnnees().add(n.getAnnee());
-                } else {
-                    result.getCredits().put(cours.getCours().getIntitule(), cours.getCredit());
-                    result.getSessions().add(Session.normale);
-                    result.getNotes().put(cours.getCours().getIntitule(), 0.0);
-                    if (annee != null) {
-                        result.getAnnees().add(annee);
-                    }
-                }
+                } /*else {
+                 result.getCredits().put(cours.getCours().getIntitule(), cours.getCredit());
+                 result.getSessions().add(Session.normale);
+                 result.getNotes().put(cours.getCours().getIntitule(), 0.0);
+                 if (annee != null) {
+                 result.getAnnees().add(annee);
+                 }
+                 }*/
+
             }
         } catch (DataAccessException ex) {
             Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -547,7 +547,7 @@ public class NoteServiceImpl implements INoteService {
     }
 
     @Override
-    public Map<String, MoyenneUniteEnseignement> listeNoteUniteEnseignement(String matricule, long anneeId, long aCourantId,  List<UniteEnseignement> ues) throws ServiceException {
+    public Map<String, MoyenneUniteEnseignement> listeNoteUniteEnseignement(String matricule, long anneeId, long aCourantId, List<UniteEnseignement> ues) throws ServiceException {
         Map<String, MoyenneUniteEnseignement> result = new HashMap<String, MoyenneUniteEnseignement>();
 
         for (UniteEnseignement liste1 : ues) {
@@ -577,7 +577,6 @@ public class NoteServiceImpl implements INoteService {
     private List<DeliberationItem> lesDeliberation(Cours c, Niveau n, Option o, AnneeAcademique a, Session s, boolean infInclusive, double borneInf, boolean supInclusive, double borneSup, double finale) throws DataAccessException {
         List<DeliberationItem> result = new ArrayList<DeliberationItem>();
 
-        
         List<EtudiantNotes> toto = listeNoteEtudiant(c, a, n, o, s);
         for (EtudiantNotes toto1 : toto) {
             // I need to keep only those with values that belongs to the right interval
@@ -647,26 +646,26 @@ public class NoteServiceImpl implements INoteService {
     public Note getNoteEtudiantByEvaluation(Long etudiantId, Long evaluationId, Long coursId, Long anneeId, int session) throws ServiceException {
         try {
             Etudiant etudiant = etudiantDao.findById(etudiantId);
-            if(etudiant == null){
+            if (etudiant == null) {
                 throw new ServiceException("L'etudiant demandé est introuvable");
             }
             Evaluation evaluation = evaluationDao.findById(evaluationId);
-            if(evaluation == null){
+            if (evaluation == null) {
                 throw new ServiceException("L'evaluation demandée est introuvable");
             }
             System.out.println("\n =====  L'id du cours est :" + coursId + "======\n");
             Cours cours = coursDao.findById(coursId);
-            if(cours == null){
+            if (cours == null) {
                 throw new ServiceException("Le cours demandé est introuvable");
             }
             AnneeAcademique academique = academiqueDao.findById(anneeId);
-            if(academique == null){
+            if (academique == null) {
                 throw new ServiceException("L'année demand est introuvable");
             }
-            
+
             Session s = Session.values()[session];
             return noteDao.getNoteCours(etudiant, evaluation, cours, academique, s);
-                    
+
         } catch (DataAccessException ex) {
             Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new ServiceException("Impossible d'effectuer le traitement");

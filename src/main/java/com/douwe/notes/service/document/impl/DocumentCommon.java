@@ -118,24 +118,27 @@ public class DocumentCommon {
         //java.awt.Image img = ImageIO.read(new File("logo4.png"));
         //Image logo = Image.getInstance(img, null);
         Image logo = Image.getInstance(url);
-        logo.scalePercent(65f);
+        logo.scalePercent(60f);
         Paragraph p = new Paragraph();
         p.setAlignment(Element.ALIGN_CENTER);
-        p.add(new Paragraph(new Chunk(logo, 0, -15, true)));
+        p.add(new Paragraph(new Chunk(logo, 0, 0, true)));        
+        Paragraph pp = new Paragraph(coordonnees);
+        p.add(pp);
         PdfPCell cel = new PdfPCell(p);
         cel.setBorderColor(BaseColor.WHITE);
         cel.setHorizontalAlignment(Element.ALIGN_CENTER);
         cel.setVerticalAlignment(Element.ALIGN_CENTER);
+        
         header.addCell(cel);
         cell1 = new PdfPCell(eng);
         cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell1.setBorderColor(BaseColor.WHITE);
         header.addCell(cell1);
-        cell1 = new PdfPCell(coordonnees);
-        cell1.setColspan(10);
-        cell1.setBorderColor(BaseColor.WHITE);
-        cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
-        header.addCell(cell1);
+//        cell1 = new PdfPCell(coordonnees);
+//        cell1.setColspan(10);
+//        cell1.setBorderColor(BaseColor.WHITE);
+//        cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+//        header.addCell(cell1);
         doc.add(header);
         /////////////////////////////
         if (!departement) {
