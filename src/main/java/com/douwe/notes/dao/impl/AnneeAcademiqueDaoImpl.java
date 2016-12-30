@@ -64,7 +64,7 @@ public class AnneeAcademiqueDaoImpl extends GenericDao<AnneeAcademique, Long> im
     
     @Override
     public List<AnneeAcademique> findAllYearWthNote(AnneeAcademique annee, Niveau niveau, Option option, Semestre semestre) throws DataAccessException {
-        List<AnneeAcademique> resultat = new ArrayList<AnneeAcademique>();
+        List<AnneeAcademique> resultat = new ArrayList<>();
         CriteriaBuilder cb = getManager().getCriteriaBuilder();
         CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
         Root<Note> noteRoot = cq.from(Note.class);
@@ -74,7 +74,7 @@ public class AnneeAcademiqueDaoImpl extends GenericDao<AnneeAcademique, Long> im
         Path<Etudiant> etudiantPath = noteRoot.get(Note_.etudiant);
         Path<Cours> coursPath = noteRoot.get(Note_.cours);
         Path<Parcours> parcoursPath = inscriptionRoot.get(Inscription_.parcours);
-        List<Predicate> predicates = new ArrayList<Predicate>();
+        List<Predicate> predicates = new ArrayList<>();
         predicates.add(cb.equal(parcoursPath.get(Parcours_.niveau), niveau));
         predicates.add(cb.equal(parcoursPath.get(Parcours_.option), option));
         predicates.add(cb.equal(programmeRoot.get(Programme_.parcours).get(Parcours_.option), option));
@@ -93,7 +93,8 @@ public class AnneeAcademiqueDaoImpl extends GenericDao<AnneeAcademique, Long> im
         cq.multiselect(inscriptionRoot.get(Inscription_.anneeAcademique),cb.max(inscriptionRoot.get(Inscription_.anneeAcademique).get(AnneeAcademique_.numeroDebut)));
         cq.distinct(true);
         cq.orderBy(cb.desc(inscriptionRoot.get(Inscription_.anneeAcademique).get(AnneeAcademique_.numeroDebut)));
-        cq.groupBy(etudiantPath.get(Etudiant_.id));
+        //cq.groupBy(etudiantPath.get(Etudiant_.id));
+        cq.groupBy(inscriptionRoot.get(Inscription_.anneeAcademique).get(AnneeAcademique_.id));
         cq.having(cb.equal(inscriptionRoot.get(Inscription_.anneeAcademique).get(AnneeAcademique_.numeroDebut), cb.max(inscriptionRoot.get(Inscription_.anneeAcademique).get(AnneeAcademique_.numeroDebut))));
         // TODO un moyen vraiment complique de contourner un bug dans eclipselink
         List<Object[]> result = getManager().createQuery(cq).getResultList();

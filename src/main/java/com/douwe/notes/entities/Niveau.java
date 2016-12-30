@@ -39,6 +39,8 @@ public class Niveau implements Serializable {
     @Column(unique = true)
     private String code;
     
+    private boolean terminal;
+    
     @ManyToOne(optional = false)
     private Cycle cycle;
     
@@ -65,6 +67,16 @@ public class Niveau implements Serializable {
     public void setCode(String code) {
         this.code = code;
     }
+
+    public boolean isTerminal() {
+        return terminal;
+    }
+
+    public void setTerminal(boolean terminal) {
+        this.terminal = terminal;
+    }
+    
+    
 
     @JsonIgnore
     public Cycle getCycle() {

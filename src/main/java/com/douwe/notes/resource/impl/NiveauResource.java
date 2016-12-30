@@ -66,6 +66,7 @@ public class NiveauResource implements INiveauResource {
             Niveau n = service.findNiveauById(id);
             if (n != null) {
                 n.setCode(niveau.getCode());
+                n.setTerminal(niveau.isTerminal());
                 n.setCycle(niveau.getCycle());
                 return service.saveOrUpdateNiveau(n);
             }

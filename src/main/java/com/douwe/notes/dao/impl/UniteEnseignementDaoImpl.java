@@ -60,7 +60,7 @@ public class UniteEnseignementDaoImpl extends GenericDao<UniteEnseignement, Long
         Path<UniteEnseignement> unitePath = programmeRoot.get(Programme_.uniteEnseignement);
         Expression<List<Cours>> ab = unitePath.get(UniteEnseignement_.cours);
         Join<Credit, Cours> toto = creditRoot.join(Credit_.cours);
-        List<Predicate> predicates = new ArrayList<Predicate>();
+        List<Predicate> predicates = new ArrayList<>();
         predicates.add(cb.equal(anneePath, annee));
         // A modifier
         predicates.add(cb.equal(creditRoot.get(Credit_.academique), annee));
@@ -82,7 +82,8 @@ public class UniteEnseignementDaoImpl extends GenericDao<UniteEnseignement, Long
 //                cb.selectCase()
 //                        .when(cb.equal(ab.get(UniteEnseignement_.hasOptionalChoices), true), cb.min(coursRoot.get(Cours_.credit)).as(Integer.class))
 //                        .otherwise(cb.sum(coursRoot.get(Cours_.credit)).as(Integer.class)));
-        cq.groupBy(unitePath.get(UniteEnseignement_.code));
+        cq.groupBy(unitePath.get(UniteEnseignement_.id));
+        cq.orderBy(cb.asc(programmeRoot.get(Programme_.uniteEnseignement).get(UniteEnseignement_.code)));
         cq.multiselect(
                 unitePath.get(UniteEnseignement_.code),
                 unitePath.get(UniteEnseignement_.intitule),
@@ -105,7 +106,7 @@ public class UniteEnseignementDaoImpl extends GenericDao<UniteEnseignement, Long
         Path<Option> optionPath = parcoursPath.get(Parcours_.option);
         Path<AnneeAcademique> anneePath = programmeRoot.get(Programme_.anneeAcademique);
         Path<UniteEnseignement> unitePath = programmeRoot.get(Programme_.uniteEnseignement);
-        List<Predicate> predicates = new ArrayList<Predicate>();
+        List<Predicate> predicates = new ArrayList<>();
         predicates.add(cb.equal(ueRoot.get(CoursUEAnnee_.anneeAcademique), a));
         predicates.add(cb.equal(ueRoot.get(CoursUEAnnee_.cours), c));
         predicates.add(cb.equal(ueRoot.get(CoursUEAnnee_.uniteEnseignement), unitePath));
@@ -128,7 +129,7 @@ public class UniteEnseignementDaoImpl extends GenericDao<UniteEnseignement, Long
         Path<Semestre> semestrePath = programmeRoot.get(Programme_.semestre);
         Path<AnneeAcademique> anneePath = programmeRoot.get(Programme_.anneeAcademique);
         
-        List<Predicate> predicates = new ArrayList<Predicate>();
+        List<Predicate> predicates = new ArrayList<>();
         predicates.add(cb.equal(anneePath, annee));
         //predicates.add(cb.equal(ab, unitePath));
         predicates.add(cb.equal(semestrePath, semestre));

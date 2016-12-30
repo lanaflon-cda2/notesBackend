@@ -20,11 +20,11 @@ import javax.inject.Named;
  */
 @Stateless
 @Named
-public class NiveauServiceImpl implements INiveauService{
-    
+public class NiveauServiceImpl implements INiveauService {
+
     @Inject
     private INiveauDao niveauDao;
-    
+
     @Inject
     private ISemestreDao semestreDao;
 
@@ -43,54 +43,51 @@ public class NiveauServiceImpl implements INiveauService{
     public void setSemestreDao(ISemestreDao semestreDao) {
         this.semestreDao = semestreDao;
     }
-    
-    
 
     @Override
-    public Niveau saveOrUpdateNiveau(Niveau niveau) throws ServiceException{
+    public Niveau saveOrUpdateNiveau(Niveau niveau) throws ServiceException {
         try {
-        if(niveau.getId() ==null){
-            niveau.setActive(1);
-                return niveauDao.create(niveau);         
-        }
-        else{
-            return niveauDao.update(niveau);
-        }
-        } catch (DataAccessException ex) {
-                Logger.getLogger(NiveauServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-                throw  new ServiceException("La ressource demandée est introuvable");
+            if (niveau.getId() == null) {
+                niveau.setActive(1);
+                return niveauDao.create(niveau);
+            } else {
+                return niveauDao.update(niveau);
             }
+        } catch (DataAccessException ex) {
+            Logger.getLogger(NiveauServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new ServiceException("La ressource demandée est introuvable");
+        }
     }
 
     @Override
-    public void deleteNiveau(Long id) throws ServiceException{
+    public void deleteNiveau(Long id) throws ServiceException {
         try {
             Niveau niveau = niveauDao.findById(id);
             niveauDao.delete(niveau);
         } catch (DataAccessException ex) {
             Logger.getLogger(NiveauServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw  new ServiceException("La ressource demandée est introuvable");
+            throw new ServiceException("La ressource demandée est introuvable");
         }
     }
 
     @Override
-    public Niveau findNiveauById(long id) throws ServiceException{
+    public Niveau findNiveauById(long id) throws ServiceException {
         try {
             return niveauDao.findById(id);
         } catch (DataAccessException ex) {
             Logger.getLogger(NiveauServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw  new ServiceException("La ressource demandée est introuvable");
+            throw new ServiceException("La ressource demandée est introuvable");
         }
     }
 
     @Override
-    public List<Niveau> getAllNiveaux() throws ServiceException{
+    public List<Niveau> getAllNiveaux() throws ServiceException {
         try {
-            List <Niveau> list = niveauDao.findAll();            
+            List<Niveau> list = niveauDao.findAll();
             return list;
         } catch (DataAccessException ex) {
             Logger.getLogger(NiveauServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw  new ServiceException("La ressource demandée est introuvable");
+            throw new ServiceException("La ressource demandée est introuvable");
         }
     }
 
@@ -98,8 +95,8 @@ public class NiveauServiceImpl implements INiveauService{
     public Niveau findByCode(String code) throws ServiceException {
         try {
             Niveau niveau = niveauDao.findByCode(code);
-            if(niveau == null){
-                throw  new ServiceException("La ressource demandée est introuvable");
+            if (niveau == null) {
+                throw new ServiceException("La ressource demandée est introuvable");
             }
             return niveau;
         } catch (DataAccessException ex) {
@@ -115,8 +112,8 @@ public class NiveauServiceImpl implements INiveauService{
             return semestreDao.findByNiveau(n);
         } catch (DataAccessException ex) {
             Logger.getLogger(NiveauServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw  new ServiceException("La ressource demandée est introuvable");
+            throw new ServiceException("La ressource demandée est introuvable");
         }
     }
-    
+
 }

@@ -252,7 +252,7 @@ public class DocumentUtil {
         return cell;
     }
 
-    public static PdfPCell createSyntheseDefaultBodyCell(String message, Font bf, boolean color, boolean isCentered) {
+    public static PdfPCell createSyntheseDefaultBodyCell(String message, Font bf, boolean color, boolean isCentered, float paddingTop, float paddingBotton) {
         PdfPCell cell = new PdfPCell(new Phrase(message, bf));
         if (color) {
             cell.setBackgroundColor(new BaseColor(230, 230, 230));
@@ -261,12 +261,17 @@ public class DocumentUtil {
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         } else {
             cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+            cell.setPaddingLeft(3f);
         }
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        cell.setPaddingBottom(4f);
-        cell.setPaddingTop(4f);
+        cell.setPaddingBottom(paddingBotton);
+        cell.setPaddingTop(paddingTop);
         cell.setBorderWidth(0.01f);
         cell.setBorderColor(BaseColor.BLACK);
         return cell;
+    }
+    
+    public static PdfPCell createSyntheseDefaultBodyCell(String message, Font bf, boolean color, boolean isCentered) {
+        return createSyntheseDefaultBodyCell(message, bf, color, isCentered, 4f, 4f);
     }
 }
