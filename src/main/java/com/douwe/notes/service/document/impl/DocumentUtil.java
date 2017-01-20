@@ -2,6 +2,7 @@ package com.douwe.notes.service.document.impl;
 
 import com.douwe.notes.entities.Session;
 import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Phrase;
@@ -14,30 +15,30 @@ import com.itextpdf.text.pdf.PdfPCell;
 public class DocumentUtil {
 
     public static String transformMoyenneMgpToGradeRelevet(double moyenne) {
-        if (Double.compare(moyenne, 4.0) == 0) {
+        /*if (Double.compare(moyenne, 4.0) == 0) {
+            return "A+";
+        }*/
+        if (moyenne <= 4 && moyenne >= 3.6) {
             return "A+";
         }
-        if (moyenne < 4 && moyenne >= 3.7) {
-            return "A";
-        }
-        if (moyenne < 3.7 && moyenne >= 3.3) {
+        if (moyenne < 3.6 && moyenne >= 3.2) {
             return "A-";
         }
-        if (moyenne < 3.3 && moyenne >= 3.0) {
-            return "B+";
-        }
-        if (moyenne < 3.0 && moyenne >= 2.7) {
+        if (moyenne < 3.2 && moyenne >= 2.8) {
             return "B";
         }
-        if (moyenne < 2.7 && moyenne >= 2.3) {
+        if (moyenne < 2.8 && moyenne >= 2.4) {
             return "B-";
         }
-        if(moyenne < 2.3 && moyenne > 2.0){
+        if (moyenne < 2.4 && moyenne >= 2.0) {
+            return "C";
+        }
+        /*if(moyenne < 2.3 && moyenne > 2.0){
             return "C+";
        }
         if(Double.compare(moyenne, 2.0) == 0){
             return "C";
-        }
+        }*/
         if(moyenne < 2.0 && moyenne >= 1.3){
             return "C-";
         }
@@ -51,36 +52,30 @@ public class DocumentUtil {
     }
     
     public static String transformMoyenneMgpToMentionRelevet(double moyenne) {
-        if (Double.compare(moyenne, 4.0) == 0) {
+        /*if (Double.compare(moyenne, 4.0) == 0) {
             return "Excellent";
-        }
-        if (moyenne < 4 && moyenne >= 3.7) {
-            return "Très Bien";
+        }*/
+        if (moyenne <= 4 && moyenne >= 3.6) {
+            return "Excellent / First Class Hons.";
         }
        
-        if (moyenne < 3.7 && moyenne >= 3.0) {
-            return "Bien";
+        if (moyenne < 3.6 && moyenne >= 3.2) {
+            return "Très Bien / Second Class Hons. Upper Division";
         }
         
       
-        if (moyenne < 3.0 && moyenne >= 2.3) {
-            return "Assez Bien";
+        if (moyenne < 3.2 && moyenne >= 2.8) {
+            return "Bien / Second Class Hons. Lower Division";
         }
         
-        if(moyenne < 2.3 && moyenne >= 2.0){
-            return "Passable";
+        if(moyenne < 2.8 && moyenne >= 2.4){
+            return "Assez-Bien / Third Class";
        }
        
-        if(moyenne < 2.0 && moyenne >= 1.3){
-            return "Insuffisant";
+        if(moyenne < 2.4 && moyenne >= 2){
+            return "Passable / Pass";
         }
-        if(moyenne < 1.3 && moyenne >= 1.2){
-            return "Faible";
-        }
-        if(moyenne < 1.2 && moyenne >= 1.0){
-            return "Très Faible";
-       }
-        return "Nul";
+        return "Echoué / Fail";
     }
 
     public static String transformNoteGradeUE(double note) {
@@ -121,40 +116,37 @@ public class DocumentUtil {
 
     public static double transformNoteMgpUE(double note) {
         /*Systeme anglophone : la note / 100 */
-        double notep = note * 5;
-        if (notep <= 100 && notep >= 90) {
+        if (note <= 20 && note >= 18) {
             return 4;
         }
-        if (notep < 90 && notep >= 80) {
+        if (note >= 16) {
             return 3.7;
         }
-        if (notep < 80 && notep >= 70) {
+        if (note >= 14) {
             return 3.3;
         }
-        if (notep < 70 && notep >= 65) {
+        if (note >= 13) {
             return 3.0;
         }
-        if (notep < 65 && notep >= 60) {
+        if (note >= 12) {
             return 2.7;
         }
-        if (notep < 60 && notep >= 55) {
+        if (note >= 11) {
             return 2.3;
         }
-        if (notep < 55 && notep >= 50) {
+        if (note >= 10) {
             return 2.0;
         }
-        if (notep < 50 && notep >= 45) {
+        if (note >= 9) {
             return 1.7;
         }
-        if (notep < 45 && notep >= 40) {
+        if (note >= 8) {
             return 1.3;
         }
-        if (note < 40 && note >= 30) {
+        if (note >= 6) {
             return 1.0;
         }
-
         return 0;
-
     }
 
     public static String transformNoteMention(double note) {
@@ -236,18 +228,20 @@ public class DocumentUtil {
     }
 
     public static PdfPCell createRelevetFootBodyCell(String message, Font bf, boolean border, int rowspan, int colspan) {
-        PdfPCell cell = new PdfPCell(new Phrase(message, bf));
-        if (border) {
+        Chunk ch = new Chunk(message, bf);
+        ch.setGenericTag("shadow");
+        PdfPCell cell = new PdfPCell(new Phrase(ch));
+        /*if (border) {
             cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
 
         }
         cell.setRowspan(rowspan);
-        cell.setColspan(colspan);
-        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell.setColspan(colspan);*/
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setPaddingBottom(4f);
-        cell.setPaddingTop(5f);
-        cell.setBorderWidth(0.01f);
+        cell.setPaddingTop(4f);
+        cell.setBorderWidth(0);
         cell.setBorderColor(BaseColor.WHITE);
         return cell;
     }
@@ -268,6 +262,7 @@ public class DocumentUtil {
         cell.setPaddingTop(paddingTop);
         cell.setBorderWidth(0.01f);
         cell.setBorderColor(BaseColor.BLACK);
+        //cell.setTop(2f);
         return cell;
     }
     

@@ -52,5 +52,9 @@ public interface INoteService {
     public int delibererCours(long niveauId, long optionId, long coursId, long anneeId, int session, double borneInf, boolean infInclusive, double borneSup, boolean supInclusive, double finale) throws ServiceException;
 
     public List<Note> listeNoteEtudiant(String matricule, long coursId, long anneeId) throws ServiceException;
+    
+    public Double calculerMoyenneCycle(String matricule, long cycleId, long anneeId) throws ServiceException;
+    
+    public int calculerNombreCreditsValides(String matricule, long cycleId, long anneeId) throws ServiceException;
 
 }

@@ -3,6 +3,7 @@ package com.douwe.notes.service.impl;
 import com.douwe.generic.dao.DataAccessException;
 import com.douwe.notes.dao.IAnneeAcademiqueDao;
 import com.douwe.notes.dao.ICoursDao;
+import com.douwe.notes.dao.ICycleDao;
 import com.douwe.notes.dao.IDepartementDao;
 import com.douwe.notes.dao.IEtudiantDao;
 import com.douwe.notes.dao.IEvaluationDao;
@@ -14,6 +15,7 @@ import com.douwe.notes.dao.ISemestreDao;
 import com.douwe.notes.dao.IUniteEnseignementDao;
 import com.douwe.notes.entities.AnneeAcademique;
 import com.douwe.notes.entities.Cours;
+import com.douwe.notes.entities.Cycle;
 import com.douwe.notes.entities.Departement;
 import com.douwe.notes.entities.Etudiant;
 import com.douwe.notes.entities.Evaluation;
@@ -27,8 +29,10 @@ import com.douwe.notes.entities.UniteEnseignement;
 import com.douwe.notes.projection.CoursCredit;
 import com.douwe.notes.projection.EtudiantNotes;
 import com.douwe.notes.projection.MoyenneUniteEnseignement;
+import com.douwe.notes.projection.UEnseignementCredit;
 import com.douwe.notes.service.INoteService;
 import com.douwe.notes.service.ServiceException;
+import com.douwe.notes.service.document.impl.DocumentUtil;
 import com.douwe.notes.service.util.DeliberationItem;
 import com.douwe.notes.service.util.ImportationError;
 import com.douwe.notes.service.util.ImportationResult;
@@ -87,6 +91,9 @@ public class NoteServiceImpl implements INoteService {
 
     @Inject
     private IOptionDao optionDao;
+
+    @Inject
+    private ICycleDao cycleDao;
 
     @Inject
     private IDepartementDao departementDao;
@@ -177,6 +184,14 @@ public class NoteServiceImpl implements INoteService {
 
     public void setDepartementDao(IDepartementDao departementDao) {
         this.departementDao = departementDao;
+    }
+
+    public ICycleDao getCycleDao() {
+        return cycleDao;
+    }
+
+    public void setCycleDao(ICycleDao cycleDao) {
+        this.cycleDao = cycleDao;
     }
 
     @Override
@@ -324,7 +339,7 @@ public class NoteServiceImpl implements INoteService {
                                 erreurs.add(err);
                             }
                         } else {
-                        //ImportationError err = new ImportationError(index, "Note indisponible");
+                            //ImportationError err = new ImportationError(index, "Note indisponible");
                             //erreurs.add(err);
                         }
                     } else {
@@ -467,7 +482,7 @@ public class NoteServiceImpl implements INoteService {
             UniteEnseignement ue = uniteEnseignementDao.findById(ueId);
             // TODO I need to come back here and figure out something
             AnneeAcademique annee = null;
-            if (anneeId > 0) {
+            if (aCourantId > 0) {
                 annee = academiqueDao.findById(aCourantId);
             }
             result = new MoyenneUniteEnseignement(ue.isHasOptionalChoices());
@@ -480,7 +495,8 @@ public class NoteServiceImpl implements INoteService {
                     result.getSessions().add(n.getSession());
                     result.getNotes().put(cours.getCours().getIntitule(), n.getMoyenne());
                     result.getAnnees().add(n.getAnnee());
-                } /*else {
+                }
+                /*else {
                  result.getCredits().put(cours.getCours().getIntitule(), cours.getCredit());
                  result.getSessions().add(Session.normale);
                  result.getNotes().put(cours.getCours().getIntitule(), 0.0);
@@ -670,6 +686,69 @@ public class NoteServiceImpl implements INoteService {
             Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new ServiceException("Impossible d'effectuer le traitement");
         }
+    }
+
+    @Override
+    public Double calculerMoyenneCycle(String matricule, long cycleId, long anneeId) throws ServiceException {
+        try {
+
+            Cycle cycle = cycleDao.findById(cycleId);
+            AnneeAcademique annee = academiqueDao.findById(anneeId);
+            Etudiant etudiant = etudiantDao.findByMatricule(matricule);
+            System.out.println("L'étudiant " + etudiant.getNom());
+            List<Niveau> niveaux = cycle.getNiveaux();
+            double produitMgp = 0;
+            int nombreCredit = 0;
+            for (Niveau niveau : niveaux) {
+                // I compute the MGP
+                Option option;
+                try {
+                    option = optionDao.findByEtudiantNiveau(etudiant, niveau);
+                } catch (NoResultException nre) {
+                    continue;
+                }
+                AnneeAcademique an;
+                if (niveau.isTerminal()) {
+                    an = academiqueDao.findLastYearNote(etudiant, niveau, option);
+                } else {
+                    an = academiqueDao.findLastInscriptionYear(etudiant, niveau, option);
+                }
+                System.out.println("Annee "+an.toString()+" etudiant "+etudiant.getNom()+" Niveau "+ niveau.getCode());
+                List<Semestre> semestres = semestreDao.findByNiveau(niveau);
+                for (Semestre semestre : semestres) {
+
+                    List<UniteEnseignement> uniteEns = uniteEnseignementDao.findByUniteNiveauOptionSemestre(niveau, option, semestre, an);
+                    List<UEnseignementCredit> ues1 = uniteEnseignementDao.findByNiveauOptionSemestre(niveau, option, semestre, an);
+                    Map<String, MoyenneUniteEnseignement> note = listeNoteUniteEnseignement(etudiant.getMatricule(), annee.getId(), an.getId(), uniteEns);
+                    for (UEnseignementCredit ue : ues1) {
+                        if (ue.getCredit() != 0) {
+                            MoyenneUniteEnseignement mue = note.get(ue.getCodeUE());
+                            Double value = mue.getMoyenne();
+                            System.out.println("UE " + ue.getIntituleUE() + " et le MGP " + value);
+                            Double noteMgp = DocumentUtil.transformNoteMgpUE(value);
+                            int credit = ue.getCredit();
+                            if (value < 10) {
+                                return null;
+                            } else {
+                                nombreCredit += credit;
+                                produitMgp += noteMgp * credit;
+                            }
+                        }
+                    }
+                }
+                System.out.println("Le nombre de credit " + nombreCredit + " MGP " + Math.floor(produitMgp / nombreCredit * 100) / 100);
+            }
+            return Math.floor(produitMgp / nombreCredit * 100) / 100;
+        } catch (DataAccessException ex) {
+            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
+
+    @Override
+    public int calculerNombreCreditsValides(String matricule, long cycleId, long anneeId) throws ServiceException {
+        return 120;
     }
 
 }

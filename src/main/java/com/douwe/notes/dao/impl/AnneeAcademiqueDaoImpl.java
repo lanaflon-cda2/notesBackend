@@ -7,7 +7,6 @@ import com.douwe.notes.entities.AnneeAcademique;
 import com.douwe.notes.entities.AnneeAcademique_;
 import com.douwe.notes.entities.Cours;
 import com.douwe.notes.entities.Etudiant;
-import com.douwe.notes.entities.Etudiant_;
 import com.douwe.notes.entities.Inscription;
 import com.douwe.notes.entities.Inscription_;
 import com.douwe.notes.entities.Niveau;
@@ -34,7 +33,7 @@ import javax.persistence.criteria.Root;
  * @author Vincent Douwe <douwevincent@yahoo.fr>
  */
 public class AnneeAcademiqueDaoImpl extends GenericDao<AnneeAcademique, Long> implements IAnneeAcademiqueDao {
-    
+
     @Override
     public List<AnneeAcademique> findAllActive() throws DataAccessException {
         return getManager().createNamedQuery("Annee.findAllActive").getResultList();
@@ -61,7 +60,7 @@ public class AnneeAcademiqueDaoImpl extends GenericDao<AnneeAcademique, Long> im
             return null;
         }
     }
-    
+
     @Override
     public List<AnneeAcademique> findAllYearWthNote(AnneeAcademique annee, Niveau niveau, Option option, Semestre semestre) throws DataAccessException {
         List<AnneeAcademique> resultat = new ArrayList<>();
@@ -79,8 +78,8 @@ public class AnneeAcademiqueDaoImpl extends GenericDao<AnneeAcademique, Long> im
         predicates.add(cb.equal(parcoursPath.get(Parcours_.option), option));
         predicates.add(cb.equal(programmeRoot.get(Programme_.parcours).get(Parcours_.option), option));
         predicates.add(cb.equal(programmeRoot.get(Programme_.parcours).get(Parcours_.niveau), niveau));
-        predicates.add(cb.equal(inscriptionRoot.get(Inscription_.etudiant), etudiantPath));        
-        predicates.add(cb.isMember(coursPath, programmeRoot.get(Programme_.uniteEnseignement).get(UniteEnseignement_.cours)));   
+        predicates.add(cb.equal(inscriptionRoot.get(Inscription_.etudiant), etudiantPath));
+        predicates.add(cb.isMember(coursPath, programmeRoot.get(Programme_.uniteEnseignement).get(UniteEnseignement_.cours)));
         predicates.add(cb.equal(anneePath, annee));
         if (semestre != null) {
             predicates.add(cb.equal(programmeRoot.get(Programme_.semestre), semestre));
@@ -88,9 +87,9 @@ public class AnneeAcademiqueDaoImpl extends GenericDao<AnneeAcademique, Long> im
         if (predicates.size() > 0) {
             cq.where((predicates.size() == 1) ? predicates.get(0) : cb.and(predicates.toArray(new Predicate[0])));
         }
-        
+
         //cq.select(inscriptionRoot.get(Inscription_.anneeAcademique));
-        cq.multiselect(inscriptionRoot.get(Inscription_.anneeAcademique),cb.max(inscriptionRoot.get(Inscription_.anneeAcademique).get(AnneeAcademique_.numeroDebut)));
+        cq.multiselect(inscriptionRoot.get(Inscription_.anneeAcademique), cb.max(inscriptionRoot.get(Inscription_.anneeAcademique).get(AnneeAcademique_.numeroDebut)));
         cq.distinct(true);
         cq.orderBy(cb.desc(inscriptionRoot.get(Inscription_.anneeAcademique).get(AnneeAcademique_.numeroDebut)));
         //cq.groupBy(etudiantPath.get(Etudiant_.id));
@@ -102,5 +101,76 @@ public class AnneeAcademiqueDaoImpl extends GenericDao<AnneeAcademique, Long> im
             resultat.add((AnneeAcademique) result1[0]);
         }
         return resultat;
+    }
+
+    @Override
+    public AnneeAcademique findLastInscriptionYear(Etudiant etudiant, Niveau niveau, Option option) throws DataAccessException {
+        try {
+            CriteriaBuilder cb = getManager().getCriteriaBuilder();
+            CriteriaQuery<AnneeAcademique> cq = cb.createQuery(AnneeAcademique.class);
+            Root<Inscription> inscriptionRoot = cq.from(Inscription.class);
+            Path<Etudiant> etudiantPath = inscriptionRoot.get(Inscription_.etudiant);
+            Path<AnneeAcademique> anneePath = inscriptionRoot.get(Inscription_.anneeAcademique);
+            Path<Parcours> parcoursPath = inscriptionRoot.get(Inscription_.parcours);
+            cq.where(cb.and(
+                    cb.equal(etudiantPath, etudiant), 
+                    cb.equal(parcoursPath.get(Parcours_.niveau), niveau),
+                    cb.equal(parcoursPath.get(Parcours_.option), option)
+                    
+                    ));
+            cq.select(anneePath);
+            cq.orderBy(cb.desc(anneePath.get(AnneeAcademique_.numeroDebut)));
+            return getManager().createQuery(cq).setMaxResults(1).getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
+
+    @Override
+    public AnneeAcademique findLastYearNote(Etudiant etudiant, Niveau niveau, Option option) throws DataAccessException {
+        try {
+            CriteriaBuilder cb = getManager().getCriteriaBuilder();
+            CriteriaQuery<AnneeAcademique> cq = cb.createQuery(AnneeAcademique.class);
+            Root<Note> noteRoot = cq.from(Note.class);
+            Root<Programme> programmeRoot = cq.from(Programme.class);
+            Path<AnneeAcademique> anneePath = noteRoot.get(Note_.anneeAcademique);
+            Path<Etudiant> etudiantPath = noteRoot.get(Note_.etudiant);
+            Path<Cours> coursPath = noteRoot.get(Note_.cours);
+            Path<Parcours> parcoursPath = programmeRoot.get(Programme_.parcours);
+            cq.where(cb.and(
+                    cb.equal(etudiantPath, etudiant), 
+                    cb.equal(parcoursPath.get(Parcours_.niveau), niveau),
+                    cb.equal(parcoursPath.get(Parcours_.option), option),
+                    cb.isMember(coursPath, programmeRoot.get(Programme_.uniteEnseignement).get(UniteEnseignement_.cours))));
+            cq.select(anneePath);
+            cq.orderBy(cb.desc(anneePath.get(AnneeAcademique_.debut)));
+            return getManager().createQuery(cq).setMaxResults(1).getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
+
+    @Override
+    public List<AnneeAcademique> findAllYearWthNote(Etudiant etudiant, Niveau niveau, Option option) throws DataAccessException {
+        try {
+            CriteriaBuilder cb = getManager().getCriteriaBuilder();
+            CriteriaQuery<AnneeAcademique> cq = cb.createQuery(AnneeAcademique.class);
+            Root<Note> noteRoot = cq.from(Note.class);
+            Root<Programme> programmeRoot = cq.from(Programme.class);
+            Path<AnneeAcademique> anneePath = noteRoot.get(Note_.anneeAcademique);
+            Path<Etudiant> etudiantPath = noteRoot.get(Note_.etudiant);
+            Path<Cours> coursPath = noteRoot.get(Note_.cours);
+            Path<Parcours> parcoursPath = programmeRoot.get(Programme_.parcours);
+            cq.where(cb.and(
+                    cb.equal(etudiantPath, etudiant), 
+                    cb.equal(parcoursPath.get(Parcours_.niveau), niveau),
+                    cb.equal(parcoursPath.get(Parcours_.option), option),
+                    cb.isMember(coursPath, programmeRoot.get(Programme_.uniteEnseignement).get(UniteEnseignement_.cours))));
+            cq.select(anneePath);
+            cq.orderBy(cb.desc(anneePath.get(AnneeAcademique_.debut)));
+            return getManager().createQuery(cq).getResultList();
+        } catch (NoResultException nre) {
+            return null;
+        }
     }
 }

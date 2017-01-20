@@ -47,5 +47,16 @@ public interface IEtudiantDao extends IDao<Etudiant, Long>{
     public List<Etudiant> listeEtudiantAvecNotes(AnneeAcademique academique, Niveau niveau, Option option, Semestre semestre) throws DataAccessException;
     
     public List<Etudiant> listeEtudiantAvecNotes(AnneeAcademique debutInscription,AnneeAcademique encours, Niveau niveau, Option option, Semestre semestre) throws DataAccessException;
+
+    /**
+     *  Renvoie la liste des étudiants qui sont inscrits au niveau et option en question l'année donnée ou qui 
+     * ont été inscrits à une année précédente et ont obtenues une note l'année en question
+     * @param n le niveau d'étude
+     * @param o l'option d'étudz
+     * @param a l'année académique
+     * @return une liste d'étudiants respectant les contraintes et critères mentionnés
+     * @throws com.douwe.generic.dao.DataAccessException si un événement non prévu survient
+     */
+    public List<Etudiant> listeEtudiantsAnnee(Niveau n, Option o, AnneeAcademique a) throws DataAccessException;
     
 }

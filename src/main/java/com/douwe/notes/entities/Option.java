@@ -43,6 +43,9 @@ public class Option implements Serializable {
 
     @Column
     private String description;
+    
+    @Column
+    private String descriptionEnglish;
 
     @ManyToOne(optional = false)
     private Departement departement;
@@ -77,6 +80,14 @@ public class Option implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getDescriptionEnglish() {
+        return descriptionEnglish;
+    }
+
+    public void setDescriptionEnglish(String descriptionEnglish) {
+        this.descriptionEnglish = descriptionEnglish;
     }
 
     @JsonIgnore

@@ -67,7 +67,8 @@ public class UniteEnseignementDaoImpl extends GenericDao<UniteEnseignement, Long
         predicates.add(cb.equal(creditRoot.get(Credit_.parcours), parcoursPath));
         predicates.add(cb.isMember(toto, ab));
         //predicates.add(cb.equal(ab, unitePath));
-        predicates.add(cb.equal(semestrePath, semestre));
+        if(semestre != null)
+            predicates.add(cb.equal(semestrePath, semestre));
         predicates.add(cb.equal(parcoursPath.get(Parcours_.niveau), niveau));
         predicates.add(cb.equal(parcoursPath.get(Parcours_.option), option));
         //predicates.add(cb.equal(programmeRoot.get(Programme_.uniteEnseignement), ab));

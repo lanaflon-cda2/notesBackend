@@ -1,5 +1,6 @@
 package com.douwe.notes.projection;
 
+import com.douwe.notes.entities.AnneeAcademique;
 import com.douwe.notes.entities.Semestre;
 import com.douwe.notes.entities.Session;
 import java.util.Map;
@@ -28,6 +29,12 @@ public class RelevetEtudiantNotesInfos {
     private Map<String, Double> mgp;
     
     private Map<String, String> semestres;
+    
+    private boolean aToutValide;
+    
+    private Double mgpCycle;
+    
+    private AnneeAcademique anneeAcademique;
     
     Map<String, Session> sessions;
 
@@ -95,7 +102,27 @@ public class RelevetEtudiantNotesInfos {
         this.semestres = semestres;
     }
 
-   
-    
-    
+    public boolean isaToutValide() {
+        return aToutValide;
+    }
+
+    public void setaToutValide(boolean aToutValide) {
+        this.aToutValide = aToutValide;
+    }
+
+    public AnneeAcademique getAnneeAcademique() {
+        return anneeAcademique;
+    }
+
+    public void setAnneeAcademique(AnneeAcademique anneeAcademique) {
+        this.anneeAcademique = anneeAcademique;
+    }
+
+    public Double getMgpCycle() {
+        return mgpCycle;
+    }
+
+    public void setMgpCycle(Double mgpCycle) {
+        this.mgpCycle = mgpCycle;
+    }
 }
