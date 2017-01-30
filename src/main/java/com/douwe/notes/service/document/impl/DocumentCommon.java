@@ -134,11 +134,6 @@ public class DocumentCommon {
         cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell1.setBorderColor(BaseColor.WHITE);
         header.addCell(cell1);
-//        cell1 = new PdfPCell(coordonnees);
-//        cell1.setColspan(10);
-//        cell1.setBorderColor(BaseColor.WHITE);
-//        cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
-//        header.addCell(cell1);
         doc.add(header);
         /////////////////////////////
         if (!departement) {

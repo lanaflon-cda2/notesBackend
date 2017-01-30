@@ -33,12 +33,6 @@ public class DocumentUtil {
         if (moyenne < 2.4 && moyenne >= 2.0) {
             return "C";
         }
-        /*if(moyenne < 2.3 && moyenne > 2.0){
-            return "C+";
-       }
-        if(Double.compare(moyenne, 2.0) == 0){
-            return "C";
-        }*/
         if(moyenne < 2.0 && moyenne >= 1.3){
             return "C-";
         }
