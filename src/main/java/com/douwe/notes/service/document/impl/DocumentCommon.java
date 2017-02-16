@@ -228,6 +228,7 @@ public class DocumentCommon {
             cell.setBorderColor(BaseColor.WHITE);
             table2.addCell(cell);
             table2.setSpacingBefore(2f);
+            //table2.setSpacingAfter(2f);
             doc.add(table2);
 
         }
