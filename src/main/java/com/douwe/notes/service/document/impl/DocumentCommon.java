@@ -134,11 +134,13 @@ public class DocumentCommon {
         cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell1.setBorderColor(BaseColor.WHITE);
         header.addCell(cell1);
+        //header.setSpacingAfter(3f);
 //        cell1 = new PdfPCell(coordonnees);
 //        cell1.setColspan(10);
 //        cell1.setBorderColor(BaseColor.WHITE);
 //        cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
 //        header.addCell(cell1);
+        
         doc.add(header);
         /////////////////////////////
         if (!departement) {
@@ -230,6 +232,7 @@ public class DocumentCommon {
             cell.setBorderColor(BaseColor.WHITE);
             table2.addCell(cell);
             table2.setSpacingBefore(2f);
+            //table2.setSpacingAfter(2f);
             doc.add(table2);
 
         }

@@ -279,8 +279,9 @@ public class RelevetDocument implements IRelevetDocument {
                 for (Etudiant etudiant : etudiants) {
                     RelevetEtudiantNotesInfos inf = infos.get(etudiant.getMatricule());
                     if (inf.isaToutValide() && (!niveau.isTerminal() || inf.getMgpCycle() != null)) {
-                        produceRelevetEtudiant(doc, etudiant, niveau, option, annee, inf);
                         doc.newPage();
+                        produceRelevetEtudiant(doc, etudiant, niveau, option, annee, inf);
+                        
                     }
                 }
             }
@@ -343,7 +344,7 @@ public class RelevetDocument implements IRelevetDocument {
     private void produceRelevetTitle(Document doc, int annee) {
         try {
             Font font = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
-            doc.add(new Phrase("\n"));
+            doc.add(new Phrase("\n", new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)));
             StringBuilder str = new StringBuilder();
 
             str.append("RELEVE DE NOTES / ACADEMIC TRANSCRIPT             ");
@@ -544,7 +545,7 @@ public class RelevetDocument implements IRelevetDocument {
             Map<String, Double> mgp = infos.getMgp();
             Map<String, String> semtrs = infos.getSemestres();
             int nombreCours = ues.size();
-            float padding = 7f * 16 / nombreCours;
+            float padding = 6f * 16 / nombreCours;
             if (estTerminale) {
                 padding = 5.8f * 16 / nombreCours;
             }
