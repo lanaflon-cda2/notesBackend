@@ -1,6 +1,7 @@
 package com.douwe.notes.service.document.impl;
 
 import com.douwe.generic.dao.DataAccessException;
+import com.douwe.notes.config.MessageHelper;
 import com.douwe.notes.dao.IAnneeAcademiqueDao;
 import com.douwe.notes.dao.ICoursDao;
 import com.douwe.notes.dao.ICreditDao;
@@ -99,6 +100,8 @@ public class SyntheseDocument implements ISyntheseDocument {
 
     @Inject
     private DocumentCommon common;
+    
+    MessageHelper msgHelper = new MessageHelper();
 
     public IEtudiantDao getEtudiantDao() {
         return etudiantDao;
@@ -339,15 +342,15 @@ public class SyntheseDocument implements ISyntheseDocument {
                 table.addCell(cell);
 
                 table.getDefaultCell().setBorderColor(BaseColor.BLACK);
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("No", bf, false));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Noms et Prénoms", bf, false));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Matricule", bf, false));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.semestrielleBody.no"), bf, false));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.semestrielleBody.nom"), bf, false));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.semestrielleBody.matricule"), bf, false));
                 for (UEnseignementCredit ue : ues) {
                     table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(ue.getIntituleUE(), bf, false));
                 }
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Moyenne " + s.getIntitule(), bf, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Crédits " + s.getIntitule() + " validés", bf, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("% crédits " + s.getIntitule() + " validés", bf, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.semestrielleBody.moyenne") + s.getIntitule(), bf, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.semestrielleBody.credit") + s.getIntitule() + msgHelper.getProperty("synthese.semestrielleBody.valides"), bf, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.semestrielleBody.creditPourcentage") + s.getIntitule() + msgHelper.getProperty("synthese.semestrielleBody.valides"), bf, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, true));
@@ -389,17 +392,17 @@ public class SyntheseDocument implements ISyntheseDocument {
             }
             PdfPTable table = new PdfPTable(3);
             table.setWidthPercentage(95);
-            PdfPCell cell = DocumentUtil.createDefaultHeaderCell("Président", bf);
+            PdfPCell cell = DocumentUtil.createDefaultHeaderCell(msgHelper.getProperty("synthese.semestrielleBody.president"), bf);
             cell.setBorder(0);
             cell.setHorizontalAlignment(Element.ALIGN_LEFT);
             cell.setBackgroundColor(BaseColor.WHITE);
             table.addCell(cell);
-            cell = DocumentUtil.createDefaultHeaderCell("Vice-Président", bf);
+            cell = DocumentUtil.createDefaultHeaderCell(msgHelper.getProperty("synthese.semestrielleBody.vicePresident"), bf);
             cell.setBorder(0);
             cell.setBackgroundColor(BaseColor.WHITE);
             cell.setHorizontalAlignment(Element.ALIGN_LEFT);
             table.addCell(cell);
-            cell = DocumentUtil.createDefaultHeaderCell("Membre(s)", bf);
+            cell = DocumentUtil.createDefaultHeaderCell(msgHelper.getProperty("synthese.semestrielleBody.membre"), bf);
             cell.setBorder(0);
             cell.setBackgroundColor(BaseColor.WHITE);
             cell.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -409,11 +412,7 @@ public class SyntheseDocument implements ISyntheseDocument {
 
             doc.add(table);
 
-        } catch (DocumentException ex) {
-            Logger.getLogger(DocumentServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (DataAccessException ex) {
-            Logger.getLogger(DocumentServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ServiceException ex) {
+        } catch (DocumentException | DataAccessException | ServiceException ex) {
             Logger.getLogger(DocumentServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -492,28 +491,28 @@ public class SyntheseDocument implements ISyntheseDocument {
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
 
                 table.getDefaultCell().setBorderColor(BaseColor.BLACK);
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("No", bf, false));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Noms et Prénoms", bf, false));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Matricule", bf, false));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.no"), bf, false));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.nom"), bf, false));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.matricule"), bf, false));
                 for (UEnseignementCredit ue : ues1) {
                     table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(ue.getIntituleUE(), bf, false));
                 }
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Moyenne I", bf, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Crédits " + semestres.get(0).getIntitule() + " validés", bf, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.moyenne1"), bf, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.credit") + semestres.get(0).getIntitule() + msgHelper.getProperty("synthese.annuelleBody.valides"), bf, true));
 
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("% crédits " + semestres.get(0).getIntitule() + " validés", bf, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.creditPourcentage") + semestres.get(0).getIntitule() + msgHelper.getProperty("synthese.annuelleBody.valides"), bf, true));
 
                 for (UEnseignementCredit ue : ues2) {
                     table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(ue.getIntituleUE(), bf, false));
                 }
 
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Moyenne II", bf, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Crédits " + semestres.get(1).getIntitule() + " validés", bf, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("% crédits " + semestres.get(1).getIntitule() + " validés", bf, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Moyenne annuelle", bf, false));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Crédits capitalisés", bf, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("% annuel de crédit validés", bf, false));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("Décision", bf, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.moyenne2"), bf, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.credit") + semestres.get(1).getIntitule() + msgHelper.getProperty("synthese.annuelleBody.valides"), bf, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.creditPourcentage") + semestres.get(1).getIntitule() + msgHelper.getProperty("synthese.annuelleBody.valides"), bf, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.moyenneAnnuelle"), bf, false));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.creditCapitalise"), bf, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.creditValidePourcentage"), bf, false));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.decision"), bf, true));
                 table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
                 table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
                 table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
@@ -589,28 +588,28 @@ public class SyntheseDocument implements ISyntheseDocument {
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(nbrCreditValide1 + nbrCreditValide2), bf1, true, true));
                     // table.addCell(createSyntheseDefaultBodyCell(String.valueOf(nbrCreditValide), bf1, true));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", ((((nbrCreditValide1 + nbrCreditValide2) * 1.0 / (creditSem1 + creditSem2))) * 100)), bf1, true, true));
-                    String decision = "RF";
+                    String decision = msgHelper.getProperty("synthese.annuelleBody.decisionRedouble");
                     int totalCredits = nbrCreditValide1 + nbrCreditValide2;
                     switch(n.getCode()){
                         case "Licence 1":
                             if ((totalCredits >= 45) || (nbrCreditValide1 == 30) || (nbrCreditValide2 == 30))
-                                decision = "AD";
+                                decision = msgHelper.getProperty("synthese.annuelleBody.decisionAdmis");
                             break;
                         case "Licence 2":
                             if (totalCredits >= 40)
-                                decision = "AD";
+                                decision = msgHelper.getProperty("synthese.annuelleBody.decisionAdmis");
                             break;
                         case "Licence 3":
                             if (totalCredits >= 60)
-                                decision = "AD";
+                                decision = msgHelper.getProperty("synthese.annuelleBody.decisionAdmis");
                             break;
                         case "Master 1":
                             if ((nbrCreditValide2 == 30) && (totalCredits >= 46))
-                                decision = "AD";
+                                decision = msgHelper.getProperty("synthese.annuelleBody.decisionAdmis");
                             break;
                         case "Master 2":
                             if (totalCredits >= 60)
-                                decision = "AD";
+                                decision = msgHelper.getProperty("synthese.annuelleBody.decisionAdmis");
                     }
                     table.addCell(DocumentUtil.createDefaultBodyCell(decision, bf1, false));
                 }
@@ -618,17 +617,17 @@ public class SyntheseDocument implements ISyntheseDocument {
             }
             PdfPTable table = new PdfPTable(3);
             table.setWidthPercentage(95);
-            PdfPCell cell = DocumentUtil.createDefaultHeaderCell("Président", bf);
+            PdfPCell cell = DocumentUtil.createDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.president"), bf);
             cell.setBorder(0);
             cell.setHorizontalAlignment(Element.ALIGN_LEFT);
             cell.setBackgroundColor(BaseColor.WHITE);
             table.addCell(cell);
-            cell = DocumentUtil.createDefaultHeaderCell("Vice-Président", bf);
+            cell = DocumentUtil.createDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.vicePresident"), bf);
             cell.setBorder(0);
             cell.setBackgroundColor(BaseColor.WHITE);
             cell.setHorizontalAlignment(Element.ALIGN_LEFT);
             table.addCell(cell);
-            cell = DocumentUtil.createDefaultHeaderCell("Membre(s)", bf);
+            cell = DocumentUtil.createDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.membres"), bf);
             cell.setBorder(0);
             cell.setBackgroundColor(BaseColor.WHITE);
             cell.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -638,11 +637,7 @@ public class SyntheseDocument implements ISyntheseDocument {
 
             doc.add(table);
 
-        } catch (DocumentException ex) {
-            Logger.getLogger(DocumentServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (DataAccessException ex) {
-            Logger.getLogger(DocumentServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ServiceException ex) {
+        } catch (DocumentException | DataAccessException | ServiceException ex) {
             Logger.getLogger(DocumentServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
