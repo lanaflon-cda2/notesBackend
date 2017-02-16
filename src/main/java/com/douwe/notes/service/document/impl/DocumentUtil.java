@@ -1,5 +1,6 @@
 package com.douwe.notes.service.document.impl;
 
+import com.douwe.notes.config.MessageHelper;
 import com.douwe.notes.entities.Session;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -13,6 +14,7 @@ import com.itextpdf.text.pdf.PdfPCell;
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
 public class DocumentUtil {
+    private static final MessageHelper msgHelper = new MessageHelper();
 
     public static String transformMoyenneMgpToGradeRelevet(double moyenne) {
         /*if (Double.compare(moyenne, 4.0) == 0) {
@@ -33,12 +35,6 @@ public class DocumentUtil {
         if (moyenne < 2.4 && moyenne >= 2.0) {
             return "C";
         }
-        /*if(moyenne < 2.3 && moyenne > 2.0){
-            return "C+";
-       }
-        if(Double.compare(moyenne, 2.0) == 0){
-            return "C";
-        }*/
         if(moyenne < 2.0 && moyenne >= 1.3){
             return "C-";
         }
@@ -56,26 +52,27 @@ public class DocumentUtil {
             return "Excellent";
         }*/
         if (moyenne <= 4 && moyenne >= 3.6) {
-            return "Excellent / First Class Hons.";
+            
+            return msgHelper.getProperty("util.excellent");
         }
        
         if (moyenne < 3.6 && moyenne >= 3.2) {
-            return "Très Bien / Second Class Hons. Upper Division";
+            return msgHelper.getProperty("util.tresBien");
         }
         
       
         if (moyenne < 3.2 && moyenne >= 2.8) {
-            return "Bien / Second Class Hons. Lower Division";
+            return msgHelper.getProperty("util.bien");
         }
         
         if(moyenne < 2.8 && moyenne >= 2.4){
-            return "Assez-Bien / Third Class";
+            return msgHelper.getProperty("util.assezBien");
        }
        
         if(moyenne < 2.4 && moyenne >= 2){
-            return "Passable / Pass";
+            return msgHelper.getProperty("util.passable");
         }
-        return "Echoué / Fail";
+        return msgHelper.getProperty("util.echoue");
     }
 
     public static String transformNoteGradeUE(double note) {
@@ -151,28 +148,29 @@ public class DocumentUtil {
 
     public static String transformNoteMention(double note) {
         if (note <= 20 && note >= 16) {
-            return "Très bien";
+            
+            return msgHelper.getProperty("util.mention.tresBien");
         }
         if (note < 16 && note >= 14) {
-            return "Bien";
+            return msgHelper.getProperty("util.mention.bien");
         }
         if (note < 14 && note >= 12) {
-            return "Assez bien";
+            return msgHelper.getProperty("util.mention.assezBien");
         }
         if (note < 12 && note >= 10) {
-            return "Passable";
+            return msgHelper.getProperty("util.mention.passable");
         }
         if(note < 10 && note >= 9){
-            return "Insuffisant";
+            return msgHelper.getProperty("util.mention.insuffisant");
         }
         if (note < 9 && note >= 8) {
-            return "Faible";
+            return msgHelper.getProperty("util.mention.faible");
         }
         if (note < 8 && note >= 6) {
-            return "Très Faible";
+            return msgHelper.getProperty("util.mention.tresFaible");
         }
 
-        return "Nul";
+        return msgHelper.getProperty("util.mention.nul");
 
     }
 

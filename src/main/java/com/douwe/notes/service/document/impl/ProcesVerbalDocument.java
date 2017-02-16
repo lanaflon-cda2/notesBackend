@@ -1,6 +1,7 @@
 package com.douwe.notes.service.document.impl;
 
 import com.douwe.generic.dao.DataAccessException;
+import com.douwe.notes.config.MessageHelper;
 import com.douwe.notes.dao.IAnneeAcademiqueDao;
 import com.douwe.notes.dao.ICoursDao;
 import com.douwe.notes.dao.ICreditDao;
@@ -100,6 +101,8 @@ public class ProcesVerbalDocument implements IProcesVerbalDocument{
     
     @Inject
     private DocumentCommon common;
+    
+    MessageHelper msgHelper = new MessageHelper();
 
     public IEtudiantDao getEtudiantDao() {
         return etudiantDao;
@@ -293,17 +296,17 @@ public class ProcesVerbalDocument implements IProcesVerbalDocument{
         PdfPTable table = new PdfPTable(relativeWidths);
 
         table.getDefaultCell().setBorderColor(BaseColor.BLACK);
-        table.addCell(DocumentUtil.createDefaultHeaderCell("No", bf));
-        table.addCell(DocumentUtil.createDefaultHeaderCell("Matricule", bf));
+        table.addCell(DocumentUtil.createDefaultHeaderCell(msgHelper.getProperty("pv.body.no"), bf));
+        table.addCell(DocumentUtil.createDefaultHeaderCell(msgHelper.getProperty("pv.body.matricule"), bf));
         if (avecNoms) {
-            table.addCell(DocumentUtil.createDefaultHeaderCell("NOM(s) et PRENOM(s)", bf));
+            table.addCell(DocumentUtil.createDefaultHeaderCell(msgHelper.getProperty("pv.body.nom"), bf));
         }
 
         for (Evaluation eval : evals) {
             table.addCell(DocumentUtil.createDefaultHeaderCell(String.format("%s / 20 ", eval.getCode()), bf));
         }
-        table.addCell(DocumentUtil.createDefaultHeaderCell("Moy / 20", bf));
-        table.addCell(DocumentUtil.createDefaultHeaderCell("Grade", bf));
+        table.addCell(DocumentUtil.createDefaultHeaderCell(msgHelper.getProperty("pv.body.moyenne"), bf));
+        table.addCell(DocumentUtil.createDefaultHeaderCell(msgHelper.getProperty("pv.body.grade"), bf));
         table.setSpacingBefore(10f);
         List<EtudiantNotes> notes = noteService.getAllNotesEtudiants(n, o, c, null, a, s);
         if (avecNoms) {
@@ -355,17 +358,17 @@ public class ProcesVerbalDocument implements IProcesVerbalDocument{
         doc.add(table);
         table = new PdfPTable(3);
         table.setWidthPercentage(95);
-        PdfPCell cell = DocumentUtil.createDefaultHeaderCell("Président", bf);
+        PdfPCell cell = DocumentUtil.createDefaultHeaderCell(msgHelper.getProperty("pv.body.president"), bf);
         cell.setBorder(0);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setBackgroundColor(BaseColor.WHITE);
         table.addCell(cell);
-        cell = DocumentUtil.createDefaultHeaderCell("Vice-Président", bf);
+        cell = DocumentUtil.createDefaultHeaderCell(msgHelper.getProperty("pv.body.vicePresident"), bf);
         cell.setBorder(0);
         cell.setBackgroundColor(BaseColor.WHITE);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         table.addCell(cell);
-        cell = DocumentUtil.createDefaultHeaderCell("Membre(s)", bf);
+        cell = DocumentUtil.createDefaultHeaderCell(msgHelper.getProperty("pv.body.membres"), bf);
         cell.setBorder(0);
         cell.setBackgroundColor(BaseColor.WHITE);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -392,29 +395,29 @@ public class ProcesVerbalDocument implements IProcesVerbalDocument{
         pourcentage.getDefaultCell().setPaddingTop(5f);
         pourcentage.addCell(new Phrase());
         pourcentage.addCell(new Phrase());
-        pourcentage.addCell(new Phrase("Pourcentage(%)", bf));
-        pourcentage.addCell(new Phrase("Moyenne Comprise entre 15 et 20", bf));
+        pourcentage.addCell(new Phrase(msgHelper.getProperty("pv.footer.pourcentage"), bf));
+        pourcentage.addCell(new Phrase(msgHelper.getProperty("pv.footer.moyenneOne"), bf));
         pourcentage.addCell(new Phrase(String.valueOf(stats.getNombreMoyenneSuperieureQuinze()), bf));
         pourcentage.addCell(new Phrase(String.format("%.2f", 100 * ((stats.getNombreMoyenneSuperieureQuinze() * 1.0) / stats.getEffectif())), bf));
-        pourcentage.addCell(new Phrase("Moyenne Comprise entre 14,99 et 10", bf));
+        pourcentage.addCell(new Phrase(msgHelper.getProperty("pv.footer.moyenneTwo"), bf));
         pourcentage.addCell(new Phrase(String.valueOf(stats.getNombreMoyenneEntre10et15()), bf));
         pourcentage.addCell(new Phrase(String.format("%.2f", 100 * ((stats.getNombreMoyenneEntre10et15() * 1.0) / stats.getEffectif())), bf));
-        pourcentage.addCell(new Phrase("Moyenne < 10", bf));
+        pourcentage.addCell(new Phrase(msgHelper.getProperty("pv.footer.moyenneThree"), bf));
         pourcentage.addCell(new Phrase(String.valueOf(stats.getNombreMoyenneInferieurA10()), bf));
         pourcentage.addCell(new Phrase(String.format("%.2f", 100 * ((stats.getNombreMoyenneInferieurA10() * 1.0) / stats.getEffectif())), bf));
-        pourcentage.addCell(new Phrase("Effectif Total des Etudiants", bf));
+        pourcentage.addCell(new Phrase(msgHelper.getProperty("pv.footer.effectif"), bf));
         pourcentage.addCell(new Phrase(String.format(String.valueOf(stats.getEffectif())), bf));
         pourcentage.addCell("");
-        pourcentage.addCell(new Phrase("Plus Grande MOY (Max)", bf));
+        pourcentage.addCell(new Phrase(msgHelper.getProperty("pv.footer.moyenneMax"), bf));
         pourcentage.addCell(new Phrase(String.format("%.2f", stats.getPlusGrandeMoyenne()), bf));
         pourcentage.addCell("");
-        pourcentage.addCell(new Phrase("Plus Petite MOY (Min)", bf));
+        pourcentage.addCell(new Phrase(msgHelper.getProperty("pv.footer.moyenneMin"), bf));
         pourcentage.addCell(new Phrase(String.format("%.2f", stats.getPlusPetiteMoyenne()), bf));
         pourcentage.addCell("");
         pourcentage.addCell(new Phrase());
         pourcentage.addCell(new Phrase());
         pourcentage.addCell(new Phrase());
-        pourcentage.addCell(new Phrase("Taux de Réussite >=10", bf));
+        pourcentage.addCell(new Phrase(msgHelper.getProperty("pv.footer.tauxReussite"), bf));
         pourcentage.addCell(new Phrase());
         pourcentage.addCell(new Phrase(String.format("%.2f", 100 * ((stats.getNombreMoyenneEntre10et15() + stats.getNombreMoyenneSuperieureQuinze()) * 1.0 / stats.getEffectif())), bf));
         pourcentage.setSpacingBefore(15f);

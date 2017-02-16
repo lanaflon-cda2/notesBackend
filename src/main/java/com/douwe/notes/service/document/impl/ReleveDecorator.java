@@ -1,5 +1,6 @@
 package com.douwe.notes.service.document.impl;
 
+import com.douwe.notes.config.MessageHelper;
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -28,13 +29,14 @@ public class ReleveDecorator extends PdfPageEventHelper {
 
     protected Paragraph pied;
     protected Paragraph pied2;
-    protected Phrase GPA = new Phrase("GPA = Grade Point Average (moyenne par grade). A+=[3,6 4] (Excellent / First Class Hons.), A- = [3,2 3,6[ (Très Bien / Second Class Hons. Upper Division), B = [2,8 3,2[ (Bien / Second Class Hons. Lower Division), B- = [2,4 2,8[ (Assez-Bien / Third Class), C = [2 2,4[ (Passable / Pass)", new Font(Font.FontFamily.TIMES_ROMAN, 5, Font.NORMAL, BaseColor.BLACK));
+    MessageHelper msgHelper = new MessageHelper();
+    protected Phrase GPA = new Phrase(msgHelper.getProperty("releveDecorator.onEndPage.gpa"), new Font(Font.FontFamily.TIMES_ROMAN, 5, Font.NORMAL, BaseColor.BLACK));
     protected Image anotherWatermark;
 
     public ReleveDecorator() {
         try {
-            pied = new Paragraph("Ce relevé de notes, pour être valide, ne doit contenir ni surcharge, ni rature. Le titulaire devra faire certifier les copies conformes en cas de besoin.", new Font(Font.FontFamily.TIMES_ROMAN, 5, Font.NORMAL, BaseColor.BLACK));
-            pied2 = new Paragraph("This academic transcript is only valid when it contains neither overload neither cross off. The holder will have to make certified true copies when necessary.", new Font(Font.FontFamily.TIMES_ROMAN, 5, Font.ITALIC, BaseColor.BLACK));
+            pied = new Paragraph(msgHelper.getProperty("releveDecorator.pied"), new Font(Font.FontFamily.TIMES_ROMAN, 5, Font.NORMAL, BaseColor.BLACK));
+            pied2 = new Paragraph(msgHelper.getProperty("releveDecorator.pied2"), new Font(Font.FontFamily.TIMES_ROMAN, 5, Font.ITALIC, BaseColor.BLACK));
             //pied = new Paragraph(builder.toString(), new Font(Font.FontFamily.TIMES_ROMAN, 5, Font.NORMAL, BaseColor.BLACK));
             URL url = new ClassPathResource("watermark.png").getURL();
             anotherWatermark = Image.getInstance(url);

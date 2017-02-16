@@ -1,5 +1,6 @@
 package com.douwe.notes.service.document.impl;
 
+import com.douwe.notes.config.MessageHelper;
 import com.douwe.notes.dao.IEnseignantDao;
 import com.douwe.notes.dao.IParcoursDao;
 import com.douwe.notes.entities.AnneeAcademique;
@@ -40,6 +41,8 @@ public class DocumentCommon {
      
      @Inject
     private IEnseignantDao enseignantDao;
+     
+    MessageHelper msgHelper = new MessageHelper();
 
     public IParcoursDao getParcoursDao() {
         return parcoursDao;
@@ -97,13 +100,13 @@ public class DocumentCommon {
         Paragraph eng = new Paragraph(new Phrase(builder.toString(), bf12));
         eng.setAlignment(Element.ALIGN_CENTER);
         builder = new StringBuilder();
-        builder.append("B.P. / P.O. Box: 46 Maroua\n");
+        builder.append(msgHelper.getProperty("header.adress"));
         if (departement) {
-            builder.append("Tel : (+237) 22 62 03 76/ (+237) 22 62 08 90\n");
-            builder.append("Fax : (+237) 22 29 31 12 / (+237) 22 29 15 41\n");
+            builder.append(msgHelper.getProperty("header.tel"));
+            builder.append(msgHelper.getProperty("header.fax"));
         }
-        builder.append("Email: institutsupsahel.uma@gmail.com\n");
-        builder.append("Site: http://www.uni-maroua.com");
+        builder.append(msgHelper.getProperty("header.mail"));
+        builder.append(msgHelper.getProperty("header.site"));
         Paragraph coordonnees = new Paragraph(new Phrase(builder.toString(), bf12));
         coordonnees.setAlignment(Element.ALIGN_CENTER);
         float widths2[] = {3, 4, 3};
@@ -134,13 +137,6 @@ public class DocumentCommon {
         cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell1.setBorderColor(BaseColor.WHITE);
         header.addCell(cell1);
-        //header.setSpacingAfter(3f);
-//        cell1 = new PdfPCell(coordonnees);
-//        cell1.setColspan(10);
-//        cell1.setBorderColor(BaseColor.WHITE);
-//        cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
-//        header.addCell(cell1);
-        
         doc.add(header);
         /////////////////////////////
         if (!departement) {
@@ -149,14 +145,14 @@ public class DocumentCommon {
             PdfPCell cell;
             Phrase phrase;
             phrase = new Phrase();
-            phrase.add(new Chunk("Mention : ", fontEntete));
+            phrase.add(new Chunk(msgHelper.getProperty("header.mention"), fontEntete));
             phrase.add(new Chunk(o.getDepartement().getFrenchDescription(), bf12));
             cell = new PdfPCell(phrase);
             cell.setColspan(3);
             cell.setBorderColor(BaseColor.WHITE);
             table2.addCell(cell);
             phrase = new Phrase();
-            phrase.add(new Chunk("Titre de l'UE : ", fontEntete));
+            phrase.add(new Chunk(msgHelper.getProperty("header.titreUe"), fontEntete));
             phrase.add(new Chunk(c.getIntitule(), bf12));
             cell = new PdfPCell(phrase);
             cell.setColspan(4);
@@ -165,7 +161,7 @@ public class DocumentCommon {
 
             //    cell = new PdfPCell(new Phrase("Parcours : " + head.getParcours(), bf12));
             phrase = new Phrase();
-            phrase.add(new Chunk("Parcours : ", fontEntete));
+            phrase.add(new Chunk(msgHelper.getProperty("header.parcours"), fontEntete));
             phrase.add(new Chunk(o.getDepartement().getCode(), bf12));
             cell = new PdfPCell(phrase);
 
@@ -174,29 +170,29 @@ public class DocumentCommon {
             table2.addCell(cell);
             // Il faut retrouver le code de l'UE
             phrase = new Phrase();
-            phrase.add(new Chunk("Code de l'UE : ", fontEntete));
+            phrase.add(new Chunk(msgHelper.getProperty("header.codeUe"), fontEntete));
             phrase.add(new Chunk(prog.getUniteEnseignement().getCode(), bf12));
             cell = new PdfPCell(phrase);
             cell.setColspan(2);
             cell.setBorderColor(BaseColor.WHITE);
             table2.addCell(cell);
             phrase = new Phrase();
-            phrase.add(new Chunk("Option : ", fontEntete));
+            phrase.add(new Chunk(msgHelper.getProperty("header.option"), fontEntete));
             phrase.add(new Chunk(o.getCode(), bf12));
             cell = new PdfPCell(phrase);
             cell.setBorderColor(BaseColor.WHITE);
             table2.addCell(cell);
             phrase = new Phrase();
-            phrase.add(new Chunk("Credit : ", fontEntete));
+            phrase.add(new Chunk(msgHelper.getProperty("header.credit"), fontEntete));
             phrase.add(new Chunk(String.valueOf(credit.getValeur()), bf12));
             cell = new PdfPCell(phrase);
             cell.setBorderColor(BaseColor.WHITE);
             table2.addCell(cell);
             phrase = new Phrase();
-            phrase.add(new Chunk("Niveau : ", fontEntete));
+            phrase.add(new Chunk(msgHelper.getProperty("header.niveau"), fontEntete));
             phrase.add(new Chunk(n.getCode(), bf12));
             phrase.add(new Chunk("  ", bf12));
-            phrase.add(new Chunk("Année Académique : ", fontEntete));
+            phrase.add(new Chunk(msgHelper.getProperty("header.annee"), fontEntete));
             phrase.add(new Chunk(a.toString(), bf12));
             cell = new PdfPCell(phrase);
             cell.setBorderColor(BaseColor.WHITE);
@@ -204,10 +200,10 @@ public class DocumentCommon {
             table2.addCell(cell);
             // I faut retrouver le semestre du cours
             phrase = new Phrase();
-            phrase.add(new Chunk("Semestre : ", fontEntete));
+            phrase.add(new Chunk(msgHelper.getProperty("header.semestre"), fontEntete));
             phrase.add(new Chunk(prog.getSemestre().getIntitule(), bf12));
             phrase.add(new Chunk("  ", fontEntete));
-            phrase.add(new Chunk("Session : ", fontEntete));
+            phrase.add(new Chunk(msgHelper.getProperty("header.session"), fontEntete));
             phrase.add(new Chunk("" + (s.ordinal() + 1), bf12));
             cell = new PdfPCell(phrase);
             cell.setColspan(2);
@@ -225,7 +221,7 @@ public class DocumentCommon {
                 ens = ens.substring(0, ens.length() - 3);
             }
             phrase = new Phrase();
-            phrase.add(new Chunk("Enseignant(s) : ", fontEntete));
+            phrase.add(new Chunk(msgHelper.getProperty("header.enseignants"), fontEntete));
             phrase.add(new Chunk(ens, bf12));
             cell = new PdfPCell(phrase);
             cell.setColspan(2);

@@ -1,6 +1,7 @@
 package com.douwe.notes.service.document.impl;
 
 import com.douwe.generic.dao.DataAccessException;
+import com.douwe.notes.config.MessageHelper;
 import com.douwe.notes.dao.IAnneeAcademiqueDao;
 import com.douwe.notes.dao.ICoursDao;
 import com.douwe.notes.dao.ICreditDao;
@@ -113,6 +114,8 @@ public class RelevetDocument implements IRelevetDocument {
     private final DateFormat dateFormatter;
 
     private final DateFormat anneeFormatter;
+    
+    MessageHelper msgHelper = new MessageHelper();
 
     public RelevetDocument() {
         dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -347,9 +350,9 @@ public class RelevetDocument implements IRelevetDocument {
             doc.add(new Phrase("\n", new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)));
             StringBuilder str = new StringBuilder();
 
-            str.append("RELEVE DE NOTES / ACADEMIC TRANSCRIPT             ");
-            str.append("N°");
-            str.append("________/DISS/DAACR/");
+            str.append(msgHelper.getProperty("releve.releveTitle.titre"));
+            str.append(msgHelper.getProperty("releve.releveTitle.no"));
+            str.append(msgHelper.getProperty("releve.releveTitle.daacr"));
             str.append(annee);
             Phrase phrase = new Phrase(str.toString(), font);
             doc.add(phrase);
@@ -375,11 +378,11 @@ public class RelevetDocument implements IRelevetDocument {
             PdfPTable table = new PdfPTable(relativeWidths);
             table.setWidthPercentage(100);
 
-            Phrase cyclef = new Phrase("Cycle: ", french2);
+            Phrase cyclef = new Phrase(msgHelper.getProperty("releve.releveHeader.cycle"), french2);
             String phrase1 = o.getDepartement().getFrenchDescription().replace("Département d'", "").replace("Département des", "").replace("Département de", "");
             String phrase2 = o.getDepartement().getEnglishDescription().replace("Department of ", "");
             Phrase valuecyclef = new Phrase(n.getCycle().getDiplomeFr() + " en " + phrase1 + "\n", french);
-            Phrase cyclee = new Phrase("cycle: ", english2);
+            Phrase cyclee = new Phrase(msgHelper.getProperty("releve.releveHeader.cycleEng"), english2);
             Phrase valuecyclee = new Phrase(n.getCycle().getDiplomeEn() + " in " + phrase2 + "\n", english);
             Phrase cycle = new Phrase();
             cycle.add(cyclef);
@@ -391,9 +394,9 @@ public class RelevetDocument implements IRelevetDocument {
             cell1.setBorderColor(BaseColor.WHITE);
             table.addCell(cell1);
 
-            Phrase niveauf = new Phrase("Niveau: ", french2);
+            Phrase niveauf = new Phrase(msgHelper.getProperty("releve.releveHeader.niveau"), french2);
             Phrase valueniveauf = new Phrase(n.getCode() + "\n", french);
-            Phrase niveaue = new Phrase("Level: ", english2);
+            Phrase niveaue = new Phrase(msgHelper.getProperty("releve.releveHeader.level"), english2);
             Phrase niveau = new Phrase();
             niveau.add(niveauf);
             niveau.add(valueniveauf);
@@ -402,9 +405,9 @@ public class RelevetDocument implements IRelevetDocument {
             cell2.setBorderColor(BaseColor.WHITE);
             table.addCell(cell2);
 
-            Phrase spf = new Phrase(new Chunk("Option: ", french2));
+            Phrase spf = new Phrase(new Chunk(msgHelper.getProperty("releve.releveHeader.option"), french2));
             Phrase valuespf = new Phrase(new Chunk(o.getDescription() + "\n", french));
-            Phrase spe = new Phrase(new Chunk("Option: ", english2));
+            Phrase spe = new Phrase(new Chunk(msgHelper.getProperty("releve.releveHeader.option"), english2));
             Phrase valuespe = new Phrase(new Chunk(o.getDescriptionEnglish(), english));
 
             /*         cell3.addElement(new Chunk("Spécialité : ", french2));
@@ -422,9 +425,9 @@ public class RelevetDocument implements IRelevetDocument {
             cell3.setBorderColor(BaseColor.WHITE);
             table.addCell(cell3);
 
-            Phrase nomf = new Phrase(new Chunk("Nom(s) et Prénom(s): ", french2));
+            Phrase nomf = new Phrase(new Chunk(msgHelper.getProperty("releve.releveHeader.nom"), french2));
             Phrase valuenomf = new Phrase(new Chunk(e.getNom() + "\n", french));
-            Phrase nome = new Phrase(new Chunk("Name and surname: ", english2));
+            Phrase nome = new Phrase(new Chunk(msgHelper.getProperty("releve.releveHeader.name"), english2));
             Phrase nom = new Phrase();
             nom.add(nomf);
             nom.add(valuenomf);
@@ -434,9 +437,9 @@ public class RelevetDocument implements IRelevetDocument {
             cell4.setColspan(2);
             table.addCell(cell4);
 
-            Phrase matf = new Phrase(new Chunk("Matricule: ", french2));
+            Phrase matf = new Phrase(new Chunk(msgHelper.getProperty("releve.releveHeader.matricule"), french2));
             Phrase valuematf = new Phrase(new Chunk(e.getMatricule() + "\n", french));
-            Phrase mate = new Phrase(new Chunk("Registration number: ", english2));
+            Phrase mate = new Phrase(new Chunk(msgHelper.getProperty("releve.releveHeader.registration"), english2));
             Phrase matricule = new Phrase();
             matricule.add(matf);
             matricule.add(valuematf);
@@ -445,19 +448,19 @@ public class RelevetDocument implements IRelevetDocument {
             cell5.setBorderColor(BaseColor.WHITE);
             table.addCell(cell5);
 
-            Phrase datef = new Phrase(new Chunk("Né(e) le: ", french2));
+            Phrase datef = new Phrase(new Chunk(msgHelper.getProperty("releve.releveHeader.neLe"), french2));
             Phrase valuedatef;
             if (e.getDateDeNaissance() != null) {
                 if (e.isValidDate()) {
                     valuedatef = new Phrase(new Chunk(dateFormatter.format(e.getDateDeNaissance()) + "\n", french));
                 } else {
-                    valuedatef = new Phrase(new Chunk("Vers " + anneeFormatter.format(e.getDateDeNaissance()) + "\n", french));
+                    valuedatef = new Phrase(new Chunk(msgHelper.getProperty("releve.releveHeader.vers") + anneeFormatter.format(e.getDateDeNaissance()) + "\n", french));
                 }
 
             } else {
-                valuedatef = new Phrase(new Chunk("Unknown" + "\n", french));
+                valuedatef = new Phrase(new Chunk(msgHelper.getProperty("releve.releveHeader.unknownBirth") + "\n", french));
             }
-            Phrase datee = new Phrase(new Chunk("Born on: ", english2));
+            Phrase datee = new Phrase(new Chunk(msgHelper.getProperty("releve.releveHeader.birthDate"), english2));
             Phrase date = new Phrase();
             date.add(datef);
             date.add(valuedatef);
@@ -466,14 +469,14 @@ public class RelevetDocument implements IRelevetDocument {
             cell6.setBorderColor(BaseColor.WHITE);
             table.addCell(cell6);
 
-            Phrase lieuf = new Phrase(new Chunk("à: ", french2));
+            Phrase lieuf = new Phrase(new Chunk(msgHelper.getProperty("releve.releveHeader.a"), french2));
             Phrase valuelieuf;
             if (e.getLieuDeNaissance() != null) {
                 valuelieuf = new Phrase(new Chunk(e.getLieuDeNaissance().toUpperCase() + "\n", french));
             } else {
-                valuelieuf = new Phrase(new Chunk("Unknown place" + "\n", french));
+                valuelieuf = new Phrase(new Chunk(msgHelper.getProperty("releve.releveHeader.unknownPlace") + "\n", french));
             }
-            Phrase lieue = new Phrase(new Chunk("at: ", english2));
+            Phrase lieue = new Phrase(new Chunk(msgHelper.getProperty("releve.releveHeader.at"), english2));
             Phrase lieu = new Phrase();
             lieu.add(lieuf);
             lieu.add(valuelieuf);
@@ -482,11 +485,11 @@ public class RelevetDocument implements IRelevetDocument {
             cell7.setBorderColor(BaseColor.WHITE);
             table.addCell(cell7);
 
-            Phrase sexef = new Phrase(new Chunk("Sexe: ", french2));
+            Phrase sexef = new Phrase(new Chunk(msgHelper.getProperty("releve.releveHeader.sexe"), french2));
             String ssexe = e.getGenre().toString();
             ssexe = ssexe.substring(0, 1).toUpperCase() + ssexe.substring(1);
             Phrase valuesexef = new Phrase(new Chunk(ssexe + "\n", french));
-            Phrase sexee = new Phrase(new Chunk("Sex: ", english2));
+            Phrase sexee = new Phrase(new Chunk(msgHelper.getProperty("releve.releveHeader.sex"), english2));
             Phrase sexe = new Phrase();
             sexe.add(sexef);
             sexe.add(valuesexef);
@@ -522,14 +525,14 @@ public class RelevetDocument implements IRelevetDocument {
             PdfPTable table = new PdfPTable(relativeWidths);
             table.setSpacingBefore(5f);
             table.setWidthPercentage(100);
-            table.addCell(CreerTitre("Code UE", "Credit Code", bf, bf2, true, true));
-            table.addCell(CreerTitre("Intitulé de l'Unité d'Enseignement", "Course Title", bf, bf2, true, true));
-            table.addCell(CreerTitre("Crédit", "Credit", bf, bf2, true, true));
-            table.addCell(CreerTitre("Moyenne/20", "Average/20", bf, bf2, true, true));
-            table.addCell(CreerTitre("Moy/Grade", "GPA", bf, bf2, true, true));
-            table.addCell(CreerTitre("Grade", "Grade", bf, bf2, true, true));
-            table.addCell(CreerTitre("Semestre", "Semester", bf, bf2, true, true));
-            table.addCell(CreerTitre("Session", "Session", bf, bf2, true, true));
+            table.addCell(CreerTitre(msgHelper.getProperty("releve.releveTable.codeUE"), msgHelper.getProperty("releve.releveTable.creditCode"), bf, bf2, true, true));
+            table.addCell(CreerTitre(msgHelper.getProperty("releve.releveTable.intituleUe"), msgHelper.getProperty("releve.releveTable.courseTitle"), bf, bf2, true, true));
+            table.addCell(CreerTitre(msgHelper.getProperty("releve.releveTable.credit"), msgHelper.getProperty("releve.releveTable.creditEng"), bf, bf2, true, true));
+            table.addCell(CreerTitre(msgHelper.getProperty("releve.releveTable.moyenne20"), msgHelper.getProperty("releve.releveTable.average20"), bf, bf2, true, true));
+            table.addCell(CreerTitre(msgHelper.getProperty("releve.releveTable.moyenneGrade"), msgHelper.getProperty("releve.releveTable.gpa"), bf, bf2, true, true));
+            table.addCell(CreerTitre(msgHelper.getProperty("releve.releveTable.grade"), msgHelper.getProperty("releve.releveTable.gradeEng"), bf, bf2, true, true));
+            table.addCell(CreerTitre(msgHelper.getProperty("releve.releveTable.semestre"), msgHelper.getProperty("releve.releveTable.semester"), bf, bf2, true, true));
+            table.addCell(CreerTitre(msgHelper.getProperty("releve.releveTable.session"), msgHelper.getProperty("releve.releveTable.sessionEng"), bf, bf2, true, true));
             /*
             table.addCell(DocumentUtil.createDefaultBodyCell("Credit Code", bf2, false));
             table.addCell(DocumentUtil.createDefaultBodyCell("Course Title", bf2, false));
@@ -602,12 +605,12 @@ public class RelevetDocument implements IRelevetDocument {
             table2.setSpacingBefore(5f);
             table2.setSpacingAfter(5f);
             table2.setWidthPercentage(96);
-            table2.addCell(CreerTitre("Rang", "Rank", bf, bf2, false, true));
-            table2.addCell(CreerTitre("Crédits Capitalisés", "Total Credits", bf, bf2, false, true));
-            table2.addCell(CreerTitre("Moy / Grad", "GPA", bf, bf2, false, true));
-            table2.addCell(CreerTitre("Grade général", "General Grade", bf, bf2, false, true));
-            table2.addCell(CreerTitre("Décision", "Decision", bf, bf2, false, true));
-            table2.addCell(CreerTitre("Mention", "", bf, bf2, false, true));
+            table2.addCell(CreerTitre(msgHelper.getProperty("releve.releveTable.rang"), msgHelper.getProperty("releve.releveTable.rank"), bf, bf2, false, true));
+            table2.addCell(CreerTitre(msgHelper.getProperty("releve.releveTable.creditCapitalise"), msgHelper.getProperty("releve.releveTable.totalCredit"), bf, bf2, false, true));
+            table2.addCell(CreerTitre(msgHelper.getProperty("releve.releveTable.moyenneGrade"), msgHelper.getProperty("releve.releveTable.gpa"), bf, bf2, false, true));
+            table2.addCell(CreerTitre(msgHelper.getProperty("releve.releveTable.gradeGeneral"), msgHelper.getProperty("releve.releveTable.generalGrade"), bf, bf2, false, true));
+            table2.addCell(CreerTitre(msgHelper.getProperty("releve.releveTable.decision"), msgHelper.getProperty("releve.releveTable.decisonEng"), bf, bf2, false, true));
+            table2.addCell(CreerTitre(msgHelper.getProperty("releve.releveTable.mention"), "", bf, bf2, false, true));
             /*table2.addCell(createRelevetFootBodyCell("Crédits Capitalisés", bf, false, 1, 1));
             //table2.addCell(createRelevetFootBodyCell("Moy /20", bf, false, 1, 1));
             table2.addCell(createRelevetFootBodyCell("Moy / Grad", bf, false, 1, 1));
@@ -654,9 +657,9 @@ public class RelevetDocument implements IRelevetDocument {
                 table2 = new PdfPTable(new float[]{3, 3, 6});
                 table2.setSpacingAfter(5f);
                 table2.setWidthPercentage(92);
-                table2.addCell(CreerTitre("Moy/Grade du Cycle", "GPA", bf, bf2, false, true));
-                table2.addCell(CreerTitre("Grade Général du Cycle", "", bf, bf2, false, true));
-                table2.addCell(CreerTitre("Mention", "", bf, bf2, false, true));
+                table2.addCell(CreerTitre(msgHelper.getProperty("releve.releveTable.moyenneGradeCycle"), msgHelper.getProperty("releve.releveTable.moyenneGradeCycleEng"), bf, bf2, false, true));
+                table2.addCell(CreerTitre(msgHelper.getProperty("releve.releveTable.gradeGeneralCycle"), "", bf, bf2, false, true));
+                table2.addCell(CreerTitre(msgHelper.getProperty("releve.releveTable.mention"), "", bf, bf2, false, true));
                 Double res = infos.getMgpCycle();
                 table2.addCell(DocumentUtil.createRelevetFootBodyCell(String.format("%.2f", res), bf, false, 1, 1));
                 table2.addCell(DocumentUtil.createRelevetFootBodyCell((res == null) ? "" : DocumentUtil.transformMoyenneMgpToGradeRelevet(infos.getMgpCycle()), bf, false, 1, 1));
@@ -714,9 +717,9 @@ public class RelevetDocument implements IRelevetDocument {
             date.setWidthPercentage(100);
 
             Phrase hh = new Phrase();
-            hh.add(new Phrase("En foi de quoi ce relevé de notes lui est délivré pour servir et valoir ce que de droit.", font3));
+            hh.add(new Phrase(msgHelper.getProperty("releve.releveFooter.foi"), font3));
             hh.add("\n");
-            hh.add(new Phrase("This academic transcript is issued to serve where and when ever neccessary.", font4));
+            hh.add(new Phrase(msgHelper.getProperty("releve.releveFooter.faith"), font4));
             PdfPCell cell1 = new PdfPCell(hh);
 
             cell1.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -728,7 +731,7 @@ public class RelevetDocument implements IRelevetDocument {
             date.addCell(removeBorder(new PdfPCell()));
 
             PdfPCell cell2 = new PdfPCell();
-            cell2.addElement(new Phrase("Maroua, le : ________________", font2));
+            cell2.addElement(new Phrase(msgHelper.getProperty("releve.releveFooter.date"), font2));
             cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell2.setHorizontalAlignment(Element.ALIGN_RIGHT);
             cell2.setBorderColor(BaseColor.WHITE);
@@ -744,14 +747,14 @@ public class RelevetDocument implements IRelevetDocument {
             cell3.addElement(new Phrase(, font2));
             cell3.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell3.setBorderColor(BaseColor.WHITE);*/
-            cachet.addCell(CreerTitre("Le Chef de Département", "The Head of Department", font1, font2, false, true));
+            cachet.addCell(CreerTitre(msgHelper.getProperty("releve.releveFooter.chefDepartement"), msgHelper.getProperty("releve.releveFooter.headDepartement"), font1, font2, false, true));
             /*PdfPCell cell4 = new PdfPCell();
             cell4.addElement(new Phrase(, font1));
             cell4.addElement(new Phrase(, font2));
             cell4.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell4.setBorderColor(BaseColor.WHITE);*/
             cachet.addCell(removeBorder(new PdfPCell()));
-            cachet.addCell(CreerTitre("Le Directeur", "The Director", font1, font2, false, true));
+            cachet.addCell(CreerTitre(msgHelper.getProperty("releve.releveFooter.directeur"), msgHelper.getProperty("releve.releveFooter.director"), font1, font2, false, true));
             doc.add(cachet);
 
         } catch (DocumentException ex) {
