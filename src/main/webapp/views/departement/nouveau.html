@@ -1,0 +1,39 @@
+<div class="panel panel-primary">
+	<div class="panel-heading" ng-hide="element.id">
+		Ajout d'un nouveau departement
+	</div>
+	<div class="panel-heading" ng-show="element.id">
+		Modification du departement
+	</div>
+	<div class="panel-body">
+		<form name="form" method="post" role="form" class="form-horizontal" novalidate>
+			<div class="form-group">
+				<label for="code" class="col-sm-2 control-label">Code</label>
+				<div class="col-sm-8">
+					<input type="text" name="code" id="code" class="form-control" ng-model="element.code" ng-required="true"/>
+					<span class="error" ng-show="form.code.$dirty && form.code.$error.required">Le code est obligatoire</span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="designation" class="col-sm-2 control-label">Intitule</label>
+				<div class="col-sm-8">
+					<input type="text" name="intitule" id="designation" class="form-control" ng-model="element.description" ng-required="true"/>
+					<span class="error" ng-show="form.intitule.$dirty && form.intitule.$error.required">L'intitule est obligatoire</span>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-default" ng-show="element.id" ng-click="form.$valid && valider()">
+						Modifier
+					</button>
+					<button type="submit" class="btn btn-default" ng-hide="element.id" ng-click="form.$valid && valider()">
+						Enregistrer
+					</button>
+					<button type="button" class="btn btn-default" ng-click="cancel()">
+						Annuler
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

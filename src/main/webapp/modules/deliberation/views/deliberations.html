@@ -1,0 +1,136 @@
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        DÉLIBÉRATIONS
+    </div>
+    <div ng-show="selection" class="selection">
+        <div class="panel-body">
+            <form name="form" method="get" role="form" class="form-horizontal" novalidate>
+                <div class="form-group">
+                    <label for="departement" class="col-sm-2 control-label">Departement</label>
+                    <div class="col-sm-6">
+                        <select id="departement" name="departement" ng-model="departement" ng-options="departement.code for departement in departements|orderBy: 'code'" class="form-control" ng-change="updateOptions()" ng-required="true"></select>
+                        <span class="error" ng-show="form.code.$dirty && form.code.$error.required">Le fichier est obligatoire</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="niveau" class="col-sm-2 control-label">Niveau</label>
+                    <div class="col-sm-6">
+                        <select id="niveau" name="niveau" ng-model="niveau" ng-options="niveau.code for niveau in niveaux|orderBy: 'code'" class="form-control" ng-change="updateOptions()" ng-required="true"></select>
+                        <span class="error" ng-show="form.code.$dirty && form.code.$error.required">Le fichier est obligatoire</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="option" class="col-sm-2 control-label">Option</label>
+                    <div class="col-sm-6">
+                        <select id="option" name="option" ng-model="option" ng-options="option.code for option in options" class="form-control" ng-required="true" ng-change="changerOption()"></select>
+                        <span class="error" ng-show="form.code.$dirty && form.code.$error.required">Le fichier est obligatoire</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="cours" class="col-sm-2 control-label">Cours</label>
+                    <div class="col-sm-6">
+                        <select id="cours" name="cours" ng-model="cour" ng-options="cour.intitule for cour in cours" class="form-control" ng-required="true"></select>
+                        <span class="error" ng-show="form.code.$dirty && form.code.$error.required">Le fichier est obligatoire</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="annee" class="col-sm-2 control-label">Année Académique</label>
+                    <div class="col-sm-6">
+                        <select name="annee" id="annee" class="form-control" ng-model="annee" ng-required="true">
+                            <option value="">Select one</option>
+                            <option ng-repeat="annee in annees|orderBy:'-debut'" value="{{annee.id}}">{{annee.debut.substring(0, 4)}}-{{annee.fin.substring(0, 4)}}</option>                      
+                        </select>
+                        <span class="error" ng-show="form.code.$dirty && form.code.$error.required">L'année est obligatoire</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="session" class="col-sm-2 control-label">Session</label>
+                    <div class="col-sm-6">
+                        <select id="session" name="session" ng-model="session" class="form-control" ng-required="true">
+                            <option value="0">Normale</option>
+                            <option value="1">Rattrapage</option>
+                        </select>
+                        <span class="error" ng-show="form.code.$dirty && form.code.$error.required">La session est obligatoire</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="borneInf" class="col-sm-2 control-label">Borne Inférieure</label>
+                    <div class="col-sm-3">
+                        <input  type="number" id="borneInf" name="borneInf" ng-model="borneInf" class="form-control" ng-required="true"/>                       
+                        <span class="error" ng-show="form.code.$dirty && form.code.$error.required">La borne inférieure est obligatoire</span>
+                    </div>
+                    <div class="col-sm-3">
+                        <input type="checkbox" ng-model="infInclusive" id="infInclusive"/>
+                        <label for="infInclusive" class="control-label">Est inclusive?</label>                                          
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="borneSup" class="col-sm-2 control-label">Borne Supérieure</label>
+                    <div class="col-sm-3">
+                        <input  type="number" id="borneSup" name="borneSup" ng-model="borneSup" class="form-control" ng-required="true"/>                       
+                        <span class="error" ng-show="form.code.$dirty && form.code.$error.required">La borne supérieure est obligatoire</span>
+                    </div>
+                    <div class="col-sm-3">
+                        <input type="checkbox" ng-model="supInclusive" id="supInclusive"/>
+                        <label for="supInclusive" class="control-label">Est inclusive?</label>                      
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="moyenneFinale" class="col-sm-2 control-label">Moyenne finale</label>
+                    <div class="col-sm-6">
+                        <input type="number" id="moyenneFinale" ng-model="moyenneFinale" class="form-control" ng-required="true"/>
+                        <span class="error" ng-show="form.code.$dirty && form.code.$error.required">La moyenne finale est obligatoire</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-success btn-s" ng-click="form.$valid && proceder()">
+                            <span class="glyphicon glyphicon-upload"></span> Procéder
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div ng-hide="selection" class="no-selection">
+        <div class="panel-body">
+            
+            <h4 class="titre">La délibération va affecter les notes notes suivantes</h4>
+            <table class="table table-bordered table-hover table-condensed table-striped">
+                <thead>
+                    <tr class="success">
+                        <th>Numero</th>
+                        <th>Matricule</th>
+                        <th>Noms et prenoms</th>
+                        <th>Note Avant</th>
+                        <th>Moyenne Avant</th>
+                        <th>Note Après</th>
+                        <th>Moyenne Après</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in deliberations" class="inverse">
+                        <td>{{$index + 1}}</td>
+                        <td>{{item.matricule}}</td>
+                        <td>{{item.nom}}</td>
+                        <td>{{item.noteAvant}}</td>
+                        <td>{{item.moyenneAvant}}</td>
+                        <td>{{item.noteApres}}</td>
+                        <td>{{item.moyenneApres}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <form name="form" method="post" role="form" class="form-horizontal" novalidate>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-success btn-s" ng-click="form.$valid && valider()">
+                            <span class="glyphicon glyphicon-upload"></span> Valider Modification
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <h2 ng-if="nombre">{{nombre}} modifications ont été correctement appliquées</h2>    
+        </div>
+    </div>
+</div>

@@ -1,80 +1,84 @@
 body{
-    //background-color: #f7f0c6;   
-    background-color: lavender ;
-    font-size: 1.5em;
+    background-color: #caeeff;
+    text-shadow: 0px 1px 1px rgba(255,255,255,.9);
 }
-.page-header{
-    background-image: url("../img/logo.png");
-    background-repeat: no-repeat;
-    height: 200px;
-    //margin-bottom: 10px;
-    background-position: center;
+#main{
+    margin-top: 5px;
 }
-.test  {
-    display: inline-flex;
-    width: 100%;
-    height: 100%;
-    margin: 0px 0px 0px 0px;
-
-
-}
-.page-header .text-center{
-    padding-top: 95px; 
-    -moz-border-radius: 20%;
+.titre{
+    text-align: center;
 }
 
 footer{
-    margin-top: 20px;
-    font-size: small;
+    font-size: smaller;
     text-align: center;
 }
-
-table.type_cours td{
-    border: none;
+header{
+    height: 130px;
+    background-image: url("../img/logo.png");
+    background-repeat: no-repeat;
+    background-position: center 0px;
 }
 
-table.type_cours td:last-child{
-    text-align: right;
-    width: 20%;
+.error {
+    color: red;
 }
-.type_cours_menuClass{
-    height: 25px;width: 25px;
+
+input.ng-dirty.ng-invalid {
+    border-color: red;
 }
-.type_cours_datatable_in_datadgrid{    
-    height: 250px;
-    //margin-top: 0px;
+
+.single-comment.ng-enter{
+    -webkit-transition: 1s linear all;
+    -o-transition: 1s linear all;
+    -moz-transition: 1s linear all;
+    opacity: 0;
+}
+.single-comment.ng-enter.ng-enter-active{
+    opacity:1;
+}
+
+#loading{
+    background-image: url("../img/ajax-loader.gif");
+    background-repeat: no-repeat;
+    background-position: center 0px;
+    height: 100px;
     width: 100%;
-}
-#aa,#ab,#ac{
-    text-align: right;
+    margin-bottom: 20px;
 }
 
-.syntaxe_content{
-    //margin-left: 10px;
-    //margin-top: 10px;
-    width: 100%;    
+ul.inline-elements{
+    padding: 0px;
+    margin: 0px;
+}
 
-    margin-top: 5px;
+ul.inline-elements li{
+    display: inline-block;
+    list-style: none;
+    padding: 5px;
+    border-radius: 3px;
     margin-bottom: 5px;
+    margin-right: 5px;
+    background-color: #dff0d8;
+    border: 1px solid #357ebd;
 }
-#center_content_div{
-    text-align: center;
-    //width: ;
-    //margin: auto;
-}
-.cmd_button{
-    width: auto;
-}
-.selectClass{
-    height: 70px;
-    width: 100%;
+
+.selection.ng-hide-add{
 
 }
 
-table.rightPosition tr td{
-    text-align: left;
+.selection.ng-hide-add-active{
+
 }
 
-table.rightPosition tr td:first-child {
-    text-align: right;
+.no-selection.ng-hide-remove{
+    -webkit-transition: 0.5s linear all;
+    -o-transition: 0.5s linear all;
+    -moz-transition: 0.5s linear all;
+    opacity : 0;
 }
+
+.no-selection.ng-hide-remove-active{
+    opacity : 1;
+}
+

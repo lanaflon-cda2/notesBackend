@@ -1,0 +1,23 @@
+<div class="panel panel-primary" ng-show="element.id">
+    <div class="panel-heading" >
+        Liste des cours de l'UE
+    </div>
+    <div class="panel-body">
+        <table class="table table-bordered table-hover table-striped table-success">
+            <tr class="success">
+                <th>Numero</th>
+                <th>Credit</th>
+                <th>Intitule</th>
+                <th>Type de cours</th>
+            </tr><tr ng-repeat="cour in cours" class="inverse">
+                <td>{{$index + 1}}</td>
+                <td>{{cour.credit}}</td>
+                <td>{{cour.intitule}}</td>
+                <td>{{cour.typeCours.nom}}</td>
+            </tr>
+        </table>
+        <button type="button" class="btn btn-danger pull-right" ng-click="cancel()">
+            <i class="glyphicon glyphicon-remove"></i> Fermer
+        </button>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+<div>
+    <h4 class="titre">LA LISTE DES ENSEIGNANTS</h4>
+    <label for="search" class="col-sm-1 control-label">Rechercher</label>
+    <div class="col-sm-4">
+        <input placeholder = "la recherche par nom" type="text" id="seach" class="form-control" ng-model="query" class="col-sm-4"></br>
+    </div>
+    <table class="table table-bordered table-hover table-condensed table-striped">
+        <thead>
+            <tr class="success">
+                <th>N<sup>o</sup></th>
+                <th>Nom</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="(cle, enseignant) in enseignants| orderBy:'nom'| offset: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage | filter:query">
+                <td>{{$index + 1}}</td>
+                <td>{{enseignant.nom}}</td>
+                <td><a ng-click="afficherFenetre(cle,enseignant)"><i class="glyphicon glyphicon-edit"></i> Modifier</a> | <a ng-click="supprimerEnseignant(cle, enseignant)"><i class="glyphicon glyphicon-remove"></i> Supprimer</a></td>
+            </tr>
+        </tbody>
+    </table> 
+    <pagination  ng-show="totalItems > itemsPerPage" boundary-links="true" total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+    <form>
+        <button class="btn btn-primary" ng-click="afficherFenetre()"><i class="glyphicon glyphicon-save"></i> Ajouter un Enseignant</button>
+    </form>
+</div>

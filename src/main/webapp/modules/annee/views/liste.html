@@ -1,0 +1,24 @@
+<div>
+    <h4 class="titre">LA LISTE DES ANNEES ACADEMIQUES</h4>
+    <table class="table table-bordered table-hover table-condensed table-striped">
+        <thead>
+            <tr class="success">
+                <th>Numero</th>
+                <th>Debut</th>
+                <th>Fin</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="annee in annees" class="inverse">
+                <td>{{$index + 1}}</td>
+                <td>{{annee.debut| date:'dd/MM/yyyy'}}</td>
+                <td>{{annee.fin| date:'dd/MM/yyyy'}}</td>
+                <td><a ng-click="afficherFenetre(annee)"> <i class="glyphicon glyphicon-edit"></i> Modifier</a> | <a ng-click="supprimerAnnee(annee)"><i class="glyphicon glyphicon-remove"></i> Supprimer </a></td>
+            </tr>
+        </tbody>
+    </table>
+    <form>
+        <button class="btn btn-primary" ng-click="afficherFenetre(undefined)"> <i class="glyphicon glyphicon-save"></i> Ajouter Annee</button>
+    </form>
+</div>

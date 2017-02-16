@@ -1,0 +1,41 @@
+<div class="panel panel-primary">
+    <div class="panel-heading" ng-hide="element.id">
+        Ajout d'un nouvel enseignement
+    </div>
+    <div class="panel-heading" ng-show="element.id">
+        Modification d'un enseignement
+    </div>
+    <div class="panel-body">
+        <form name="form" method="post" role="form" class="form-horizontal" novalidate>            
+            <div class="form-group">
+                <label for="cours" class="col-sm-2 control-label">Cours</label>
+                <div class="col-sm-8">
+                    <select type="text" ng-model="element.cours" id="cours" class="form-control" ng-options="cour as cour.intitule for cour in cours track by cour.id"></select>
+                    <span class="error" ng-show="form.intitule.$dirty && form.intitule.$error.required">Le cours est obligatoire</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="enseignants" class="col-sm-2 control-label">Enseignants</label>
+                <div class="col-sm-8">
+                    <tags-input ng-model="tags" id="enseignants" display-property="nom" key-property="id" placeholder="Ajouter un enseignant" add-from-autocomplete-only="true">
+                        <auto-complete source="loadItems($query)"></auto-complete>
+                    </tags-input>
+                    <span class="error" ng-show="form.cycle.$dirty && form.cycle.$error.required">L'enseignant est obligatoire</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary" ng-show="element.id" ng-click="form.$valid && valider()">
+                        <i class="glyphicon glyphicon-edit"></i> Modifier
+                    </button>
+                    <button type="submit" class="btn btn-primary" ng-hide="element.id" ng-click="form.$valid && valider()">
+                        <i class="glyphicon glyphicon-saved"></i> Enregistrer
+                    </button>
+                    <button type="button" class="btn btn-danger pull-right" ng-click="cancel()">
+                        <i class="glyphicon glyphicon-ban-circle"></i> Annuler
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

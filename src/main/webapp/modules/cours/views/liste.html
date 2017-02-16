@@ -1,0 +1,42 @@
+<div>
+    <h4 class="titre">LA LISTE DES COURS</h4>
+    <form name="form" method="post" role="form" class="form-horizontal" novalidate>
+        <div class="form-group">
+            <label for="search" class="col-sm-1 control-label">Rechercher</label>
+            <div class="col-sm-4">
+                <input placeholder = "la recherche par nom" type="text" id="search" class="form-control col-sm-4" ng-model="query"></br>
+            </div>
+
+            <div class="col-sm-4">
+                <select id="options" class="form-control" ng-model="departement" ng-options="departement.id as departement.code  for departement in departements | orderBy: 'code'"></select>
+            </div>
+            <div class="col-sm-1">
+                <button class="btn btn-success" ng-click="filtrer()">Filtrer</button>
+            </div>
+        </div>
+    </form>
+    <table class="table table-bordered table-hover table-condensed table-striped">
+        <thead>
+            <tr class="success">
+                <th>Numero</th>
+                <!--                <th>Credit</th>-->
+                <th>Intitule</th>
+                <th>Type de cours </th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="(cle,cour) in cours | orderBy : 'intitule'| offset: (currentPage - 1) * itemsPerPage | limitTo: itemsPerPage | filter:query" class="inverse">
+                <td>{{(currentPage - 1) * itemsPerPage + $index + 1}}</td>
+                <!--                <td>{{cour.credit}}</td>-->
+                <td>{{cour.intitule}}</td>
+                <td>{{cour.typeCours.nom}}</td>
+                <td><a ng-click="afficherFenetre(cle, cour)"><i class="glyphicon glyphicon-edit"></i>  Modifier</a> | <a ng-click="supprimerCours(cle, cour)"> <i class="glyphicon glyphicon-remove"></i>  Supprimer</a></td>
+            </tr>
+        </tbody>
+    </table>
+    <pagination  boundary-links="true" total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+    <form>
+        <button class="btn btn-primary" ng-click="afficherFenetre()"><i class="glyphicon glyphicon-save"></i>Ajouter un Cours</button>
+    </form>
+</div>

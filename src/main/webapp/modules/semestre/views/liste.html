@@ -1,0 +1,24 @@
+<div>
+    <h3 class="titre">LA LISTE DES SEMESTRES</h3><br/>
+    <table class="table table-bordered table-hover table-condensed table-striped">
+        <thead>
+            <tr class="success">
+                <th>Numero</th>
+                <th>Intitule</th>
+                <th>Niveau</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="semestre in semestres" class="inverse">
+                <td>{{$index + 1}}</td>
+                <td>{{semestre.intitule}}</td>
+                <td>{{semestre.niveau.code}}</td>
+                <td><a ng-click="afficherFenetre(semestre)">Modifier</a> | <a ng-click="supprimerSemestre(semestre)">Supprimer</a></td>
+            </tr>
+        </tbody>
+    </table>
+    <form>
+        <button class="btn btn-primary" ng-click="afficherFenetre(undefined)"><i class="icon-user"></i>Ajouter</button>
+    </form>
+</div>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Un test simple pour l'importation</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>
+            <form action="/api/etudiants/import" method="post" enctype="multipart/form-data">
+                Fichier <input type='file' name="fichier"/><br/>
+                Annee <input type='number' name="annee"/><br/>
+                <input type="submit" value="Send"/>
+            </form>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,24 @@
+<div>
+    <h4>LA LISTE DES EVALUATIONS</h4>
+    <table class="table table-bordered table-hover table-condensed table-striped">
+        <thead>
+            <tr class="success">
+                <th>Numero</th>
+                <th>Code</th>
+                <th>Decription</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="depart in departements" class="inverse">
+                <td>{{$index + 1}}</td>
+                <td>{{depart.code}}</td>
+                <td>{{depart.description}}</td>
+                <td><a ng-click="afficherFenetre(depart)"><i class="glyphicon glyphicon-edit"></i>  Modifier</a> | <a ng-click="supprimerEvaluation(depart)"><i class="glyphicon glyphicon-remove"></i>  Supprimer</a></td>
+            </tr>
+        </tbody>
+    </table>
+    <form>
+        <button class="btn btn-primary" ng-click="afficherFenetre(undefined)"><i class="glyphicon glyphicon-save"></i> Ajouter Evaluation</button>
+    </form>
+</div>
