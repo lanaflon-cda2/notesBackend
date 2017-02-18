@@ -3,6 +3,7 @@ package com.douwe.notes.resource;
 import com.douwe.notes.entities.Cours;
 import com.douwe.notes.entities.Evaluation;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -22,16 +23,19 @@ public interface ICoursResource {
 
     @GET
     @Produces(value = "application/json")
+    @RolesAllowed({"ADMIN"})
     List<Cours> getAllCours();
     
     @GET
     @Path(value = "{niveauId : \\d+}/{optionId : \\d+}")
     @Produces(value = "application/json")
+    @RolesAllowed({"ADMIN"})
     List<Cours> getByParcours(@PathParam(value = "niveauId")long niveauId, @PathParam(value = "optionId")long optionId);
 
     @GET
     @Path(value = "{id : \\d+}")
     @Produces(value = "application/json")
+    @RolesAllowed({"ADMIN"})
     Cours getCours(@PathParam(value = "id")long id);
 
     @PUT
@@ -46,6 +50,7 @@ public interface ICoursResource {
     @GET
     @Path(value = "{intitule}")
     @Produces(value = "application/json") 
+    @RolesAllowed({"ADMIN"})
     public Cours findByIntitule(@PathParam(value = "intitule")String intitule);
     
     @GET

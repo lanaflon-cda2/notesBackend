@@ -28,6 +28,7 @@ public class ApplicationConfig extends Application {
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(com.douwe.notes.resource.JAXBMarshaller.class);
         resources.add(com.douwe.notes.resource.impl.AnneeResource.class);
+        resources.add(com.douwe.notes.resource.impl.AuthSecurityInterceptor.class);
         resources.add(com.douwe.notes.resource.impl.CoursResource.class);
         resources.add(com.douwe.notes.resource.impl.CreditResource.class);
         resources.add(com.douwe.notes.resource.impl.CycleResource.class);
@@ -48,6 +49,7 @@ public class ApplicationConfig extends Application {
         resources.add(com.douwe.notes.resource.impl.SemestreResource.class);
         resources.add(com.douwe.notes.resource.impl.TypeCoursResource.class);
         resources.add(com.douwe.notes.resource.impl.UniteEnseignementResource.class);
+        resources.add(com.douwe.notes.resource.impl.UtilisateurResource.class);
     }
     
 }

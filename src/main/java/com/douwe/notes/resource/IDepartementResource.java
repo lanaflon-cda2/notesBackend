@@ -4,6 +4,7 @@ import com.douwe.notes.entities.Cours;
 import com.douwe.notes.entities.Departement;
 import com.douwe.notes.entities.Option;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -53,6 +54,7 @@ public interface IDepartementResource {
     @GET
     @Path(value = "{id : \\d+}/cours")
     @Produces(value = "application/json")
+    @RolesAllowed({"ADMIN"})
     List<Cours> getAllCours(@PathParam(value = "id") long id);
 
 }

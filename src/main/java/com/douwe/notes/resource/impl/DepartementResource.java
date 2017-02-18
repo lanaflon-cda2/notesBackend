@@ -9,6 +9,7 @@ import com.douwe.notes.service.ServiceException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
@@ -174,6 +175,7 @@ public class DepartementResource implements IDepartementResource {
     }
 
     @Override
+    @RolesAllowed({"ADMIN"})
     public List<Cours> getAllCours(long id) {
         try {
             return departementService.getAllCours(id);
