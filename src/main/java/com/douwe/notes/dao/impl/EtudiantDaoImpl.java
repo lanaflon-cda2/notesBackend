@@ -174,6 +174,7 @@ public class EtudiantDaoImpl extends GenericDao<Etudiant, Long> implements IEtud
         predicates.add(cb.equal(etudiantPath, inscriptionRoot.get(Inscription_.etudiant)));
         predicates.add(cb.equal(etudiantPath, inscriptionRoot2.get(Inscription_.etudiant)));
         predicates.add(cb.equal(inscriptionRoot2.get(Inscription_.parcours).get(Parcours_.niveau), niveau));
+        predicates.add(cb.equal(inscriptionRoot.get(Inscription_.parcours).get(Parcours_.niveau).get(Niveau_.cycle), niveau.getCycle()));
         predicates.add(cb.equal(inscriptionRoot2.get(Inscription_.parcours).get(Parcours_.option), option));
         predicates.add(cb.lessThanOrEqualTo(inscriptionRoot2.get(Inscription_.anneeAcademique).get(AnneeAcademique_.debut), academique.getDebut()));
         predicates.add(cb.equal(inscriptionRoot.get(Inscription_.anneeAcademique), academique));

@@ -263,7 +263,7 @@ public class NoteServiceImpl implements INoteService {
         // recuperer les listes des  étudiants du parcours
         //List<Etudiant> etudiants = etudiantDao.listeEtudiantParDepartementEtNiveau(null, academique, niveau, option);
         List<Etudiant> etudiants = etudiantDao.listeEtudiantAvecNotes(academique, niveau, option, cours, session);
-        System.out.println("Bravo j'ai trouve " + etudiants.size() + " etudiants");
+        //System.out.println("Bravo j'ai trouve " + etudiants.size() + " etudiants");
         for (Etudiant etudiant : etudiants) {
             EtudiantNotes et = new EtudiantNotes();
             et.setMatricule(etudiant.getMatricule());
