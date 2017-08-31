@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -38,6 +39,9 @@ public class Utilisateur implements Serializable{
     
     @Column
     private String role;
+    
+    @ManyToOne
+    private Departement departement;
 
     public Long getId() {
         return id;
@@ -86,5 +90,15 @@ public class Utilisateur implements Serializable{
     public void setRole(String role) {
         this.role = role;
     }
+
+    public Departement getDepartement() {
+        return departement;
+    }
+
+    public void setDepartement(Departement departement) {
+        this.departement = departement;
+    }
+    
+    
     
 }
