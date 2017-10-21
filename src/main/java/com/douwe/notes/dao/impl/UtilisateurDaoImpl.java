@@ -32,5 +32,14 @@ public class UtilisateurDaoImpl extends GenericDao<Utilisateur, Long> implements
         cq.where(cb.and(cb.like(utRoot.get(Utilisateur_.login), username), cb.like(utRoot.get(Utilisateur_.token), token)));
         return getManager().createQuery(cq).getSingleResult();
     }
+
+    @Override
+    public Utilisateur findByAuthToken(String token) throws DataAccessException {
+        CriteriaBuilder cb = getManager().getCriteriaBuilder();
+        CriteriaQuery<Utilisateur> cq = cb.createQuery(Utilisateur.class);
+        Root<Utilisateur> utRoot = cq.from(Utilisateur.class);
+        cq.where(cb.like(utRoot.get(Utilisateur_.token), token));
+        return getManager().createQuery(cq).getSingleResult();
+    }
     
 }
