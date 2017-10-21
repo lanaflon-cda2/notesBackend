@@ -27,6 +27,8 @@ import com.douwe.notes.entities.Semestre;
 import com.douwe.notes.entities.Session;
 import com.douwe.notes.entities.UniteEnseignement;
 import com.douwe.notes.projection.CoursCredit;
+import com.douwe.notes.projection.EtudiantCycle;
+import com.douwe.notes.projection.EtudiantNiveau;
 import com.douwe.notes.projection.EtudiantNotes;
 import com.douwe.notes.projection.MoyenneUniteEnseignement;
 import com.douwe.notes.projection.UEnseignementCredit;
@@ -281,7 +283,7 @@ public class NoteServiceImpl implements INoteService {
     }
 
     private Map<String, Integer> getEvaluationDetails(Cours cours) throws DataAccessException {
-        Map<String, Integer> calc = new HashMap<String, Integer>();
+        Map<String, Integer> calc = new HashMap<>();
         List<EvaluationDetails> details = evaluationDetailsDao.findByTypeCours(cours.getTypeCours());
         for (EvaluationDetails detail : details) {
             calc.put(detail.getEvaluation().getCode(), detail.getPourcentage());
@@ -292,7 +294,7 @@ public class NoteServiceImpl implements INoteService {
     @Override
     public ImportationResult importNotes(InputStream stream, Long coursId, Long evaluationId, Long anneeId, int session) throws ServiceException {
         ImportationResult result = new ImportationResult();
-        List<ImportationError> erreurs = new ArrayList<ImportationError>();
+        List<ImportationError> erreurs = new ArrayList<>();
         int count = 0;
         try {
             Cours cours = coursDao.findById(coursId);
@@ -330,7 +332,7 @@ public class NoteServiceImpl implements INoteService {
                                 try {
                                     noteDao.create(note);
                                     count++;
-                                } catch (Exception ex) {
+                                } catch (DataAccessException ex) {
                                     ImportationError err = new ImportationError(index, ex.getMessage());
                                     erreurs.add(err);
                                 }
@@ -350,9 +352,7 @@ public class NoteServiceImpl implements INoteService {
                 row = sheet.getRow(index++);
             }
 
-        } catch (IOException ex) {
-            Logger.getLogger(EtudiantServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvalidFormatException ex) {
+        } catch (IOException | InvalidFormatException ex) {
             Logger.getLogger(EtudiantServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } catch (DataAccessException ex) {
             Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -397,55 +397,23 @@ public class NoteServiceImpl implements INoteService {
 
     }
 
-//    @Override
-//    public List<EtudiantNotes> getAllNotesEtudiants(Niveau niveau, Option option, Cours cours) throws ServiceException {
-//        List<EtudiantNotes> result = new ArrayList<EtudiantNotes>();
-//        boolean state = false;
-//        try {
-//
-//            Map<String, Integer> calc = new HashMap<String, Integer>();
-//            List<EvaluationDetails> details = evaluationDetailsDao.findByTypeCours(cours.getTypeCours());
-//            for (EvaluationDetails detail : details) {
-//                calc.put(detail.getEvaluation().getCode(), detail.getPourcentage());
-//            }
-//
-//            // recuperer les listes des  étudiants du parcours
-//            List<Etudiant> etudiants = etudiantDao.listeEtudiantParDepartementEtNiveau(null, academique, niveau, option);
-//            for (Etudiant etudiant : etudiants) {
-//                EtudiantNotes et = new EtudiantNotes();
-//                et.setMatricule(etudiant.getMatricule());
-//                et.setNom(etudiant.getNom());
-//                Map<String, Double> notes = new HashMap<String, Double>();
-//                List<Note> nn = noteDao.listeNoteCours(etudiant, cours, academique, session);
-//                for (Note nn1 : nn) {
-//                    notes.put(nn1.getEvaluation().getCode(), nn1.getValeur());
-//                    state = state || (nn1.getEvaluation().isIsExam() && nn1.getValeur() >= 0);
-//                }
-//                et.setNote(notes);
-//                et.setDetails(calc);
-//                if (state || session == Session.normale) {
-//                    result.add(et);
-//                }
-//                state = false;
-//            }
-//        } catch (DataAccessException ex) {
-//            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return result;
-//    }
     @Override
-    public EtudiantNotes getNoteEtudiant(String matricule, long coursId, long anneeId) throws ServiceException {
+    public EtudiantNotes getNoteEtudiant(String matricule, long niveauId, long coursId, long anneeId) throws ServiceException {
         EtudiantNotes result = null;
         try {
             Etudiant etudiant = etudiantDao.findByMatricule(matricule);
             Cours c = coursDao.findById(coursId);
             AnneeAcademique annee = academiqueDao.findById(anneeId);
+            //System.out.println("L'année donne "+annee);
+            Niveau niveau = niveauDao.findById(niveauId);
             try {
-                annee = academiqueDao.findLastYearNote(etudiant, c, annee);
+                annee = academiqueDao.findLastYearNote(etudiant, niveau, c, annee);
+                
             } catch (NoResultException nre) {
                 annee = null;
             }
             if (annee != null) {
+                //System.out.println(String.format("Pour l'étudiant %s l'annee donne %s et le cours est %s",etudiant.getNom(), annee.toString(), c.getIntitule()));
                 result = new EtudiantNotes();
                 result.setAnnee(annee);
                 List<Note> notes = noteDao.getNoteCours(etudiant, c, annee);
@@ -454,7 +422,7 @@ public class NoteServiceImpl implements INoteService {
                 result.setMatricule(etudiant.getMatricule());
                 Session s = Session.normale;
                 boolean status = false;
-                Map<String, Double> map = new HashMap<String, Double>();
+                Map<String, Double> map = new HashMap<>();
                 for (Note note : notes) {
                     if (note.getEvaluation().isIsExam()) {
                         if (!status) {
@@ -476,7 +444,7 @@ public class NoteServiceImpl implements INoteService {
     }
 
     @Override
-    public MoyenneUniteEnseignement getMoyenneUEEtudiant(String matricule, long ueId, long anneeId, long aCourantId) throws ServiceException {
+    public MoyenneUniteEnseignement getMoyenneUEEtudiant(String matricule, long niveauId, long ueId, long anneeId, long aCourantId) throws ServiceException {
         MoyenneUniteEnseignement result = null;
         try {
             UniteEnseignement ue = uniteEnseignementDao.findById(ueId);
@@ -489,21 +457,13 @@ public class NoteServiceImpl implements INoteService {
             // TODO I need to find out a way not to issue this query for every student
             List<CoursCredit> liste = coursDao.findCoursCreditByUe(ue, annee);
             for (CoursCredit cours : liste) {
-                EtudiantNotes n = getNoteEtudiant(matricule, cours.getCours().getId(), anneeId);
+                EtudiantNotes n = getNoteEtudiant(matricule, niveauId, cours.getCours().getId(), anneeId);
                 if (n != null) {
                     result.getCredits().put(cours.getCours().getIntitule(), cours.getCredit());
                     result.getSessions().add(n.getSession());
                     result.getNotes().put(cours.getCours().getIntitule(), n.getMoyenne());
                     result.getAnnees().add(n.getAnnee());
                 }
-                /*else {
-                 result.getCredits().put(cours.getCours().getIntitule(), cours.getCredit());
-                 result.getSessions().add(Session.normale);
-                 result.getNotes().put(cours.getCours().getIntitule(), 0.0);
-                 if (annee != null) {
-                 result.getAnnees().add(annee);
-                 }
-                 }*/
 
             }
         } catch (DataAccessException ex) {
@@ -512,47 +472,17 @@ public class NoteServiceImpl implements INoteService {
         return result;
     }
 
-//    private MoyenneUniteEnseignement getMoyenneUEEtudiant(String matricule, long anneeId, List<CoursCredit> courss, boolean isOptional) throws ServiceException {
-//        MoyenneUniteEnseignement result = null;
-//        try {
-//            
-//            AnneeAcademique annee = null;
-//            if (anneeId > 0) {
-//                annee = academiqueDao.findById(anneeId);
-//            }
-//            result = new MoyenneUniteEnseignement(isOptional);
-//            for (CoursCredit cours : courss) {
-//                EtudiantNotes n = getNoteEtudiant(matricule, cours.getCours().getId(), anneeId);
-//                if (n != null) {
-//                    result.getCredits().put(cours.getCours().getIntitule(), cours.getCredit());
-//                    result.getSessions().add(n.getSession());
-//                    result.getNotes().put(cours.getCours().getIntitule(), n.getMoyenne());
-//                    result.getAnnees().add(n.getAnnee());
-//                } else {
-//                    result.getCredits().put(cours.getCours().getIntitule(), cours.getCredit());
-//                    result.getSessions().add(Session.normale);
-//                    result.getNotes().put(cours.getCours().getIntitule(), 0.0);
-//                    if (annee != null) {
-//                        result.getAnnees().add(annee);
-//                    }
-//                }
-//            }
-//        } catch (DataAccessException ex) {
-//            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return result;
-//    }
     @Override
     public Map<String, MoyenneUniteEnseignement> listeNoteUniteEnseignement(String matricule, long niveauId, long optionId, long semestreId, long anneeId) throws ServiceException {
         try {
-            Map<String, MoyenneUniteEnseignement> result = new HashMap<String, MoyenneUniteEnseignement>();
+            Map<String, MoyenneUniteEnseignement> result = new HashMap<>();
             Niveau niveau = niveauDao.findById(niveauId);
             Option option = optionDao.findById(optionId);
             Semestre semestre = semestreDao.findById(semestreId);
             AnneeAcademique annee = academiqueDao.findById(anneeId);
             List<UniteEnseignement> liste = uniteEnseignementDao.findByUniteNiveauOptionSemestre(niveau, option, semestre, annee);
             for (UniteEnseignement liste1 : liste) {
-                MoyenneUniteEnseignement res = getMoyenneUEEtudiant(matricule, liste1.getId(), anneeId, anneeId);
+                MoyenneUniteEnseignement res = getMoyenneUEEtudiant(matricule, niveauId, liste1.getId(), anneeId, anneeId);
                 result.put(liste1.getCode(), res);
             }
             return result;
@@ -563,11 +493,11 @@ public class NoteServiceImpl implements INoteService {
     }
 
     @Override
-    public Map<String, MoyenneUniteEnseignement> listeNoteUniteEnseignement(String matricule, long anneeId, long aCourantId, List<UniteEnseignement> ues) throws ServiceException {
-        Map<String, MoyenneUniteEnseignement> result = new HashMap<String, MoyenneUniteEnseignement>();
+    public Map<String, MoyenneUniteEnseignement> listeNoteUniteEnseignement(String matricule, long niveauId, long anneeId, long aCourantId, List<UniteEnseignement> ues) throws ServiceException {
+        Map<String, MoyenneUniteEnseignement> result = new HashMap<>();
 
         for (UniteEnseignement liste1 : ues) {
-            MoyenneUniteEnseignement res = getMoyenneUEEtudiant(matricule, liste1.getId(), anneeId, aCourantId);
+            MoyenneUniteEnseignement res = getMoyenneUEEtudiant(matricule, niveauId,liste1.getId(), anneeId, aCourantId);
             result.put(liste1.getCode(), res);
         }
         return result;
@@ -591,7 +521,7 @@ public class NoteServiceImpl implements INoteService {
     }
 
     private List<DeliberationItem> lesDeliberation(Cours c, Niveau n, Option o, AnneeAcademique a, Session s, boolean infInclusive, double borneInf, boolean supInclusive, double borneSup, double finale) throws DataAccessException {
-        List<DeliberationItem> result = new ArrayList<DeliberationItem>();
+        List<DeliberationItem> result = new ArrayList<>();
 
         List<EtudiantNotes> toto = listeNoteEtudiant(c, a, n, o, s);
         for (EtudiantNotes toto1 : toto) {
@@ -669,14 +599,14 @@ public class NoteServiceImpl implements INoteService {
             if (evaluation == null) {
                 throw new ServiceException("L'evaluation demandée est introuvable");
             }
-            System.out.println("\n =====  L'id du cours est :" + coursId + "======\n");
+            //System.out.println("\n =====  L'id du cours est :" + coursId + "======\n");
             Cours cours = coursDao.findById(coursId);
             if (cours == null) {
                 throw new ServiceException("Le cours demandé est introuvable");
             }
             AnneeAcademique academique = academiqueDao.findById(anneeId);
             if (academique == null) {
-                throw new ServiceException("L'année demand est introuvable");
+                throw new ServiceException("L'année demandée est introuvable");
             }
 
             Session s = Session.values()[session];
@@ -695,7 +625,6 @@ public class NoteServiceImpl implements INoteService {
             Cycle cycle = cycleDao.findById(cycleId);
             AnneeAcademique annee = academiqueDao.findById(anneeId);
             Etudiant etudiant = etudiantDao.findByMatricule(matricule);
-            System.out.println("L'étudiant " + etudiant.getNom());
             List<Niveau> niveaux = cycle.getNiveaux();
             double produitMgp = 0;
             int nombreCredit = 0;
@@ -713,18 +642,18 @@ public class NoteServiceImpl implements INoteService {
                 } else {
                     an = academiqueDao.findLastInscriptionYear(etudiant, niveau, option);
                 }
-                System.out.println("Annee "+an.toString()+" etudiant "+etudiant.getNom()+" Niveau "+ niveau.getCode());
+                //System.out.println("Annee " + an.toString() + " etudiant " + etudiant.getNom() + " Niveau " + niveau.getCode());
                 List<Semestre> semestres = semestreDao.findByNiveau(niveau);
                 for (Semestre semestre : semestres) {
 
                     List<UniteEnseignement> uniteEns = uniteEnseignementDao.findByUniteNiveauOptionSemestre(niveau, option, semestre, an);
                     List<UEnseignementCredit> ues1 = uniteEnseignementDao.findByNiveauOptionSemestre(niveau, option, semestre, an);
-                    Map<String, MoyenneUniteEnseignement> note = listeNoteUniteEnseignement(etudiant.getMatricule(), annee.getId(), an.getId(), uniteEns);
+                    Map<String, MoyenneUniteEnseignement> note = listeNoteUniteEnseignement(etudiant.getMatricule(), niveau.getId(), annee.getId(), an.getId(), uniteEns);
                     for (UEnseignementCredit ue : ues1) {
                         if (ue.getCredit() != 0) {
                             MoyenneUniteEnseignement mue = note.get(ue.getCodeUE());
                             Double value = mue.getMoyenne();
-                            System.out.println("UE " + ue.getIntituleUE() + " et le MGP " + value);
+                            //System.out.println("UE " + ue.getIntituleUE() + " et le MGP " + value);
                             Double noteMgp = DocumentUtil.transformNoteMgpUE(value);
                             int credit = ue.getCredit();
                             if (value < 10) {
@@ -736,7 +665,7 @@ public class NoteServiceImpl implements INoteService {
                         }
                     }
                 }
-                System.out.println("Le nombre de credit " + nombreCredit + " MGP " + Math.floor(produitMgp / nombreCredit * 100) / 100);
+                //System.out.println("Le nombre de credit " + nombreCredit + " MGP " + Math.floor(produitMgp / nombreCredit * 100) / 100);
             }
             return Math.floor(produitMgp / nombreCredit * 100) / 100;
         } catch (DataAccessException ex) {
@@ -748,7 +677,127 @@ public class NoteServiceImpl implements INoteService {
 
     @Override
     public int calculerNombreCreditsValides(String matricule, long cycleId, long anneeId) throws ServiceException {
+        // TODO I need to figure out why I did this stupidity
         return 120;
+    }
+
+    @Override
+    public EtudiantNiveau calculerPerformanceNiveau(String matricule, long niveauId, long anneeId) throws ServiceException {
+        EtudiantNiveau result = new EtudiantNiveau();
+        try {            
+            Etudiant etudiant = etudiantDao.findByMatricule(matricule);
+            Niveau niveau = niveauDao.findById(niveauId);
+            double produitMgp = 0;
+            int nombreCredit = 0;
+            Option option;
+            try {
+                option = optionDao.findByEtudiantNiveau(etudiant, niveau);
+            } catch (NoResultException nre) {
+                return null;
+            }
+            AnneeAcademique an;
+            if (niveau.isTerminal()) {
+                an = academiqueDao.findLastYearNote(etudiant, niveau, option);
+            } else {
+                an = academiqueDao.findLastInscriptionYear(etudiant, niveau, option);
+            }
+            //List<Semestre> semestres = semestreDao.findByNiveau(niveau);
+            //for (Semestre semestre : semestres) {
+            List<UniteEnseignement> uniteEns = uniteEnseignementDao.findByUniteNiveauOptionSemestre(niveau, option, null, an);
+            List<UEnseignementCredit> ues1 = uniteEnseignementDao.findByNiveauOptionSemestre(niveau, option, null, an);
+            //System.out.println("*********** est null "+(an == null)+" et l'étudiant est "+etudiant.getNom());
+            Map<String, MoyenneUniteEnseignement> note = listeNoteUniteEnseignement(etudiant.getMatricule(), niveauId, anneeId, (an == null)?anneeId: an.getId(), uniteEns);
+            for (UEnseignementCredit ue : ues1) {
+                if (ue.getCredit() != 0) {
+                    MoyenneUniteEnseignement mue = note.get(ue.getCodeUE());
+                    Double value = mue.getMoyenne();
+                    Double noteMgp = DocumentUtil.transformNoteMgpUE(value);
+                    int credit = ue.getCredit();
+                    if (value >= 10) {
+                        nombreCredit += credit;
+                    }
+                    produitMgp += noteMgp * credit;
+
+                }
+            }
+            result.setMgp(Math.floor(produitMgp / nombreCredit * 100) / 100);
+            result.setNiveau(niveau.getCode());
+            result.setMatricule(matricule);
+            result.setCredit(nombreCredit);
+            return result;
+        } catch (DataAccessException ex) {
+            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
+
+    @Override
+    public EtudiantCycle calculerPerformanceCycle(String matricule, long cycleId, long anneeId) throws ServiceException {
+        EtudiantCycle result = new EtudiantCycle();
+        try {
+
+            Cycle cycle = cycleDao.findById(cycleId);
+            Etudiant etudiant = etudiantDao.findByMatricule(matricule);
+            result.setMatricule(matricule);
+            result.setNom(etudiant.getNom());
+            List<Niveau> niveaux = cycle.getNiveaux();
+            double produitMgp = 0;
+            int nombreCredit = 0;
+            boolean validCycle = true;
+            for (Niveau niveau : niveaux) {                
+                int creditCapitalise = 0;
+                int creditNiveau = 0;
+                double produitMgpNiveau = 0;
+                boolean validNiveau = true;
+                Option option;
+                try {
+                    option = optionDao.findByEtudiantNiveau(etudiant, niveau);
+                } catch (NoResultException nre) {
+                    continue;
+                }
+                AnneeAcademique an;
+                if (niveau.isTerminal()) {
+                    an = academiqueDao.findLastYearNote(etudiant, niveau, option);
+                } else {
+                    an = academiqueDao.findLastInscriptionYear(etudiant, niveau, option);
+                }
+                List<Semestre> semestres = semestreDao.findByNiveau(niveau);
+                for (Semestre semestre : semestres) {
+
+                    List<UniteEnseignement> uniteEns = uniteEnseignementDao.findByUniteNiveauOptionSemestre(niveau, option, semestre, an);
+                    List<UEnseignementCredit> ues1 = uniteEnseignementDao.findByNiveauOptionSemestre(niveau, option, semestre, an);
+                    Map<String, MoyenneUniteEnseignement> note = listeNoteUniteEnseignement(etudiant.getMatricule(), niveau.getId(), anneeId, (an == null) ? anneeId : an.getId(), uniteEns);
+                    for (UEnseignementCredit ue : ues1) {
+                        if (ue.getCredit() != 0) {
+                            MoyenneUniteEnseignement mue = note.get(ue.getCodeUE());
+                            Double value = mue.getMoyenne();
+                            Double noteMgp = DocumentUtil.transformNoteMgpUE(value);
+                            int credit = ue.getCredit();
+                            if (value < 10) {
+                                validNiveau = false;
+                                validCycle = false;
+                            } else {
+                                creditCapitalise += credit;
+                                produitMgpNiveau += noteMgp * credit;
+                            }
+                            creditNiveau += credit;
+                        }
+                    }
+                }
+                nombreCredit += creditNiveau;
+                produitMgp += produitMgpNiveau;
+                result.addCreditNiveau(niveau.getCode(), creditCapitalise);
+                if(validNiveau)
+                    result.addMGPNiveau(niveau.getCode(), Math.floor(produitMgpNiveau / creditNiveau * 100) / 100);
+            }
+            if(validCycle)
+                result.setMgp(Math.floor(produitMgp / nombreCredit * 100) / 100);
+        } catch (DataAccessException ex) {
+            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return result;
     }
 
 }

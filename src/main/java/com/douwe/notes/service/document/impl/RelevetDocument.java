@@ -317,9 +317,7 @@ public class RelevetDocument implements IRelevetDocument {
                 }
              */
             doc.close();
-        } catch (DocumentException ex) {
-            Logger.getLogger(DocumentServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
+        } catch (DocumentException | DataAccessException ex) {
             Logger.getLogger(DocumentServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -817,7 +815,7 @@ public class RelevetDocument implements IRelevetDocument {
             for (Semestre semestre : semestres) {
                 List<UniteEnseignement> uniteEns = uniteEnsDao.findByUniteNiveauOptionSemestre(niveau, option, semestre, aa);
                 List<UEnseignementCredit> ues1 = uniteEnsDao.findByNiveauOptionSemestre(niveau, option, semestre, aa);
-                Map<String, MoyenneUniteEnseignement> note = noteService.listeNoteUniteEnseignement(etudiant.getMatricule(), annee.getId(), aa.getId(), uniteEns);
+                Map<String, MoyenneUniteEnseignement> note = noteService.listeNoteUniteEnseignement(etudiant.getMatricule(),niveau.getId(), annee.getId(), aa.getId(), uniteEns);
                 //unites.addAll(uniteEns);
                 //credits.addAll(ues1);
                 for (UEnseignementCredit ue : ues1) {
@@ -852,11 +850,60 @@ public class RelevetDocument implements IRelevetDocument {
             if (niveau.isTerminal()) {
                 infos.setMgpCycle(noteService.calculerMoyenneCycle(etudiant.getMatricule(), niveau.getCycle().getId(), annee.getId()));
             }
-        } catch (DataAccessException ex) {
-            Logger.getLogger(RelevetDocument.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ServiceException ex) {
+        } catch (DataAccessException | ServiceException ex) {
             Logger.getLogger(RelevetDocument.class.getName()).log(Level.SEVERE, null, ex);
         }
+        /*  try {
+        Map<String, MoyenneUniteEnseignement> notes1 = noteService.listeNoteUniteEnseignement(e.getMatricule(), a.getId(), a.getId(), uniteEns1);
+        Map<String, MoyenneUniteEnseignement> notes2 = noteService.listeNoteUniteEnseignement(e.getMatricule(), a.getId(), a.getId(), uniteEns2);
+        for (UEnseignementCredit ue : ues1) {
+        MoyenneUniteEnseignement mue = notes1.get(ue.getCodeUE());
+        // System.out.println(mue);
+        Double value = mue.getMoyenne();
+        Double noteMgp = DocumentUtil.transformNoteMgpUE(value);
+        Session session = mue.getSession();
+        mgp.put(ue.getCodeUE(), noteMgp);
+        Semestre semestre = semestres.get(0);
+        String sem = semestreToRoman(semestre) + "(" + a.toString() + ")";
+        semes.put(ue.getCodeUE(), sem);
+        notes.put(ue.getCodeUE(), value);
+        sessions.put(ue.getCodeUE(), session);
+        produit += value * ue.getCredit();
+        produitMgp += noteMgp * ue.getCredit();
+        nombreCredit += ue.getCredit();
+        if (value >= 10) {
+        nombreCreditValide += ue.getCredit();
+        }
+        }
+        for (UEnseignementCredit ue : ues2) {
+        //MoyenneTrashData mue = notes.get(ue.getCodeUE());
+        MoyenneUniteEnseignement mue = notes2.get(ue.getCodeUE());
+        Double value = mue.getMoyenne();
+        Double noteMgp = DocumentUtil.transformNoteMgpUE(value);
+        Session session = mue.getSession();
+        nombreCredit += ue.getCredit();
+        notes.put(ue.getCodeUE(), value);
+        mgp.put(ue.getCodeUE(), noteMgp);
+        Semestre semestre = semestres.get(1);
+        String sem = semestreToRoman(semestre) + "(" + a + ")";
+        semes.put(ue.getCodeUE(), sem);
+        sessions.put(ue.getCodeUE(), session);
+        produit += value * ue.getCredit();
+        produitMgp += noteMgp * ue.getCredit();
+        if (value >= 10) {
+        nombreCreditValide += ue.getCredit();
+        }
+        }
+        infos.setNotes(notes);
+        infos.setMgp(mgp);
+        infos.setSessions(sessions);
+        infos.setSemestres(semes);
+        infos.setNombreCreditValides(nombreCreditValide);
+        infos.setMoyenneMgp((Math.round(((produitMgp * 1.0) / nombreCredit) * 100.0) / 100.0));
+        infos.setMoyenne((Math.round(((produit * 1.0) / nombreCredit) * 100.0) / 100.0));
+        } catch (ServiceException ex) {
+        Logger.getLogger(RelevetDocument.class.getName()).log(Level.SEVERE, null, ex);
+        }*/ 
         /*  try {
 
             Map<String, MoyenneUniteEnseignement> notes1 = noteService.listeNoteUniteEnseignement(e.getMatricule(), a.getId(), a.getId(), uniteEns1);

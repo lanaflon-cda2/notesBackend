@@ -13,6 +13,8 @@ public interface IDocumentFacadeService {
     public String produireSynthese(Long niveauId, Long optionId,Long academiqueId,Long semestreId, OutputStream stream) throws ServiceException;
     
     public void produireRelevet(Long niveauId, Long optionId, Long anneeId, OutputStream stream, Long etudinatid);
+
+    public void produireSyntheseDiplomation(long cycleId, long departementId, long anneeId, OutputStream output);
     
     
 }

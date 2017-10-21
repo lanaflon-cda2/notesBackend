@@ -67,15 +67,16 @@ public class UniteEnseignementDaoImpl extends GenericDao<UniteEnseignement, Long
         predicates.add(cb.equal(creditRoot.get(Credit_.parcours), parcoursPath));
         predicates.add(cb.isMember(toto, ab));
         //predicates.add(cb.equal(ab, unitePath));
-        if(semestre != null)
+        if (semestre != null) {
             predicates.add(cb.equal(semestrePath, semestre));
+        }
         predicates.add(cb.equal(parcoursPath.get(Parcours_.niveau), niveau));
         predicates.add(cb.equal(parcoursPath.get(Parcours_.option), option));
         //predicates.add(cb.equal(programmeRoot.get(Programme_.uniteEnseignement), ab));
         if (predicates.size() > 0) {
             cq.where((predicates.size() == 1) ? predicates.get(0) : cb.and(predicates.toArray(new Predicate[0])));
         }
-       // cq.groupBy(ab.get(UniteEnseignement_.code));
+        // cq.groupBy(ab.get(UniteEnseignement_.code));
         //cq.orderBy(cb.asc(ab.get(UniteEnseignement_.code)));
         // I need to figure out one day why it is not working
 //        cq.multiselect(ab.get(UniteEnseignement_.code),
@@ -89,9 +90,8 @@ public class UniteEnseignementDaoImpl extends GenericDao<UniteEnseignement, Long
                 unitePath.get(UniteEnseignement_.code),
                 unitePath.get(UniteEnseignement_.intitule),
                 cb.sum(creditRoot.get(Credit_.valeur)),
-                cb.min(creditRoot.get(Credit_.valeur))
-                ,
-                unitePath.get(UniteEnseignement_.hasOptionalChoices)
+                cb.min(creditRoot.get(Credit_.valeur)),
+                 unitePath.get(UniteEnseignement_.hasOptionalChoices)
         );
         return getManager().createQuery(cq).getResultList();
     }
@@ -129,11 +129,13 @@ public class UniteEnseignementDaoImpl extends GenericDao<UniteEnseignement, Long
         Path<Parcours> parcoursPath = programmeRoot.get(Programme_.parcours);
         Path<Semestre> semestrePath = programmeRoot.get(Programme_.semestre);
         Path<AnneeAcademique> anneePath = programmeRoot.get(Programme_.anneeAcademique);
-        
+
         List<Predicate> predicates = new ArrayList<>();
         predicates.add(cb.equal(anneePath, annee));
         //predicates.add(cb.equal(ab, unitePath));
-        predicates.add(cb.equal(semestrePath, semestre));
+        if (semestre != null) {
+            predicates.add(cb.equal(semestrePath, semestre));
+        }
         predicates.add(cb.equal(parcoursPath.get(Parcours_.niveau), niveau));
         predicates.add(cb.equal(parcoursPath.get(Parcours_.option), option));
         if (predicates.size() > 0) {

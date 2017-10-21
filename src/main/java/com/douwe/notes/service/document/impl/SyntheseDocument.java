@@ -55,6 +55,7 @@ import javax.inject.Inject;
 @Stateless
 public class SyntheseDocument implements ISyntheseDocument {
 
+    // TODO Royken I faut eviter les dependances vers les services
     @EJB
     private INoteService noteService;
 
@@ -82,7 +83,7 @@ public class SyntheseDocument implements ISyntheseDocument {
     @Inject
     private ICreditDao creditDao;
 
-    // TODO Royken I faut eviter les dependances vers les services
+    
     @Inject
     private IEvaluationDao EvaluationDao;
 
@@ -334,7 +335,8 @@ public class SyntheseDocument implements ISyntheseDocument {
                 }
                 firstPage = false;
                 table.setWidthPercentage(100);
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
+                //table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
+                table.addCell(new PdfPCell());
                 // Entete de synthese
                 PdfPCell cell = new PdfPCell(new Phrase(s.getIntitule(), bf));
                 cell.setColspan(taille + 5);
@@ -368,7 +370,7 @@ public class SyntheseDocument implements ISyntheseDocument {
                     double sumMoyenne = 0.0; //sumMoyenne /30 renvoie à la moyenne trimestrielle
                     int nbrCreditValide = 0; // le nombre de crédits validés  
                     // TODO I need to figure out how to speed this computation
-                    Map<String, MoyenneUniteEnseignement> notes = noteService.listeNoteUniteEnseignement(etudiant.getMatricule(), a.getId(), annee.getId(), totos);
+                    Map<String, MoyenneUniteEnseignement> notes = noteService.listeNoteUniteEnseignement(etudiant.getMatricule(), n.getId(), a.getId(), annee.getId(), totos);
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(i++), bf1, false, true));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(etudiant.getNom(), bf1, false, false));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(etudiant.getMatricule(), bf1, false, true));
@@ -461,11 +463,11 @@ public class SyntheseDocument implements ISyntheseDocument {
                 int taille1 = ues1.size();
                 int taille2 = ues2.size();
                 float relativeWidths[];
-                relativeWidths = new float[13 + taille1 + taille2];
+                relativeWidths = new float[11 + taille1 + taille2];
                 relativeWidths[0] = 1;
                 relativeWidths[1] = 10;
                 relativeWidths[2] = 3;
-                for (int i = 0; i < taille1 + taille2 + 10; i++) {
+                for (int i = 0; i < taille1 + taille2 + 8; i++) {
                     relativeWidths[3 + i] = 2;
                 }
                 PdfPTable table = new PdfPTable(relativeWidths);
@@ -473,22 +475,25 @@ public class SyntheseDocument implements ISyntheseDocument {
                 firstPage = false;
                 table.setWidthPercentage(100);
 
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
+                table.addCell(DocumentUtil.createEmptyCell());
+                table.addCell(DocumentUtil.createEmptyCell());
+                table.addCell(DocumentUtil.createEmptyCell());
                 PdfPCell cell = new PdfPCell(new Phrase(semestres.get(0).getIntitule(), bf));
-                cell.setColspan(taille1 + 3);
+                cell.setColspan(taille1 + 2);
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 table.addCell(cell);
 
                 PdfPCell cell1 = new PdfPCell(new Phrase(semestres.get(1).getIntitule(), bf));
-                cell1.setColspan(taille2 + 3);
+                cell1.setColspan(taille2 + 2);
                 cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell1.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 table.addCell(cell1);
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell("", bf, false));
+                table.addCell(DocumentUtil.createEmptyCell());
+                table.addCell(DocumentUtil.createEmptyCell());
+                table.addCell(DocumentUtil.createEmptyCell());
+                table.addCell(DocumentUtil.createEmptyCell());
 
                 table.getDefaultCell().setBorderColor(BaseColor.BLACK);
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.no"), bf, false));
@@ -498,20 +503,21 @@ public class SyntheseDocument implements ISyntheseDocument {
                     table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(ue.getIntituleUE(), bf, false));
                 }
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.moyenne1"), bf, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.credit") + semestres.get(0).getIntitule() + msgHelper.getProperty("synthese.annuelleBody.valides"), bf, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.credit") + semestres.get(0).getIntitule() +" "+ msgHelper.getProperty("synthese.annuelleBody.valides"), bf, true));
 
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.creditPourcentage") + semestres.get(0).getIntitule() + msgHelper.getProperty("synthese.annuelleBody.valides"), bf, true));
+                //table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.creditPourcentage") + semestres.get(0).getIntitule() + msgHelper.getProperty("synthese.annuelleBody.valides"), bf, true));
 
                 for (UEnseignementCredit ue : ues2) {
                     table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(ue.getIntituleUE(), bf, false));
                 }
 
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.moyenne2"), bf, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.credit") + semestres.get(1).getIntitule() + msgHelper.getProperty("synthese.annuelleBody.valides"), bf, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.creditPourcentage") + semestres.get(1).getIntitule() + msgHelper.getProperty("synthese.annuelleBody.valides"), bf, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.credit") + semestres.get(1).getIntitule() +" "+ msgHelper.getProperty("synthese.annuelleBody.valides"), bf, true));
+                //table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.creditPourcentage") + semestres.get(1).getIntitule() + msgHelper.getProperty("synthese.annuelleBody.valides"), bf, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.moyenneAnnuelle"), bf, false));
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.creditCapitalise"), bf, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.creditValidePourcentage"), bf, false));
+                //table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.creditValidePourcentage"), bf, false));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.mgp"), bf, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.decision"), bf, true));
                 table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
                 table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
@@ -521,13 +527,13 @@ public class SyntheseDocument implements ISyntheseDocument {
                 }
                 table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
                 table.addCell(DocumentUtil.createDefaultBodyCell(String.valueOf(creditSem1), bf, true));
-                table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
+                //table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
                 for (UEnseignementCredit ue : ues2) {
                     table.addCell(DocumentUtil.createDefaultBodyCell(String.valueOf(ue.getCredit()), bf, true));
                 }
                 table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
                 table.addCell(DocumentUtil.createDefaultBodyCell(String.valueOf(creditSem2), bf, true));
-                table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
+                //table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
                 table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
                 table.addCell(DocumentUtil.createDefaultBodyCell(String.valueOf(creditSem1 + creditSem2), bf, true));
                 table.addCell(DocumentUtil.createDefaultBodyCell("", bf, true));
@@ -543,7 +549,8 @@ public class SyntheseDocument implements ISyntheseDocument {
                     int nbrCreditValide1 = 0; // le nombre de  crédits validés
                     int nbrCreditValide2 = 0;
                     double sumMoyenne2 = 0;
-                    Map<String, MoyenneUniteEnseignement> notes = noteService.listeNoteUniteEnseignement(etudiant.getMatricule(), a.getId(), annee.getId(), uniteEns1);
+                    double produitMgp = 0;
+                    Map<String, MoyenneUniteEnseignement> notes = noteService.listeNoteUniteEnseignement(etudiant.getMatricule(), n.getId(),a.getId(), annee.getId(), uniteEns1);
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(i++), bf1, false, true));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(etudiant.getNom(), bf1, false, false));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(etudiant.getMatricule(), bf1, false, true));
@@ -555,6 +562,7 @@ public class SyntheseDocument implements ISyntheseDocument {
                         if (mue != null) {
                             value = mue.getMoyenne();
                             sumMoyenne1 += value * ue.getCredit();
+                            produitMgp += DocumentUtil.transformNoteMgpUE(value) * ue.getCredit();
                             if (value >= 10) {
                                 nbrCreditValide1 += ue.getCredit();
                             }
@@ -564,30 +572,32 @@ public class SyntheseDocument implements ISyntheseDocument {
                     }
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", Math.ceil(sumMoyenne1 * 100 / creditSem1) / 100), bf1, true, true));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(nbrCreditValide1), bf1, true, true));
-                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", (((nbrCreditValide1 * 1.0 / creditSem1)) * 100)), bf1, true, true));
+                    //table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", (((nbrCreditValide1 * 1.0 / creditSem1)) * 100)), bf1, true, true));
 
                     // Le second semestre
-                    Map<String, MoyenneUniteEnseignement> notes2 = noteService.listeNoteUniteEnseignement(etudiant.getMatricule(), a.getId(), annee.getId(), uniteEns2);
+                    Map<String, MoyenneUniteEnseignement> notes2 = noteService.listeNoteUniteEnseignement(etudiant.getMatricule(), n.getId(), a.getId(), annee.getId(), uniteEns2);
                     for (UEnseignementCredit ue : ues2) {
                         MoyenneUniteEnseignement mue = notes2.get(ue.getCodeUE());
                         double value = 0.0;
                         if (mue != null) {
                             value = mue.getMoyenne();
                             sumMoyenne2 += value * ue.getCredit();
+                            produitMgp += DocumentUtil.transformNoteMgpUE(value) * ue.getCredit();
                             if (value >= 10) {
                                 nbrCreditValide2 += ue.getCredit();
                             }
                         }
                         table.addCell(DocumentUtil.createSyntheseDefaultBodyCell((value == 0.0) ? "" : String.format("%.2f", value), (mue.getSession() == Session.normale) ? bf1 : rattra, false, true));
                     }
+                    produitMgp /= (creditSem1 + creditSem2);
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", (sumMoyenne2 / creditSem2)), bf1, true, true));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(nbrCreditValide2), bf1, true, true));
-                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", (((nbrCreditValide2 * 1.0 / creditSem2)) * 100)), bf1, true, true));
+                    //table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", (((nbrCreditValide2 * 1.0 / creditSem2)) * 100)), bf1, true, true));
 
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", ((sumMoyenne1 + sumMoyenne2) / (creditSem1 + creditSem2))), bf1, true, true));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(nbrCreditValide1 + nbrCreditValide2), bf1, true, true));
                     // table.addCell(createSyntheseDefaultBodyCell(String.valueOf(nbrCreditValide), bf1, true));
-                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", ((((nbrCreditValide1 + nbrCreditValide2) * 1.0 / (creditSem1 + creditSem2))) * 100)), bf1, true, true));
+                    //table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", ((((nbrCreditValide1 + nbrCreditValide2) * 1.0 / (creditSem1 + creditSem2))) * 100)), bf1, true, true));
                     String decision = msgHelper.getProperty("synthese.annuelleBody.decisionRedouble");
                     int totalCredits = nbrCreditValide1 + nbrCreditValide2;
                     switch(n.getCode()){
@@ -611,6 +621,7 @@ public class SyntheseDocument implements ISyntheseDocument {
                             if (totalCredits >= 60)
                                 decision = msgHelper.getProperty("synthese.annuelleBody.decisionAdmis");
                     }
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", produitMgp), bf1, true, true));
                     table.addCell(DocumentUtil.createDefaultBodyCell(decision, bf1, false));
                 }
                 doc.add(table);
@@ -632,8 +643,9 @@ public class SyntheseDocument implements ISyntheseDocument {
             cell.setBackgroundColor(BaseColor.WHITE);
             cell.setHorizontalAlignment(Element.ALIGN_LEFT);
             table.addCell(cell);
-            table.setSpacingBefore(15f);
-            table.setSpacingAfter(25f);
+            table.setSpacingBefore(5f);
+            //table.setSpacingAfter(25f);
+            table.setSpacingAfter(5f);
 
             doc.add(table);
 

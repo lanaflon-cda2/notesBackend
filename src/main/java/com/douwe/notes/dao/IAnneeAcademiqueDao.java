@@ -18,7 +18,7 @@ public interface IAnneeAcademiqueDao extends IDao<AnneeAcademique, Long>{
     
     public List<AnneeAcademique> findAllActive() throws DataAccessException;
     
-    public AnneeAcademique findLastYearNote(Etudiant etudiant, Cours c, AnneeAcademique fin) throws DataAccessException;
+    public AnneeAcademique findLastYearNote(Etudiant etudiant, Niveau n, Cours c, AnneeAcademique fin) throws DataAccessException;
     
     public List<AnneeAcademique> findAllYearWthNote(AnneeAcademique annee, Niveau niveau, Option option, Semestre semestre) throws DataAccessException;
     

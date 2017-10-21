@@ -41,8 +41,8 @@ angular.module("notesApp.rapports.controllers", []).controller("ProcesVerbalCont
                 }
             });
         };
-    }]).controller("SyntheseController", ["$log","$scope", "$http", "Departement", "Niveau", "Annee",
-    function ($log,$scope, $http, Departement, Niveau, Annee) {
+    }]).controller("SyntheseController", ["$log", "$scope", "$http", "Departement", "Niveau", "Annee",
+    function ($log, $scope, $http, Departement, Niveau, Annee) {
         var deps = Departement.query(function () {
             $scope.departements = deps;
         });
@@ -90,8 +90,8 @@ angular.module("notesApp.rapports.controllers", []).controller("ProcesVerbalCont
                 }
             });
         };
-    }]).controller("RelevesNoteController", ["$log","$scope", "$http", "Departement", "Niveau", "Annee",
-    function ($log,$scope, $http, Departement, Niveau, Annee) {
+    }]).controller("RelevesNoteController", ["$log", "$scope", "$http", "Departement", "Niveau", "Annee",
+    function ($log, $scope, $http, Departement, Niveau, Annee) {
         var deps = Departement.query(function () {
             $scope.departements = deps;
         });
@@ -129,8 +129,6 @@ angular.module("notesApp.rapports.controllers", []).controller("ProcesVerbalCont
                 toto = toto + $scope.niveau.id + "/";
                 toto = toto + $scope.option.id + "/";
                 toto = toto + $scope.annee;
-
-                console.log('je veux avoir les releves' + toto);
             }
 
             $http.get(toto).success(function (data, status, headers, config) {
@@ -144,6 +142,37 @@ angular.module("notesApp.rapports.controllers", []).controller("ProcesVerbalCont
                 }
             });
         };
+    }]).controller("DiplomationController", ["$scope", "$http", "Departement", "Cycle", "Annee",
+    function ($scope, $http, Departement, Cycle, Annee) {
+        var deps = Departement.query(function () {
+            $scope.departements = deps;
+        });
+
+        var anns = Annee.query(function () {
+            $scope.annees = anns;
+        });
+
+        var cycles = Cycle.query(function () {
+            $scope.cycles = cycles;
+        });
+
+        $scope.produireDiplomation = function () {
+            var toto;
+
+            toto = "/notesBackend/api/rapport/diplomation/";
+            toto = toto + $scope.cycle.id + "/";
+            toto = toto + $scope.departement.id + "/";
+            toto = toto + $scope.annee;
+
+            $http.get(toto).success(function (data, status, headers, config) {
+                if ((status === 200) && (headers('content-type') === 'text/pdf')) {
+                    var element = angular.element('<a>');
+                    element.attr({
+                        href: config.url,
+                        target: '_blank',
+                        download: 'diplomation.pdf'
+                    })[0].click();
+                }
+            });
+        };
     }]);
-
-

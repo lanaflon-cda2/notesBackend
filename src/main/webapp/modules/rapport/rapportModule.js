@@ -12,6 +12,10 @@ angular.module("notesApp.rapports").config(function ($stateProvider, $locationPr
         url: '/releves',
         controller: 'RelevesNoteController',
         templateUrl: 'modules/rapport/views/releves.html'
+    }).state("diplomation", {
+        url: '/diplomation',
+        controller: 'DiplomationController',
+        templateUrl: 'modules/rapport/views/diplomation.html'
     });
 });
 

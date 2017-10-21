@@ -39,6 +39,12 @@ public interface IRapportResource {
     @Produces("text/pdf")
     Response produireRelevetEtudiant(@PathParam(value = "niveauid") long niveauid, @PathParam(value = "optionid") long optionid, @PathParam(value = "anneeid") long anneeid, @PathParam(value = "etudiantid") long etudiantid);
     
+    
+    @GET
+    @Path(value = "diplomation/{cycle : \\d+}/{departement : \\d+}/{anneeid : \\d+}")
+    @Produces("text/pdf")
+    Response produireSyntheseDiplomation(@PathParam(value = "cycle") long cycleId, @PathParam(value = "departement") long departementId, @PathParam(value = "anneeid") long anneeId);
+    
     @GET
     @Path(value = "synthese/annual")
     @Produces("text/pdf")

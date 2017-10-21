@@ -2,11 +2,6 @@ package com.douwe.notes.resource.impl;
 
 import com.douwe.notes.resource.IRapportResource;
 import com.douwe.notes.service.IDocumentFacadeService;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import javax.ejb.EJB;
@@ -165,6 +160,22 @@ public class RapportResource implements IRapportResource {
         };
         return Response.ok(stream).header("Content-Disposition",
                 "attachment; filename=" + filename + "relevet.pdf").build();
+    }
+
+    @Override
+    public Response produireSyntheseDiplomation(final long cycleId, final long departementId, final long anneeId) {
+         StreamingOutput stream = new StreamingOutput() {
+            @Override
+            public void write(OutputStream output) throws IOException, WebApplicationException {
+                try {
+                    documentService.produireSyntheseDiplomation(cycleId, departementId, anneeId, output);
+                } catch (Exception e) {
+                    throw new WebApplicationException(e);
+                }
+            }
+        };
+        return Response.ok(stream).header("Content-Disposition",
+                "attachment; filename=" + filename + "diplomation.pdf").build();
     }
 
 }

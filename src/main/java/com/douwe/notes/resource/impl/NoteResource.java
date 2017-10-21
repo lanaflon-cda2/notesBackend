@@ -238,9 +238,9 @@ public class NoteResource implements INoteResource {
     }
 
     @Override
-    public EtudiantNotes noteEtudiant(String matricule, long coursId, long anneeId) {
+    public EtudiantNotes noteEtudiant(String matricule, long niveauId, long coursId, long anneeId) {
         try {
-            return noteService.getNoteEtudiant(matricule, coursId, anneeId);
+            return noteService.getNoteEtudiant(matricule, niveauId, coursId, anneeId);
         } catch (ServiceException ex) {
             Logger.getLogger(NoteResource.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -248,9 +248,9 @@ public class NoteResource implements INoteResource {
     }
 
     @Override
-    public MoyenneUniteEnseignement moyenneEtudiant(String matricule, long ueId, long annee) {
+    public MoyenneUniteEnseignement moyenneEtudiant(String matricule, long niveauId, long ueId, long annee) {
         try {
-            return noteService.getMoyenneUEEtudiant(matricule, ueId, annee, annee);
+            return noteService.getMoyenneUEEtudiant(matricule, niveauId, ueId, annee, annee);
         } catch (ServiceException ex) {
             Logger.getLogger(NoteResource.class.getName()).log(Level.SEVERE, null, ex);
         }

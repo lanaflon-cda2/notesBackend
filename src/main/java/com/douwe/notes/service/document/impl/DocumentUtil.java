@@ -14,7 +14,8 @@ import com.itextpdf.text.pdf.PdfPCell;
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
 public class DocumentUtil {
-    private static final MessageHelper msgHelper = new MessageHelper();
+
+    private static final MessageHelper MSGHELPER = new MessageHelper();
 
     public static String transformMoyenneMgpToGradeRelevet(double moyenne) {
         /*if (Double.compare(moyenne, 4.0) == 0) {
@@ -35,44 +36,43 @@ public class DocumentUtil {
         if (moyenne < 2.4 && moyenne >= 2.0) {
             return "C";
         }
-        if(moyenne < 2.0 && moyenne >= 1.3){
+        if (moyenne < 2.0 && moyenne >= 1.3) {
             return "C-";
         }
-        if(moyenne < 1.3 && moyenne >= 1.2){
+        if (moyenne < 1.3 && moyenne >= 1.2) {
             return "D";
         }
-        if(moyenne < 1.2 && moyenne >= 1.0){
+        if (moyenne < 1.2 && moyenne >= 1.0) {
             return "E";
-       }
+        }
         return "F";
     }
-    
+
     public static String transformMoyenneMgpToMentionRelevet(double moyenne) {
         /*if (Double.compare(moyenne, 4.0) == 0) {
             return "Excellent";
         }*/
         if (moyenne <= 4 && moyenne >= 3.6) {
-            
-            return msgHelper.getProperty("util.excellent");
+
+            return MSGHELPER.getProperty("util.excellent");
         }
-       
+
         if (moyenne < 3.6 && moyenne >= 3.2) {
-            return msgHelper.getProperty("util.tresBien");
+            return MSGHELPER.getProperty("util.tresBien");
         }
-        
-      
+
         if (moyenne < 3.2 && moyenne >= 2.8) {
-            return msgHelper.getProperty("util.bien");
+            return MSGHELPER.getProperty("util.bien");
         }
-        
-        if(moyenne < 2.8 && moyenne >= 2.4){
-            return msgHelper.getProperty("util.assezBien");
-       }
-       
-        if(moyenne < 2.4 && moyenne >= 2){
-            return msgHelper.getProperty("util.passable");
+
+        if (moyenne < 2.8 && moyenne >= 2.4) {
+            return MSGHELPER.getProperty("util.assezBien");
         }
-        return msgHelper.getProperty("util.echoue");
+
+        if (moyenne < 2.4 && moyenne >= 2) {
+            return MSGHELPER.getProperty("util.passable");
+        }
+        return MSGHELPER.getProperty("util.echoue");
     }
 
     public static String transformNoteGradeUE(double note) {
@@ -148,29 +148,29 @@ public class DocumentUtil {
 
     public static String transformNoteMention(double note) {
         if (note <= 20 && note >= 16) {
-            
-            return msgHelper.getProperty("util.mention.tresBien");
+
+            return MSGHELPER.getProperty("util.mention.tresBien");
         }
         if (note < 16 && note >= 14) {
-            return msgHelper.getProperty("util.mention.bien");
+            return MSGHELPER.getProperty("util.mention.bien");
         }
         if (note < 14 && note >= 12) {
-            return msgHelper.getProperty("util.mention.assezBien");
+            return MSGHELPER.getProperty("util.mention.assezBien");
         }
         if (note < 12 && note >= 10) {
-            return msgHelper.getProperty("util.mention.passable");
+            return MSGHELPER.getProperty("util.mention.passable");
         }
-        if(note < 10 && note >= 9){
-            return msgHelper.getProperty("util.mention.insuffisant");
+        if (note < 10 && note >= 9) {
+            return MSGHELPER.getProperty("util.mention.insuffisant");
         }
         if (note < 9 && note >= 8) {
-            return msgHelper.getProperty("util.mention.faible");
+            return MSGHELPER.getProperty("util.mention.faible");
         }
         if (note < 8 && note >= 6) {
-            return msgHelper.getProperty("util.mention.tresFaible");
+            return MSGHELPER.getProperty("util.mention.tresFaible");
         }
 
-        return msgHelper.getProperty("util.mention.nul");
+        return MSGHELPER.getProperty("util.mention.nul");
 
     }
 
@@ -206,7 +206,9 @@ public class DocumentUtil {
         cell.setBorderWidth(0.01f);
 
         cell.setBorderColor(BaseColor.BLACK);
-
+        if (message.length() > 50) {
+            cell.setFixedHeight(215f);
+        }
         cell.setRotation(90);
         return cell;
     }
@@ -220,6 +222,18 @@ public class DocumentUtil {
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setPaddingBottom(4f);
         cell.setPaddingTop(5f);
+        cell.setBorderWidth(0.01f);
+        cell.setBorderColor(BaseColor.BLACK);
+        return cell;
+    }
+
+    public static PdfPCell createEmptyCell() {
+        PdfPCell cell = new PdfPCell(new Phrase(" "));
+
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setPaddingBottom(2f);
+        cell.setPaddingTop(2f);
         cell.setBorderWidth(0.01f);
         cell.setBorderColor(BaseColor.BLACK);
         return cell;
@@ -263,7 +277,7 @@ public class DocumentUtil {
         //cell.setTop(2f);
         return cell;
     }
-    
+
     public static PdfPCell createSyntheseDefaultBodyCell(String message, Font bf, boolean color, boolean isCentered) {
         return createSyntheseDefaultBodyCell(message, bf, color, isCentered, 4f, 4f);
     }

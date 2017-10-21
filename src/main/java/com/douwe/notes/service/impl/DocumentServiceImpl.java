@@ -8,6 +8,7 @@ import com.douwe.notes.service.document.ISyntheseDocument;
 import java.io.OutputStream;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import com.douwe.notes.service.document.ISyntheseDiplomationDocument;
 
 /**
  *
@@ -25,6 +26,9 @@ public class DocumentServiceImpl implements IDocumentFacadeService {
     
     @EJB
     private IRelevetDocument relevetDocument;
+    
+    @EJB
+    private ISyntheseDiplomationDocument syntheseDiplomation;
 
     
 
@@ -66,6 +70,11 @@ public class DocumentServiceImpl implements IDocumentFacadeService {
     @Override
     public void produireRelevet(Long niveauId, Long optionId, Long anneeId, OutputStream stream, Long etudinatid) {
         relevetDocument.produireRelevet(niveauId, optionId, anneeId, stream, null);
+    }
+
+    @Override
+    public void produireSyntheseDiplomation(long cycleId, long departementId, long anneeId, OutputStream output) {
+        syntheseDiplomation.produireSyntheseDiplomation(cycleId, departementId, anneeId, output);
     }
 
 }

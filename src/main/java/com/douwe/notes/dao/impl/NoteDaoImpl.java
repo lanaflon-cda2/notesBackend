@@ -38,7 +38,7 @@ public class NoteDaoImpl extends GenericDao<Note, Long> implements INoteDao {
         Path<AnneeAcademique> anneePath = noteRoot.get(Note_.anneeAcademique);
         Path<Cours> coursPath = noteRoot.get(Note_.cours);
         Path<Evaluation> evaluationPath = noteRoot.get(Note_.evaluation);
-        List<Predicate> predicates = new ArrayList<Predicate>();
+        List<Predicate> predicates = new ArrayList<>();
         predicates.add(cb.equal(noteRoot.get(Note_.active), 1));
         if (etudiant != null) {
             predicates.add(cb.equal(etudiantPath, etudiant));
@@ -70,7 +70,7 @@ public class NoteDaoImpl extends GenericDao<Note, Long> implements INoteDao {
         Path<Etudiant> etudiantPath = noteRoot.get(Note_.etudiant);
         Path<AnneeAcademique> anneePath = noteRoot.get(Note_.anneeAcademique);
         Path<Cours> coursPath = noteRoot.get(Note_.cours);
-        List<Predicate> predicates = new ArrayList<Predicate>();
+        List<Predicate> predicates = new ArrayList<>();
         predicates.add(cb.equal(noteRoot.get(Note_.active), 1));
         if (etudiant != null) {
             predicates.add(cb.equal(etudiantPath, etudiant));
@@ -134,10 +134,6 @@ public class NoteDaoImpl extends GenericDao<Note, Long> implements INoteDao {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-//    @Override
-//    public List<EtudiantNotesUe> findAllByUe(Niveau niveau, Option option, Semestre semestre, AnneeAcademique academique) throws DataAccessException {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
 
     @Override
     public List<Note> getNoteCours(Etudiant etudiant, Cours c, AnneeAcademique annee) throws DataAccessException {

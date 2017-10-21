@@ -104,9 +104,9 @@ public interface INoteResource {
     
     
     @GET
-    @Path(value = "/salut/{matricule}/{coursId: \\d+}/{anneeId: \\d+}")
+    @Path(value = "/salut/{matricule}/{niveauId: \\d+}/{coursId: \\d+}/{anneeId: \\d+}")
     @Produces(value = "application/json")
-    EtudiantNotes noteEtudiant(@PathParam(value = "matricule")String matricule, @PathParam(value = "coursId")long coursId, @PathParam(value = "anneeId")long anneeId);
+    EtudiantNotes noteEtudiant(@PathParam(value = "matricule")String matricule,@PathParam(value = "niveauId")long niveauId, @PathParam(value = "coursId")long coursId, @PathParam(value = "anneeId")long anneeId);
     
     @GET
     @Path(value = "/{matricule}/{coursId: \\d+}/{anneeId: \\d+}")
@@ -114,9 +114,9 @@ public interface INoteResource {
     List<NoteTransfer> getNoteEtudiantCours(@PathParam(value = "matricule")String matricule, @PathParam(value = "coursId")long coursId, @PathParam(value = "anneeId")long anneeId);
     
     @GET
-    @Path(value = "/bonsoir/{matricule}/{ueId: \\d+}/{annee: \\d+}")
+    @Path(value = "/bonsoir/{matricule}/{niveauId: \\d+}/{ueId: \\d+}/{annee: \\d+}")
     @Produces(value = "application/json")
-    MoyenneUniteEnseignement moyenneEtudiant(@PathParam(value = "matricule")String matricule, @PathParam(value = "ueId")long ueId, @PathParam(value = "annee")long annee);
+    MoyenneUniteEnseignement moyenneEtudiant(@PathParam(value = "matricule")String matricule, @PathParam(value = "niveauId")long niveauId,@PathParam(value = "ueId")long ueId, @PathParam(value = "annee")long annee);
     
     @GET
     @Path(value = "/cafe/{matricule}/{niveauId: \\d+}/{optionId: \\d+}/{semestreId: \\d+}/{anneeId: \\d+}")
