@@ -11,20 +11,20 @@ angular.module("notesApp.rapports.controllers", []).controller("ProcesVerbalCont
         });
         $scope.updateOptions = function () {
             if (($scope.departement) && ($scope.niveau)) {
-                $http.get('/notesBackend/api/options/' + $scope.departement.id + '/' + $scope.niveau.id).success(function (data, status, config, headers) {
+                $http.get('api/options/' + $scope.departement.id + '/' + $scope.niveau.id).success(function (data, status, config, headers) {
                     $scope.options = data;
                 });
             }
         };
         $scope.changerOption = function () {
             if (($scope.option) && ($scope.niveau)) {
-                $http.get('/notesBackend/api/cours/' + $scope.niveau.id + '/' + $scope.option.id).success(function (data, status, config, headers) {
+                $http.get('api/cours/' + $scope.niveau.id + '/' + $scope.option.id).success(function (data, status, config, headers) {
                     $scope.cours = data;
                 });
             }
         }
         $scope.produirePV = function () {
-            var toto = "/notesBackend/api/rapport/pv/";
+            var toto = "api/rapport/pv/";
             toto = toto + $scope.niveau.id + "/";
             toto = toto + $scope.option.id + "/";
             toto = toto + $scope.cour.id + "/";
@@ -54,10 +54,10 @@ angular.module("notesApp.rapports.controllers", []).controller("ProcesVerbalCont
         });
         $scope.updateOptions = function () {
             if (($scope.departement) && ($scope.niveau)) {
-                $http.get('/notesBackend/api/options/' + $scope.departement.id + '/' + $scope.niveau.id).success(function (data, status, config, headers) {
+                $http.get('api/options/' + $scope.departement.id + '/' + $scope.niveau.id).success(function (data, status, config, headers) {
                     $scope.options = data;
                 });
-                $http.get('/notesBackend/api/niveaux/' + $scope.niveau.id + '/semestres').success(function (data, status, config, headers) {
+                $http.get('api/niveaux/' + $scope.niveau.id + '/semestres').success(function (data, status, config, headers) {
                     $scope.semestres = data;
                 });
             }
@@ -68,13 +68,13 @@ angular.module("notesApp.rapports.controllers", []).controller("ProcesVerbalCont
             $log.log($scope.semestre !== undefined);
             $log.log(!$scope.semestre);
             if (($scope.semestre !== undefined) && ($scope.semestre)) {
-                toto = "/notesBackend/api/rapport/synthese/semestre/";
+                toto = "api/rapport/synthese/semestre/";
                 toto = toto + $scope.niveau.id + "/";
                 toto = toto + $scope.option.id + "/";
                 toto = toto + $scope.annee + "/";
                 toto = toto + $scope.semestre;
             } else {
-                toto = "/notesBackend/api/rapport/synthese/annuelle/";
+                toto = "api/rapport/synthese/annuelle/";
                 toto = toto + $scope.niveau.id + "/";
                 toto = toto + $scope.option.id + "/";
                 toto = toto + $scope.annee;
@@ -104,9 +104,9 @@ angular.module("notesApp.rapports.controllers", []).controller("ProcesVerbalCont
         $scope.etudiant = undefined;
 
         $scope.updateOptions = function () {
-            console.log('/notesBackend/api/options/' + $scope.departement.id + '/' + $scope.niveau.id);
+            console.log('api/options/' + $scope.departement.id + '/' + $scope.niveau.id);
             if (($scope.departement) && ($scope.niveau)) {
-                $http.get('/notesBackend/api/options/' + $scope.departement.id + '/' + $scope.niveau.id).success(function (data, status, config, headers) {
+                $http.get('api/options/' + $scope.departement.id + '/' + $scope.niveau.id).success(function (data, status, config, headers) {
                     $scope.options = data;
                 });
             }
@@ -118,14 +118,14 @@ angular.module("notesApp.rapports.controllers", []).controller("ProcesVerbalCont
             $log.log(!$scope.semestre);
             if (($scope.etudiant !== undefined) && ($scope.option)) {
                 //le releve de notes de notes de l etudiant
-                toto = "/notesBackend/api/rapport/relevet/";
+                toto = "api/rapport/relevet/";
                 toto = toto + $scope.niveau.id + "/";
                 toto = toto + $scope.option.id + "/";
                 toto = toto + $scope.annee.id + "/";
                 //toto = toto + $scope.etudiant.id;
             } else {
                 //le releve de notes de notes de l option
-                toto = "/notesBackend/api/rapport/relevet/";
+                toto = "api/rapport/relevet/";
                 toto = toto + $scope.niveau.id + "/";
                 toto = toto + $scope.option.id + "/";
                 toto = toto + $scope.annee;
@@ -159,7 +159,7 @@ angular.module("notesApp.rapports.controllers", []).controller("ProcesVerbalCont
         $scope.produireDiplomation = function () {
             var toto;
 
-            toto = "/notesBackend/api/rapport/diplomation/";
+            toto = "api/rapport/diplomation/";
             toto = toto + $scope.cycle.id + "/";
             toto = toto + $scope.departement.id + "/";
             toto = toto + $scope.annee;

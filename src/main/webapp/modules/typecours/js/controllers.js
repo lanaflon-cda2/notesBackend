@@ -5,7 +5,7 @@ angular.module("notesApp.typecours.controllers", []).controller("TypecoursContro
         });
         $scope.ajouterEvaluation = function (typ, eva) {
             var modelInstance = $modal.open({
-                templateUrl: '/modules/typecours/views/nouveau_evaluation.html',
+                templateUrl: 'modules/typecours/views/nouveau_evaluation.html',
                 controller: 'EvaluationDetailController',
                 controllerAs: 'evaluation',
                 keyboard: true,
@@ -75,7 +75,7 @@ angular.module("notesApp.typecours.controllers", []).controller("TypecoursContro
         };
         $scope.afficherFenetre = function (item) {
             var modelInstance = $modal.open({
-                templateUrl: '/modules/typecours/views/nouveau.html',
+                templateUrl: 'modules/typecours/views/nouveau.html',
                 controller: 'TypecoursFenetreController',
                 controllerAs: 'semestre',
                 keyboard: true,

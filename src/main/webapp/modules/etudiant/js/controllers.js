@@ -28,7 +28,7 @@ angular.module("notesApp.etudiants.controllers", []).controller("EtudiantControl
         };
         $scope.updateOptions = function () {
             if (($scope.departement !== null) && ($scope.niveau !== null)) {
-                $http.get('/notesBackend/api/options/' + $scope.departement + '/' + $scope.niveau).success(function (data, status, config, headers) {
+                $http.get('api/options/' + $scope.departement + '/' + $scope.niveau).success(function (data, status, config, headers) {
                     $scope.options = data;
                 });
             }
@@ -55,7 +55,7 @@ angular.module("notesApp.etudiants.controllers", []).controller("EtudiantControl
             if ($scope.option !== null) {
                 queries['optionId'] = $scope.option;
             }
-            $http.get('/notesBackend/api/etudiants/inscrits', {params: queries}).success(function (data, status, config, headers) {
+            $http.get('api/etudiants/inscrits', {params: queries}).success(function (data, status, config, headers) {
                 $scope.etudiants = data;
                 $scope.totalItems = data.length;
             });
@@ -65,7 +65,7 @@ angular.module("notesApp.etudiants.controllers", []).controller("EtudiantControl
 
     $scope.afficherFenetre = function (key,item) {
             var modelInstance = $modal.open({
-                templateUrl: '/modules/etudiant/views/nouveau.html',
+                templateUrl: 'modules/etudiant/views/nouveau.html',
                 controller: 'EtudiantFenetreController',
                 controllerAs: 'depart',
                 keyboard: true,
@@ -114,7 +114,7 @@ angular.module("notesApp.etudiants.controllers", []).controller("EtudiantControl
             //Take the first selected file
             fd.append("fichier", $scope.files[0]);
             fd.append("annee", $scope.annee);
-            $http.post('/notesBackend/api/etudiants/import', fd, {
+            $http.post('api/etudiants/import', fd, {
                 withCredentials: true,
                 headers: {'Content-Type': undefined},
                 transformRequest: angular.identity
@@ -128,7 +128,7 @@ angular.module("notesApp.etudiants.controllers", []).controller("EtudiantControl
         //je suis en train de tester 
 
         var uploader = $scope.uploader = new FileUploader({
-            url: '/notesBackend/api/etudiants/import',
+            url: 'api/etudiants/import',
             method: 'POST',
             headers: {'Content-Type': undefined},
             formData:fd

@@ -15,7 +15,7 @@ angular.module("notesApp.cours.controllers", []).controller("CoursController", [
 
         $scope.filtrer = function () {
             if ($scope.departement) {
-                var query = "/notesBackend/api/departements/" + $scope.departement + "/cours";
+                var query = "api/departements/" + $scope.departement + "/cours";
                 $http.get(query).success(function (data) {
                     $log.log(data);
                     $scope.cours = data;
@@ -30,7 +30,7 @@ angular.module("notesApp.cours.controllers", []).controller("CoursController", [
         $scope.afficherFenetre = function (cle, item) {
             if ($scope.departement) {
                 var modelInstance = $modal.open({
-                    templateUrl: '/modules/cours/views/nouveau.html',
+                    templateUrl: 'modules/cours/views/nouveau.html',
                     controller: 'CoursFenetreController',
                     controllerAs: 'depart',
                     keyboard: true,

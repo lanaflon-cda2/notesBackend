@@ -31,7 +31,7 @@ angular.module("notesApp.parcours.controllers", []).controller("ParcoursControll
         $scope.departement = null;
         $scope.afficherFenetre = function (item) {
             var modelInstance = $modal.open({
-                templateUrl: '/modules/parcours/views/nouveau.html',
+                templateUrl: 'modules/parcours/views/nouveau.html',
                 controller: 'ParcoursFenetreController',
                 controllerAs: 'parcours',
                 keyboard: true,

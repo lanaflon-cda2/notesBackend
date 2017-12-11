@@ -5,7 +5,7 @@ angular.module("notesApp.annees.controllers", []).controller("AnneeController", 
         });
         $scope.afficherFenetre = function (item) {
             var modelInstance = $modal.open({
-                templateUrl: '/modules/annee/views/nouveau.html',
+                templateUrl: 'modules/annee/views/nouveau.html',
                 controller: 'AnneeFenetreController',
                 controllerAs: 'depart',
                 keyboard: true,

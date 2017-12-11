@@ -308,8 +308,9 @@ public class SyntheseDiplomationDocument implements ISyntheseDiplomationDocument
                     if (eNiveau) {
                         // I need to work hard here or maybe before
                         if (status != 0) {
-                            cell = new PdfPCell(new Phrase("Admis en "+niv.getCode().toLowerCase(), bf12));
+                            cell = new PdfPCell(new Phrase("Admis en "+niv.getCode().toLowerCase(), bf));
                             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                             cell.setColspan(status);
                             cell.setPadding(4f);
                             ptable.addCell(cell);

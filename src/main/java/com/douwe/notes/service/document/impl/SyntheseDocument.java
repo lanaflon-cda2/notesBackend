@@ -83,7 +83,6 @@ public class SyntheseDocument implements ISyntheseDocument {
     @Inject
     private ICreditDao creditDao;
 
-    
     @Inject
     private IEvaluationDao EvaluationDao;
 
@@ -101,7 +100,7 @@ public class SyntheseDocument implements ISyntheseDocument {
 
     @Inject
     private DocumentCommon common;
-    
+
     MessageHelper msgHelper = new MessageHelper();
 
     public IEtudiantDao getEtudiantDao() {
@@ -425,12 +424,14 @@ public class SyntheseDocument implements ISyntheseDocument {
             doc.add(new Phrase("\n"));
             boolean firstPage = true;
             List<AnneeAcademique> annees = academiqueDao.findAllYearWthNote(a, n, o, null);
+            System.out.println("Le nombre d'annees donne " + annees.size());
             List<Semestre> semestres = semestreDao.findByNiveau(n);
             Font bf = new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD);
             Font bf1 = new Font(Font.FontFamily.TIMES_ROMAN, 6);
             Font title = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
             Font rattra = new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.ITALIC, BaseColor.RED);
             for (AnneeAcademique annee : annees) {
+                System.out.println("Bonjour je suis l'année " + annee);
                 if (!firstPage) {
                     doc.newPage();
                 }
@@ -503,16 +504,15 @@ public class SyntheseDocument implements ISyntheseDocument {
                     table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(ue.getIntituleUE(), bf, false));
                 }
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.moyenne1"), bf, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.credit") + semestres.get(0).getIntitule() +" "+ msgHelper.getProperty("synthese.annuelleBody.valides"), bf, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.credit") + semestres.get(0).getIntitule() + " " + msgHelper.getProperty("synthese.annuelleBody.valides"), bf, true));
 
                 //table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.creditPourcentage") + semestres.get(0).getIntitule() + msgHelper.getProperty("synthese.annuelleBody.valides"), bf, true));
-
                 for (UEnseignementCredit ue : ues2) {
                     table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(ue.getIntituleUE(), bf, false));
                 }
 
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.moyenne2"), bf, true));
-                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.credit") + semestres.get(1).getIntitule() +" "+ msgHelper.getProperty("synthese.annuelleBody.valides"), bf, true));
+                table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.credit") + semestres.get(1).getIntitule() + " " + msgHelper.getProperty("synthese.annuelleBody.valides"), bf, true));
                 //table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.creditPourcentage") + semestres.get(1).getIntitule() + msgHelper.getProperty("synthese.annuelleBody.valides"), bf, true));
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.moyenneAnnuelle"), bf, false));
                 table.addCell(DocumentUtil.createSyntheseDefaultHeaderCell(msgHelper.getProperty("synthese.annuelleBody.creditCapitalise"), bf, true));
@@ -550,7 +550,7 @@ public class SyntheseDocument implements ISyntheseDocument {
                     int nbrCreditValide2 = 0;
                     double sumMoyenne2 = 0;
                     double produitMgp = 0;
-                    Map<String, MoyenneUniteEnseignement> notes = noteService.listeNoteUniteEnseignement(etudiant.getMatricule(), n.getId(),a.getId(), annee.getId(), uniteEns1);
+                    Map<String, MoyenneUniteEnseignement> notes = noteService.listeNoteUniteEnseignement(etudiant.getMatricule(), n.getId(), a.getId(), annee.getId(), uniteEns1);
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(i++), bf1, false, true));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(etudiant.getNom(), bf1, false, false));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(etudiant.getMatricule(), bf1, false, true));
@@ -558,9 +558,13 @@ public class SyntheseDocument implements ISyntheseDocument {
                         // Double value = enue.getNote().get(ue.getCodeUE());
                         //Double value = notes.get(ue)
                         MoyenneUniteEnseignement mue = notes.get(ue.getCodeUE());
+
                         double value = 0.0;
                         if (mue != null) {
                             value = mue.getMoyenne();
+                            if ((mue.getAnneeAcademique() != a) && (value < 10)) {
+                                value = 0.0;
+                            }
                             sumMoyenne1 += value * ue.getCredit();
                             produitMgp += DocumentUtil.transformNoteMgpUE(value) * ue.getCredit();
                             if (value >= 10) {
@@ -623,6 +627,7 @@ public class SyntheseDocument implements ISyntheseDocument {
                     }
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", produitMgp), bf1, true, true));
                     table.addCell(DocumentUtil.createDefaultBodyCell(decision, bf1, false));
+                    //table.addCell(DocumentUtil.createDefaultBodyCell(" ", bf1, false));
                 }
                 doc.add(table);
             }

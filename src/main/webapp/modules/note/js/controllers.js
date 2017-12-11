@@ -36,21 +36,21 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
         };
         $scope.changerDepartement = function(){
             if(($scope.departement !== undefined) && ($scope.niveau !== undefined)){
-                $http.get('/notesBackend/api/options/' + $scope.departement + '/' + $scope.niveau).success(function(data){
+                $http.get('api/options/' + $scope.departement + '/' + $scope.niveau).success(function(data){
                     $scope.options = data;
                 });
             }
         };
         $scope.changerOption = function(){
             if(($scope.option !== undefined) && ($scope.niveau !== undefined)){
-                $http.get('/notesBackend/api/cours/' + $scope.niveau + '/' + $scope.option).success(function (data, status, config, headers) {
+                $http.get('api/cours/' + $scope.niveau + '/' + $scope.option).success(function (data, status, config, headers) {
                     $scope.cours = data;
                 });
             }
         };
         $scope.changerCours = function(){
             if($scope.cour){
-                $http.get('/notesBackend/api/cours/'+$scope.cour+'/evaluations').success(function(data){
+                $http.get('api/cours/'+$scope.cour+'/evaluations').success(function(data){
                    $scope.evaluations = data; 
                 });
             }
@@ -65,7 +65,7 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
             fd.append("anneeId", $scope.annee);
             if ($scope.session)
                 fd.append("session", $scope.session);
-            $http.post('/notesBackend/api/notes/import', fd, {
+            $http.post('api/notes/import', fd, {
                 withCredentials: true,
                 headers: {'Content-Type': undefined},
                 transformRequest: angular.identity
@@ -89,22 +89,22 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
         $scope.cours;
         $scope.updateOptions = function () {
             if (($scope.departement) && ($scope.niveau)) {
-                $http.get('/notesBackend/api/options/' + $scope.departement.id + '/' + $scope.niveau.id).success(function (data, status, config, headers) {
+                $http.get('api/options/' + $scope.departement.id + '/' + $scope.niveau.id).success(function (data, status, config, headers) {
                     $scope.options = data;
                 });
             }
         };
         $scope.changerOption = function () {
-            console.log('/notesBackend/api/cours/' + $scope.niveau.id + '/' + $scope.option.id);
+            console.log('api/cours/' + $scope.niveau.id + '/' + $scope.option.id);
             if (($scope.option) && ($scope.niveau)) {
-                $http.get('/notesBackend/api/cours/' + $scope.niveau.id + '/' + $scope.option.id).success(function (data, status, config, headers) {
+                $http.get('api/cours/' + $scope.niveau.id + '/' + $scope.option.id).success(function (data, status, config, headers) {
                     $scope.cours = data;
                 });
             }
         }
         $scope.afficher = function(){
             if($scope.matricule){
-                $http.get('/notesBackend/api/notes/'+$scope.matricule+'/'+$scope.cour.id+'/'+$scope.annee).success(function(data){
+                $http.get('api/notes/'+$scope.matricule+'/'+$scope.cour.id+'/'+$scope.annee).success(function(data){
                    $scope.notes = data; 
                 });
             }
@@ -123,7 +123,7 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
 
     $scope.afficherFenetre = function (key,item) {
             var modelInstance = $modal.open({
-                templateUrl: '/modules/note/views/modificationnote.html',
+                templateUrl: 'modules/note/views/modificationnote.html',
                 controller: 'NotesFenetreController',
                 controllerAs: 'depart',
                 keyboard: true,

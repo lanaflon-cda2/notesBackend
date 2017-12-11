@@ -15,7 +15,7 @@ angular.module("notesApp.options.controllers", []).controller("OptionController"
 
         $scope.afficherFenetre = function (item) {
             var modelInstance = $modal.open({
-                templateUrl: '/modules/option/views/nouveau.html',
+                templateUrl: 'modules/option/views/nouveau.html',
                 controller: 'OptionFenetreController',
                 controllerAs: 'opt',
                 keyboard: true,

@@ -5,7 +5,7 @@ function($scope, $modal, Cycle) {
 	});
 	$scope.afficherFenetre = function(item) {
 		var modelInstance = $modal.open({
-			templateUrl : '/modules/cycle/views/nouveau.html',
+			templateUrl : 'modules/cycle/views/nouveau.html',
 			controller : 'CycleFenetreController',
 			controllerAs : 'depart',
 			keyboard : true,

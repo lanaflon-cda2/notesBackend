@@ -13,7 +13,7 @@ angular.module("notesApp.programme.controllers", []).controller("ProgrammeContro
 
         $scope.filtrer = function () {
             if (($scope.departement !== undefined) && ($scope.niveau !== undefined) && ($scope.annee !== undefined) && ($scope.semestre !== undefined) && ($scope.option !== undefined)) {
-                $http.get('/notesBackend/api/programmes/' + $scope.annee.id + '/' + $scope.niveau + '/' + $scope.option + '/' + $scope.semestre.id).success(function (data) {
+                $http.get('api/programmes/' + $scope.annee.id + '/' + $scope.niveau + '/' + $scope.option + '/' + $scope.semestre.id).success(function (data) {
                     $scope.programmes = data;
                 });
             }
@@ -21,12 +21,12 @@ angular.module("notesApp.programme.controllers", []).controller("ProgrammeContro
 
         $scope.updateOptionsSemestre = function () {
             if ($scope.niveau !== undefined) {
-                $http.get('/notesBackend/api/niveaux/' + $scope.niveau + "/semestres").success(function (data) {
+                $http.get('api/niveaux/' + $scope.niveau + "/semestres").success(function (data) {
                     $scope.semestres = data;
                 });
                 $scope.semestre = undefined;
                 if ($scope.departement !== undefined) {
-                    $http.get('/notesBackend/api/options/' + $scope.departement + '/' + $scope.niveau).success(function (data) {
+                    $http.get('api/options/' + $scope.departement + '/' + $scope.niveau).success(function (data) {
                         $scope.options = data;
                     });
                     $scope.option = undefined;
@@ -38,7 +38,7 @@ angular.module("notesApp.programme.controllers", []).controller("ProgrammeContro
         $scope.afficherFenetre = function (cle, item) {
             if (($scope.departement !== undefined) && ($scope.niveau !== undefined) && ($scope.annee !== undefined) && ($scope.semestre !== undefined) && ($scope.option !== undefined)) {
                 var modelInstance = $modal.open({
-                    templateUrl: '/modules/programme/views/nouveau.html',
+                    templateUrl: 'modules/programme/views/nouveau.html',
                     controller: 'ProrammeFenetreController',
                     controllerAs: 'programme',
                     keyboard: true,
@@ -60,11 +60,11 @@ angular.module("notesApp.programme.controllers", []).controller("ProgrammeContro
                     item.anneeAcademique = $scope.annee;
                     item.semestre = $scope.semestre;
                     if ((item.id !== undefined) && (cle !== null)) {
-                        $http.put('/notesBackend/api/programmes/' + $scope.niveau + '/' + $scope.option + '/' + item.id, item).success(function (data) {
+                        $http.put('api/programmes/' + $scope.niveau + '/' + $scope.option + '/' + item.id, item).success(function (data) {
                             $scope.programmes.splice(cle, 1, item);
                         });
                     } else {
-                        $http.post('/notesBackend/api/programmes/' + $scope.niveau + '/' + $scope.option, item).success(function (data) {
+                        $http.post('api/programmes/' + $scope.niveau + '/' + $scope.option, item).success(function (data) {
                             $scope.programmes.push(data);
                         });
                     }
@@ -90,7 +90,7 @@ angular.module("notesApp.programme.controllers", []).controller("ProgrammeContro
         $scope.niveau = element.niveau;
         $scope.option = element.option;
 
-        $http.get('/notesBackend/api/uniteEns/' + $scope.niveau + '/' + $scope.option).success(function (data) {
+        $http.get('api/uniteEns/' + $scope.niveau + '/' + $scope.option).success(function (data) {
             $scope.unites = data;
         });
 

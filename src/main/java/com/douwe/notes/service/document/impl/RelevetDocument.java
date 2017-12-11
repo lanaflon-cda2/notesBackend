@@ -547,8 +547,10 @@ public class RelevetDocument implements IRelevetDocument {
             Map<String, String> semtrs = infos.getSemestres();
             int nombreCours = ues.size();
             float padding = 6f * 16 / nombreCours;
+            
             if (estTerminale) {
                 padding = 5.8f * 16 / nombreCours;
+                //padding = 4.0f * 16 / nombreCours;
             }
             for (UEnseignementCredit ue : ues) {
                 if (ue.getCredit() != 0) {
@@ -633,6 +635,8 @@ public class RelevetDocument implements IRelevetDocument {
             table2.addCell(DocumentUtil.createRelevetFootBodyCell(aToutValide ? DocumentUtil.transformMoyenneMgpToGradeRelevet(infos.getMoyenneMgp()) : "        ", bf, false, 1, 1));
             table2.addCell(DocumentUtil.createRelevetFootBodyCell((infos.getMoyenne() >= 10) ? "AD" : "RD", bf, false, 1, 1));
             table2.addCell(DocumentUtil.createRelevetFootBodyCell(aToutValide ? DocumentUtil.transformMoyenneMgpToMentionRelevet(infos.getMoyenneMgp()) : "               ", bf, false, 2, 2));
+            cell.setBorderWidth(0.01f);
+            cell.setBorderColor(BaseColor.BLACK);
             /*Chunk toto = new Chunk("Très Bien / Second Class Hons. Upper Division", bf);
             toto.setGenericTag("shadow");
             PdfPCell ccc = new PdfPCell(new Phrase(toto));
@@ -664,6 +668,8 @@ public class RelevetDocument implements IRelevetDocument {
                 table2.addCell(DocumentUtil.createRelevetFootBodyCell((res == null) ? "" : DocumentUtil.transformMoyenneMgpToMentionRelevet(infos.getMgpCycle()), bf, false, 1, 1));
                 cell = new PdfPCell();
                 cell.setColspan(8);
+                cell.setBorderWidth(0.01f);
+                cell.setBorderColor(BaseColor.BLACK);
                 cell.setBorderColorTop(BaseColor.WHITE);
                 cell.setBorderWidthTop(0);
                 //cell.setBorderColor(BaseColor.WHITE);

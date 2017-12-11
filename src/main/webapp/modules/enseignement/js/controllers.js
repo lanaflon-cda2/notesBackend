@@ -15,7 +15,7 @@ angular.module("notesApp.enseignements.controllers", []).controller("Enseignemen
 
         $scope.modificationDepartement = function () {
             if (($scope.departement !== undefined) && ($scope.niveau !== undefined)) {
-                $http.get('/notesBackend/api/options/' + $scope.departement + '/' + $scope.niveau).success(function (data, status, config, headers) {
+                $http.get('api/options/' + $scope.departement + '/' + $scope.niveau).success(function (data, status, config, headers) {
                     $scope.options = data;
                 });
                 $scope.option = null;
@@ -24,7 +24,7 @@ angular.module("notesApp.enseignements.controllers", []).controller("Enseignemen
 
         $scope.filtrer = function () {
             if (($scope.departement !== undefined) && ($scope.niveau !== undefined) && ($scope.annee !== undefined) && ($scope.option !== undefined)) {
-                $http.get('/notesBackend/api/enseignements/' + $scope.annee + '/' + $scope.niveau + '/' + $scope.option).success(function (data, status, config, headers) {
+                $http.get('api/enseignements/' + $scope.annee + '/' + $scope.niveau + '/' + $scope.option).success(function (data, status, config, headers) {
                     $scope.enseignements = data;
                 });
             }
@@ -32,7 +32,7 @@ angular.module("notesApp.enseignements.controllers", []).controller("Enseignemen
         $scope.afficherFenetre = function (cle, item) {
             if (($scope.departement !== undefined) && ($scope.niveau !== undefined) && ($scope.annee !== undefined) && ($scope.option !== undefined)) {
                 var modelInstance = $modal.open({
-                    templateUrl: '/modules/enseignement/views/nouveau.html',
+                    templateUrl: 'modules/enseignement/views/nouveau.html',
                     controller: 'EnseignementFenetreController',
                     controllerAs: 'depart',
                     keyboard: true,
@@ -53,11 +53,11 @@ angular.module("notesApp.enseignements.controllers", []).controller("Enseignemen
                     var item = resultat.item;
                     var cle = resultat.cle;
                     if ((item.id !== undefined) && (cle !== undefined)) {
-                        $http.put('/notesBackend/api/enseignements/' + $scope.annee + '/' + $scope.niveau + '/' + $scope.option + '/' + item.id, item).success(function (data) {
+                        $http.put('api/enseignements/' + $scope.annee + '/' + $scope.niveau + '/' + $scope.option + '/' + item.id, item).success(function (data) {
                             $scope.enseignements.splice(cle, 1, data);
                         });
                     } else {
-                        $http.post('/notesBackend/api/enseignements/' + $scope.annee + '/' + $scope.niveau + '/' + $scope.option, item).success(function (data) {
+                        $http.post('api/enseignements/' + $scope.annee + '/' + $scope.niveau + '/' + $scope.option, item).success(function (data) {
                             $scope.enseignements.push(data);
                         });
                     }
@@ -79,7 +79,7 @@ angular.module("notesApp.enseignements.controllers", []).controller("Enseignemen
     function ($http, $scope, $modalInstance, element, Enseignant, Annee, Enseignant) {
         $scope.element = element.item;
         $scope.cle = element.cle;
-        $http.get('/notesBackend/api/cours/' + element.niveau + '/' + element.option).success(function (data) {
+        $http.get('api/cours/' + element.niveau + '/' + element.option).success(function (data) {
             $scope.cours = data;
         });
         var enseignants = Enseignant.query(function () {

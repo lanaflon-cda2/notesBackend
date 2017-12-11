@@ -11,7 +11,7 @@ angular.module("notesApp.uniteenseignements.controllers", []).controller("UniteE
 
         $scope.modificationDepartement = function () {
             if (($scope.departement) && ($scope.niveau)) {
-                $http.get('/notesBackend/api/options/' + $scope.departement + '/' + $scope.niveau).success(function (data, status, config, headers) {
+                $http.get('api/options/' + $scope.departement + '/' + $scope.niveau).success(function (data, status, config, headers) {
                     $scope.options = data;
                 });
                 $scope.option = null;
@@ -19,13 +19,13 @@ angular.module("notesApp.uniteenseignements.controllers", []).controller("UniteE
         };
         $scope.filtrer = function () {
             if (($scope.niveau) && ($scope.option)) {
-                $http.get('/notesBackend/api/uniteEns/' + $scope.niveau + '/' + $scope.option).success(function (data, status, config, headers) {
+                $http.get('api/uniteEns/' + $scope.niveau + '/' + $scope.option).success(function (data, status, config, headers) {
                     $scope.unites = data;
                 });
             }
             
             if($scope.departement){
-                $http.get("/notesBackend/api/departements/"+ $scope.departement + "/cours").success(function(data){
+                $http.get("api/departements/"+ $scope.departement + "/cours").success(function(data){
                     $scope.cours = data;
                 }
                         );
@@ -37,7 +37,7 @@ angular.module("notesApp.uniteenseignements.controllers", []).controller("UniteE
 
         $scope.afficherFenetre = function (cle,item) {
             var modelInstance = $modal.open({
-                templateUrl: '/modules/uniteEnseignement/views/nouveau.html',
+                templateUrl: 'modules/uniteEnseignement/views/nouveau.html',
                 controller: 'UniteEnsFenetreController',
                 controllerAs: 'unite',
                 keyboard: true,
@@ -60,11 +60,11 @@ angular.module("notesApp.uniteenseignements.controllers", []).controller("UniteE
                 var item = resultat.element;
                 var cle = resultat.cle;
                 if (item.id && (cle !== undefined)) {
-                    $http.put('/notesBackend/api/uniteEns/'+resultat.niveau+'/'+resultat.option+'/'+item.id, item).success(function (data, status, config, headers) {
+                    $http.put('api/uniteEns/'+resultat.niveau+'/'+resultat.option+'/'+item.id, item).success(function (data, status, config, headers) {
                         $scope.unites.splice(cle, 1, item);
                     });
                 } else {
-                    $http.post('/notesBackend/api/uniteEns/'+resultat.niveau+'/'+resultat.option, item).success(function (data, status, config, headers) {
+                    $http.post('api/uniteEns/'+resultat.niveau+'/'+resultat.option, item).success(function (data, status, config, headers) {
                         $scope.unites.push(data);
                     });
                 }
@@ -91,7 +91,7 @@ angular.module("notesApp.uniteenseignements.controllers", []).controller("UniteE
         
         $scope.modificationDepartement = function () {
             if (($scope.departement) && ($scope.niveau)) {
-                $http.get('/notesBackend/api/options/' + $scope.departement + '/' + $scope.niveau).success(function (data, status, config, headers) {
+                $http.get('api/options/' + $scope.departement + '/' + $scope.niveau).success(function (data, status, config, headers) {
                     $scope.options = data;
                 });
                 $scope.option = {};

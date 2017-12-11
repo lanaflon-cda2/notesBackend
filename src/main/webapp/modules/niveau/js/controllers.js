@@ -6,7 +6,7 @@ angular.module("notesApp.niveaux.controllers", []).controller("NiveauController"
 
         $scope.afficherFenetre = function (item) {
             var modelInstance = $modal.open({
-                templateUrl: '/modules/niveau/views/nouveau.html',
+                templateUrl: 'modules/niveau/views/nouveau.html',
                 controller: 'NiveauFenetreController',
                 controllerAs: 'depart',
                 keyboard: true,

@@ -76,6 +76,7 @@ public class AnneeAcademiqueDaoImpl extends GenericDao<AnneeAcademique, Long> im
         CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
         Root<Note> noteRoot = cq.from(Note.class);
         Root<Inscription> inscriptionRoot = cq.from(Inscription.class);
+        Root<Inscription> inscriptionRoot1 = cq.from(Inscription.class);
         Root<Programme> programmeRoot = cq.from(Programme.class);
         Path<AnneeAcademique> anneePath = noteRoot.get(Note_.anneeAcademique);
         Path<Etudiant> etudiantPath = noteRoot.get(Note_.etudiant);
@@ -90,8 +91,11 @@ public class AnneeAcademiqueDaoImpl extends GenericDao<AnneeAcademique, Long> im
         predicates.add(cb.isMember(coursPath, programmeRoot.get(Programme_.uniteEnseignement).get(UniteEnseignement_.cours)));
         predicates.add(cb.equal(anneePath, annee));
         // J'écris vraiment des requêtes compliquées
-        predicates.add(cb.equal(parcoursPath.get(Parcours_.niveau).get(Niveau_.cycle), niveau.getCycle()));
-        predicates.add(cb.equal(inscriptionRoot.get(Inscription_.anneeAcademique), annee));
+        //predicates.add(cb.equal(parcoursPath.get(Parcours_.niveau).get(Niveau_.cycle), niveau.getCycle()));
+        predicates.add(cb.equal(inscriptionRoot1.get(Inscription_.anneeAcademique), annee));
+        predicates.add(cb.equal(inscriptionRoot1.get(Inscription_.etudiant), etudiantPath));
+        predicates.add(cb.equal(inscriptionRoot1.get(Inscription_.parcours).get(Parcours_.niveau).get(Niveau_.cycle), niveau.getCycle()));
+        predicates.add(cb.equal(inscriptionRoot1.get(Inscription_.anneeAcademique), annee));
         if (semestre != null) {
             predicates.add(cb.equal(programmeRoot.get(Programme_.semestre), semestre));
         }

@@ -1,5 +1,5 @@
 angular.module("notesApp.options.services", []).factory('Option', function ($resource) {
-    return $resource("/notesBackend/api/options/:id", {
+    return $resource("api/options/:id", {
         id: '@id'
     }, {
         update: {
@@ -13,7 +13,7 @@ angular.module("notesApp.options.services", []).factory('Option', function ($res
 }).factory('NiveauxOptions', function ($http) {
     return {
         getOptionsNiveau: function (departement, niveau) {
-            return $http.get('/notesBackend/api/options/' + departement + '/' + niveau).then(function(response) { 
+            return $http.get('api/options/' + departement + '/' + niveau).then(function(response) { 
                 return response.data; 
             });
         }

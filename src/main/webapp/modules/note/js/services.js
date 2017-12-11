@@ -1,5 +1,5 @@
 angular.module("notesApp.notes.services", []).factory('Note', function ($resource) {
-    return $resource("/notesBackendapi/notes/:id", {
+    return $resource("api/notes/:id", {
         id: '@id'
     }, {
         update: {
@@ -7,7 +7,7 @@ angular.module("notesApp.notes.services", []).factory('Note', function ($resourc
         },
         toto: {
             method: 'GET',
-            url:"/notesBackend/api/options/:first/:second"
+            url:"api/options/:first/:second"
         }
     });
 });

@@ -5,7 +5,7 @@ function($scope, $modal, $log, Evaluation) {
 	});
 	$scope.afficherFenetre = function(item) {
 		var modelInstance = $modal.open({
-			templateUrl : '/modules/evaluation/views/nouveau.html',
+			templateUrl : 'modules/evaluation/views/nouveau.html',
 			controller : 'EvaluationFenetreController',
 			controllerAs : 'depart',
 			keyboard : true,

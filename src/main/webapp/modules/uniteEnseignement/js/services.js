@@ -1,5 +1,5 @@
 angular.module("notesApp.uniteenseignements.services", []).factory('UniteEns', function ($resource) {
-    return $resource("/notesBackend/api/uniteEns/:id", {
+    return $resource("api/uniteEns/:id", {
         id: '@id'
     }, {
         update: {
@@ -9,7 +9,7 @@ angular.module("notesApp.uniteenseignements.services", []).factory('UniteEns', f
 }).factory('ListeCours', function ($http) {
     return {
         getCoursUe: function (ue) {
-            return $http.get('/notesBackend/api/uniteEns/' + ue+ '/cours').then(function (response) {
+            return $http.get('api/uniteEns/' + ue+ '/cours').then(function (response) {
                 return response.data;
             });
         }

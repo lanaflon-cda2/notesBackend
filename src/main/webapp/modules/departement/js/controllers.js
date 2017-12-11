@@ -8,7 +8,7 @@ angular.module("notesApp.departements.controllers", []).controller("DepartementC
 
         $scope.afficherFenetre = function (key,item) {
             var modelInstance = $modal.open({
-                templateUrl: '/modules/departement/views/nouveau.html',
+                templateUrl: 'modules/departement/views/nouveau.html',
                 controller: 'DepartementFenetreController',
                 controllerAs: 'depart',
                 keyboard: true,

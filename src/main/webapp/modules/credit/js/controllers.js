@@ -14,7 +14,7 @@ angular.module("notesApp.credits.controllers", []).controller("CreditController"
 
         $scope.filtrer = function () {
             if (($scope.departement !== undefined) && ($scope.niveau !== undefined) && ($scope.annee !== undefined) && ($scope.option !== undefined)) {
-                $http.get('/notesBackend/api/credits/' + $scope.annee.id + '/' + $scope.niveau + '/' + $scope.option).success(function (data) {
+                $http.get('api/credits/' + $scope.annee.id + '/' + $scope.niveau + '/' + $scope.option).success(function (data) {
                     $scope.credits = data;
                 });
             }
@@ -22,7 +22,7 @@ angular.module("notesApp.credits.controllers", []).controller("CreditController"
 
         $scope.updateOptionsSemestre = function () {
             if (($scope.niveau !== undefined) && ($scope.departement !== undefined)) {
-                $http.get('/notesBackend/api/options/' + $scope.departement + '/' + $scope.niveau).success(function (data) {
+                $http.get('api/options/' + $scope.departement + '/' + $scope.niveau).success(function (data) {
                     $scope.options = data;
                 });
                 $scope.option = undefined;
@@ -31,7 +31,7 @@ angular.module("notesApp.credits.controllers", []).controller("CreditController"
         $scope.afficherFenetre = function (cle, item) {
             if (($scope.departement !== undefined) && ($scope.niveau !== undefined) && ($scope.annee !== undefined) && ($scope.option !== undefined)) {
                 var modelInstance = $modal.open({
-                    templateUrl: '/modules/credit/views/nouveau.html',
+                    templateUrl: 'modules/credit/views/nouveau.html',
                     controller: 'CreditFenetreController',
                     controllerAs: 'credit',
                     keyboard: true,
@@ -53,11 +53,11 @@ angular.module("notesApp.credits.controllers", []).controller("CreditController"
                     item.academique = $scope.annee;
                     item.semestre = $scope.semestre;
                     if ((item.id !== undefined) && (cle !== null)) {
-                        $http.put('/notesBackend/api/credits/' + $scope.niveau + '/' + $scope.option + '/' + item.id, item).success(function (data) {
+                        $http.put('api/credits/' + $scope.niveau + '/' + $scope.option + '/' + item.id, item).success(function (data) {
                             $scope.credits.splice(cle, 1, item);
                         });
                     } else {
-                        $http.post('/notesBackend/api/credits/' + $scope.niveau + '/' + $scope.option, item).success(function (data) {
+                        $http.post('api/credits/' + $scope.niveau + '/' + $scope.option, item).success(function (data) {
                             $scope.credits.push(data);
                         });
                     }
@@ -83,7 +83,7 @@ angular.module("notesApp.credits.controllers", []).controller("CreditController"
         $scope.niveau = element.niveau;
         $scope.option = element.option;
 
-        $http.get('/notesBackend/api/cours/' + $scope.niveau + '/' + $scope.option).success(function (data) {
+        $http.get('api/cours/' + $scope.niveau + '/' + $scope.option).success(function (data) {
             $scope.cours = data;
         });
 

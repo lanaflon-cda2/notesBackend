@@ -1,5 +1,5 @@
 angular.module("notesApp.cycles.services", []).factory('Cycle', function($resource) {
-	return $resource("/notesBackend/api/cycles/:id", {
+	return $resource("api/cycles/:id", {
 		id : '@id'
 	}, {
 		update : {

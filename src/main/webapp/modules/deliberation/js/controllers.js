@@ -14,14 +14,14 @@ angular.module("notesApp.deliberations.controllers", []).controller("Deliberatio
         $scope.supInclusive = false;
         $scope.updateOptions = function () {
             if (($scope.departement) && ($scope.niveau)) {
-                $http.get('/notesBackend/api/options/' + $scope.departement.id + '/' + $scope.niveau.id).success(function (data, status, config, headers) {
+                $http.get('api/options/' + $scope.departement.id + '/' + $scope.niveau.id).success(function (data, status, config, headers) {
                     $scope.options = data;
                 });
             }
         };
         $scope.changerOption = function () {
             if (($scope.option) && ($scope.niveau)) {
-                $http.get('/notesBackend/api/cours/' + $scope.niveau.id + '/' + $scope.option.id).success(function (data, status, config, headers) {
+                $http.get('api/cours/' + $scope.niveau.id + '/' + $scope.option.id).success(function (data, status, config, headers) {
                     $scope.cours = data;
                 });
             }
@@ -42,7 +42,7 @@ angular.module("notesApp.deliberations.controllers", []).controller("Deliberatio
             fd.append("moyenne", $scope.moyenneFinale);
             if ($scope.session)
                 fd.append("session", $scope.session);
-            $http.post('/notesBackend/api/notes/deliberation', fd, {
+            $http.post('api/notes/deliberation', fd, {
                 withCredentials: true,
                 headers: {'Content-Type': undefined},
                 transformRequest: angular.identity
@@ -69,7 +69,7 @@ angular.module("notesApp.deliberations.controllers", []).controller("Deliberatio
             fd.append("moyenne", $scope.moyenneFinale);
             if ($scope.session)
                 fd.append("session", $scope.session);
-            $http.put('/notesBackend/api/notes/deliberation', fd, {
+            $http.put('api/notes/deliberation', fd, {
                 withCredentials: true,
                 headers: {'Content-Type': undefined},
                 transformRequest: angular.identity

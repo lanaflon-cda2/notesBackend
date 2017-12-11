@@ -5,7 +5,7 @@ angular.module("notesApp.semestres.controllers", []).controller("SemestreControl
         });
         $scope.afficherFenetre = function (item) {
             var modelInstance = $modal.open({
-                templateUrl: '/modules/semestre/views/nouveau.html',
+                templateUrl: 'modules/semestre/views/nouveau.html',
                 controller: 'SemestreFenetreController',
                 controllerAs: 'semestre',
                 keyboard: true,

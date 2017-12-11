@@ -14,7 +14,7 @@ angular.module("notesApp.enseignants.controllers", []).controller("EnseignantCon
         // fin de la pagination
         $scope.afficherFenetre = function (cle, item) {
             var modelInstance = $modal.open({
-                templateUrl: '/modules/enseignant/views/nouveau.html',
+                templateUrl: 'modules/enseignant/views/nouveau.html',
                 controller: 'EnseignantFenetreController',
                 controllerAs: 'enseignant',
                 keyboard: true,
