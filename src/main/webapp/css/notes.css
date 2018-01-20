@@ -1,6 +1,5 @@
 body{
-    background-color: #caeeff;
-    text-shadow: 0px 1px 1px rgba(255,255,255,.9);
+    background-color: #f7f7f7;
 }
 #main{
     margin-top: 5px;
@@ -15,7 +14,6 @@ footer{
 }
 header{
     height: 130px;
-    background-image: url("../img/logo.png");
     background-repeat: no-repeat;
     background-position: center 0px;
 }
@@ -39,12 +37,15 @@ input.ng-dirty.ng-invalid {
 }
 
 #loading{
-    background-image: url("../img/ajax-loader.gif");
+    background-image: url(../img/ajax-loader.gif);
     background-repeat: no-repeat;
     background-position: center 0px;
     height: 100px;
-    width: 100%;
+    width: 50%;
     margin-bottom: 20px;
+    background-size: 100% 100%;
+    min-height: 200px;
+    margin-left: 25%;
 }
 
 ul.inline-elements{
@@ -80,5 +81,8 @@ ul.inline-elements li{
 
 .no-selection.ng-hide-remove-active{
     opacity : 1;
+}
+tr.success{
+    background: white;
 }
 
