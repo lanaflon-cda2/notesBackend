@@ -549,8 +549,8 @@ public class RelevetDocument implements IRelevetDocument {
             float padding = 6f * 16 / nombreCours;
             
             if (estTerminale) {
-                padding = 5.8f * 16 / nombreCours;
-                //padding = 4.0f * 16 / nombreCours;
+               // padding = 5.8f * 16 / nombreCours;
+                padding = 4.0f * 16 / nombreCours;
             }
             for (UEnseignementCredit ue : ues) {
                 if (ue.getCredit() != 0) {
