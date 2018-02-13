@@ -259,7 +259,7 @@ public class NoteServiceImpl implements INoteService {
     }
 
     private List<EtudiantNotes> listeNoteEtudiant(Cours cours, AnneeAcademique academique, Niveau niveau, Option option, Session session) throws DataAccessException {
-        List<EtudiantNotes> result = new ArrayList<EtudiantNotes>();
+        List<EtudiantNotes> result = new ArrayList<>();
         Map<String, Integer> calc = getEvaluationDetails(cours);
 
         // recuperer les listes des  étudiants du parcours
@@ -270,12 +270,14 @@ public class NoteServiceImpl implements INoteService {
             EtudiantNotes et = new EtudiantNotes();
             et.setMatricule(etudiant.getMatricule());
             et.setNom(etudiant.getNom());
-            Map<String, Double> notes = new HashMap<String, Double>();
+            Map<String, Double> notes = new HashMap<>();
             List<Note> nn = noteDao.listeNoteCours(etudiant, cours, academique, session);
             for (Note nn1 : nn) {
                 notes.put(nn1.getEvaluation().getCode(), nn1.getValeur());
             }
             et.setNote(notes);
+            // TODO I need to review this
+            et.setAnnee(academique);
             et.setDetails(calc);
             result.add(et);
         }
@@ -461,7 +463,8 @@ public class NoteServiceImpl implements INoteService {
                 if (n != null) {
                     result.getCredits().put(cours.getCours().getIntitule(), cours.getCredit());
                     result.getSessions().add(n.getSession());
-                    result.getNotes().put(cours.getCours().getIntitule(), n.getMoyenne());
+                    // TODO I need to review something here
+                    result.getNotes().put(cours.getCours().getIntitule(), n.getMoyenne().get());
                     result.getAnnees().add(n.getAnnee());
                 }
 
@@ -526,7 +529,8 @@ public class NoteServiceImpl implements INoteService {
         List<EtudiantNotes> toto = listeNoteEtudiant(c, a, n, o, s);
         for (EtudiantNotes toto1 : toto) {
             // I need to keep only those with values that belongs to the right interval
-            double moyenne = toto1.getMoyenne();
+            // I need to review something here
+            double moyenne = toto1.getMoyenne().get();
             boolean test1 = infInclusive ? moyenne >= borneInf : moyenne > borneInf;
             boolean test2 = supInclusive ? moyenne <= borneSup : moyenne < borneSup;
             if (test1 && test2) {
@@ -541,7 +545,8 @@ public class NoteServiceImpl implements INoteService {
                 noteApres = Math.ceil(noteApres * 4) / 4.0;
                 // TODO je dois surement eviter de faire ce genre de chose
                 toto1.getNote().put("EE", noteApres);
-                item.setMoyenneApres(toto1.getMoyenne());
+                // TODO I need to review this code
+                item.setMoyenneApres(toto1.getMoyenne().get());
                 item.setNoteAvant(noteAvant);
                 item.setNoteApres(noteApres);
                 result.add(item);

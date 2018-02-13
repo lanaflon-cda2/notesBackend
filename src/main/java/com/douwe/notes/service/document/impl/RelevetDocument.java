@@ -52,6 +52,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -565,7 +566,7 @@ public class RelevetDocument implements IRelevetDocument {
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(value < 10 ? "0" : String.valueOf(ue.getCredit()), bf1, false, true, padding, padding));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", value), bf1, false, true, padding, padding));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(mgp.get(ue.getCodeUE())), bf1, false, true, padding, padding));
-                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.transformNoteGradeUE(value), bf1, false, true, padding, padding));
+                    table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.transformNoteGradeUE(Optional.of(value)), bf1, false, true, padding, padding));
 
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(semtrs.get(ue.getCodeUE()), bf1, false, true, padding, padding));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(DocumentUtil.sessionToString(session), bf1, false, true, padding, padding));

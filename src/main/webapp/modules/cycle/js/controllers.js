@@ -26,7 +26,7 @@ function($scope, $modal, Cycle) {
 				item.$update(function() {
 					var id;
 					for (var i = 0; i < $scope.cycles.length; i++) {
-						if ($scope.cycles[i].id == item.id) {
+						if ($scope.cycles[i].id === item.id) {
 							id = i;
 							break;
 						}
@@ -36,8 +36,8 @@ function($scope, $modal, Cycle) {
 					}
 				});
 			} else {
-				Cycle.save(item, function() {
-					$scope.cycles.push(item);
+				Cycle.save(item, function(data) {
+					$scope.cycles.push(data);
 				});
 			}
 		}, function() {
@@ -51,7 +51,7 @@ function($scope, $modal, Cycle) {
 			}, function() {
 				var id;
 				for (var i = 0; i < $scope.cycles.length; i++) {
-					if ($scope.cycles[i].id == item.id) {
+					if ($scope.cycles[i].id === item.id) {
 						id = i;
 						break;
 					}

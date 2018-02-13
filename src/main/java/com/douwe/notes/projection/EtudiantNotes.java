@@ -3,6 +3,7 @@ package com.douwe.notes.projection;
 import com.douwe.notes.entities.AnneeAcademique;
 import com.douwe.notes.entities.Session;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  *
@@ -22,14 +23,20 @@ public class EtudiantNotes {
     
     private Map<String, Integer> details;
     
-    public double getMoyenne(){
+    public Optional<Double> getMoyenne(){
         double res = 0;
+        boolean isClean = true;
         for (Map.Entry<String, Integer> col : details.entrySet()) {
             if(note.containsKey(col.getKey())){
                 res += note.get(col.getKey()) * col.getValue();
+            }else{
+                isClean = false;
             }
         }
-        return res / 100;
+        if (isClean || annee.getNumeroDebut() < 2017){
+            return Optional.of(res / 100);
+        }
+        return Optional.empty();
     }
 
     public String getMatricule() {

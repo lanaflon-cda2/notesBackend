@@ -8,6 +8,7 @@ import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
+import java.util.Optional;
 
 /**
  *
@@ -75,40 +76,45 @@ public class DocumentUtil {
         return MSGHELPER.getProperty("util.echoue");
     }
 
-    public static String transformNoteGradeUE(double note) {
-        if (note <= 20 && note >= 18) {
-            return "A+";
-        }
-        if (note < 18 && note >= 16) {
-            return "A";
-        }
+    public static String transformNoteGradeUE(Optional<Double> noteD) {
+        if (noteD.isPresent()) {
+            double note = noteD.get();
+            if (note <= 20 && note >= 18) {
+                return "A+";
+            }
+            if (note < 18 && note >= 16) {
+                return "A";
+            }
 
-        if (note < 16 && note >= 14) {
-            return "B+";
-        }
-        if (note < 14 && note >= 13) {
-            return "B";
-        }
-        if (note < 13 && note >= 12) {
-            return "B-";
-        }
-        if (note < 12 && note >= 11) {
-            return "C+";
-        }
-        if (note < 11 && note >= 10) {
-            return "C";
-        }
-        if (note < 10 && note >= 9) {
-            return "C-";
-        }
-        if (note < 9 && note >= 8) {
-            return "D";
-        }
-        if (note < 8 && note >= 6) {
-            return "E";
-        }
+            if (note < 16 && note >= 14) {
+                return "B+";
+            }
+            if (note < 14 && note >= 13) {
+                return "B";
+            }
+            if (note < 13 && note >= 12) {
+                return "B-";
+            }
+            if (note < 12 && note >= 11) {
+                return "C+";
+            }
+            if (note < 11 && note >= 10) {
+                return "C";
+            }
+            if (note < 10 && note >= 9) {
+                return "C-";
+            }
+            if (note < 9 && note >= 8) {
+                return "D";
+            }
+            if (note < 8 && note >= 6) {
+                return "E";
+            }
 
-        return "F";
+            return "F";
+        } else {
+            return "EL";
+        }
     }
 
     public static double transformNoteMgpUE(double note) {

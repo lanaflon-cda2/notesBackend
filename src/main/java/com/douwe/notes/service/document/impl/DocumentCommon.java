@@ -35,13 +35,13 @@ import org.springframework.core.io.ClassPathResource;
  */
 @Stateless
 public class DocumentCommon {
-    
-     @Inject
-    private  IParcoursDao parcoursDao;
-     
-     @Inject
+
+    @Inject
+    private IParcoursDao parcoursDao;
+
+    @Inject
     private IEnseignantDao enseignantDao;
-     
+
     MessageHelper msgHelper = new MessageHelper();
 
     public IParcoursDao getParcoursDao() {
@@ -59,12 +59,8 @@ public class DocumentCommon {
     public void setEnseignantDao(IEnseignantDao enseignantDao) {
         this.enseignantDao = enseignantDao;
     }
-     
-     
-    
-    
-   
-    public  void produceDocumentHeader(Document doc, Cours c, Niveau n, Option o, AnneeAcademique a, Session s, Programme prog, Credit credit, boolean departement) throws Exception {
+
+    public void produceDocumentHeader(Document doc, Cours c, Niveau n, Option o, AnneeAcademique a, Session s, Programme prog, Credit credit, boolean departement) throws Exception {
         Font bf12 = new Font(Font.FontFamily.TIMES_ROMAN, 8);
         Font fontEntete = new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD);
         // Définition de l'entete du document
@@ -76,7 +72,11 @@ public class DocumentCommon {
         builder.append("****\n");
         builder.append("Université de Maroua\n");
         builder.append("****\n");
-        builder.append("Institut Supérieur du Sahel");
+        if (a.getNumeroDebut() < 2017) {
+            builder.append("Institut Supérieur du Sahel");
+        } else {
+            builder.append("École Nationale Supérieure Polytechnique de Maroua");
+        }
         if (departement) {
             builder.append("\n****\n");
             builder.append(o.getDepartement().getFrenchDescription());
@@ -92,7 +92,11 @@ public class DocumentCommon {
         builder.append("****\n");
         builder.append("The University of Maroua\n");
         builder.append("****\n");
-        builder.append("The Higher Institute of the Sahel");
+        if (a.getNumeroDebut() < 2017) {
+            builder.append("The Higher Institute of the Sahel");
+        } else {
+            builder.append("National Advanced School of Engineering of Maroua");
+        }
         if (departement) {
             builder.append("\n****\n");
             builder.append(o.getDepartement().getEnglishDescription());
@@ -105,8 +109,13 @@ public class DocumentCommon {
             builder.append(msgHelper.getProperty("header.tel"));
             builder.append(msgHelper.getProperty("header.fax"));
         }
-        builder.append(msgHelper.getProperty("header.mail"));
-        builder.append(msgHelper.getProperty("header.site"));
+        if (a.getNumeroDebut() < 2017) {
+            builder.append(msgHelper.getProperty("header.mail"));
+            builder.append(msgHelper.getProperty("header.site"));
+        } else {
+            builder.append(msgHelper.getProperty("header.mail2"));
+            builder.append(msgHelper.getProperty("header.site2"));
+        }
         Paragraph coordonnees = new Paragraph(new Phrase(builder.toString(), bf12));
         coordonnees.setAlignment(Element.ALIGN_CENTER);
         float widths2[] = {3, 4, 3};
@@ -124,14 +133,14 @@ public class DocumentCommon {
         logo.scalePercent(60f);
         Paragraph p = new Paragraph();
         p.setAlignment(Element.ALIGN_CENTER);
-        p.add(new Paragraph(new Chunk(logo, 0, 0, true)));        
+        p.add(new Paragraph(new Chunk(logo, 0, 0, true)));
         Paragraph pp = new Paragraph(coordonnees);
         p.add(pp);
         PdfPCell cel = new PdfPCell(p);
         cel.setBorderColor(BaseColor.WHITE);
         cel.setHorizontalAlignment(Element.ALIGN_CENTER);
         cel.setVerticalAlignment(Element.ALIGN_CENTER);
-        
+
         header.addCell(cel);
         cell1 = new PdfPCell(eng);
         cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -234,14 +243,13 @@ public class DocumentCommon {
         }
 
     }
- 
-    
-      public int computeTotalCredit(List<UEnseignementCredit> ues) {
+
+    public int computeTotalCredit(List<UEnseignementCredit> ues) {
         int result = 0;
         for (UEnseignementCredit ue : ues) {
             result += ue.getCredit();
         }
         return result;
     }
-    
+
 }

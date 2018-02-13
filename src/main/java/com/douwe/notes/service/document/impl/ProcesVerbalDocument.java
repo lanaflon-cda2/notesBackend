@@ -43,6 +43,7 @@ import java.io.OutputStream;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -54,8 +55,8 @@ import javax.inject.Inject;
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
 @Stateless
-public class ProcesVerbalDocument implements IProcesVerbalDocument{
-    
+public class ProcesVerbalDocument implements IProcesVerbalDocument {
+
     @EJB
     private INoteService noteService;
 
@@ -98,10 +99,10 @@ public class ProcesVerbalDocument implements IProcesVerbalDocument{
 
     @Inject
     private IUniteEnseignementDao uniteEnsDao;
-    
+
     @Inject
     private DocumentCommon common;
-    
+
     MessageHelper msgHelper = new MessageHelper();
 
     public IEtudiantDao getEtudiantDao() {
@@ -228,8 +229,6 @@ public class ProcesVerbalDocument implements IProcesVerbalDocument{
     public void setCommon(DocumentCommon common) {
         this.common = common;
     }
-    
-    
 
     @Override
     public String produirePv(Long niveauId, Long optionId, Long coursId, Long academiqueId, int session, OutputStream stream) throws ServiceException {
@@ -262,8 +261,8 @@ public class ProcesVerbalDocument implements IProcesVerbalDocument{
         }
         return null;
     }
-    
-        // TODO I need to change something here because this method is called twice and every times it needs to load the data from the database
+
+    // TODO I need to change something here because this method is called twice and every times it needs to load the data from the database
     // Can we load the data only once ?
     private StatistiquesNote produceBody(Document doc, Cours c, Niveau n, Option o, AnneeAcademique a, Session s, boolean avecNoms) throws Exception {
         StatistiquesNote result = new StatistiquesNote();
@@ -329,7 +328,7 @@ public class ProcesVerbalDocument implements IProcesVerbalDocument{
             table.addCell(DocumentUtil.createDefaultBodyCell(String.valueOf(++i), bf12, false));
             table.addCell(DocumentUtil.createDefaultBodyCell(note.getMatricule(), bf12, false));
             if (avecNoms) {
-                PdfPCell cell =DocumentUtil. createDefaultBodyCell(note.getNom().toUpperCase(), bf12, false);
+                PdfPCell cell = DocumentUtil.createDefaultBodyCell(note.getNom().toUpperCase(), bf12, false);
                 cell.setHorizontalAlignment(Element.ALIGN_LEFT);
                 table.addCell(cell);
             }
@@ -338,21 +337,24 @@ public class ProcesVerbalDocument implements IProcesVerbalDocument{
                 table.addCell(DocumentUtil.createDefaultBodyCell((value == null) ? "" : String.format("%.2f", value), bf12, false));
 
             }
-            double moyenne = note.getMoyenne();
-            table.addCell(DocumentUtil.createDefaultBodyCell(String.format("%.2f", moyenne), bf12, false));
-            table.addCell(DocumentUtil.createDefaultBodyCell(DocumentUtil.transformNoteGradeUE(moyenne), bf12, false));
-            if (moyenne > max) {
-                max = moyenne;
-            }
-            if (moyenne < min) {
-                min = moyenne;
-            }
-            if (moyenne >= 15) {
-                sup15++;
-            } else if (moyenne >= 10) {
-                entre1014++;
-            } else {
-                inf10++;
+            Optional<Double> moyenneD = note.getMoyenne();
+            table.addCell(DocumentUtil.createDefaultBodyCell(moyenneD.isPresent() ? String.format("%.2f", moyenneD.get()) : "-", bf12, false));
+            table.addCell(DocumentUtil.createDefaultBodyCell(DocumentUtil.transformNoteGradeUE(moyenneD), bf12, false));
+            if (moyenneD.isPresent()) {
+                double moyenne = moyenneD.get();
+                if (moyenne > max) {
+                    max = moyenne;
+                }
+                if (moyenne < min) {
+                    min = moyenne;
+                }
+                if (moyenne >= 15) {
+                    sup15++;
+                } else if (moyenne >= 10) {
+                    entre1014++;
+                } else {
+                    inf10++;
+                }
             }
         }
         doc.add(table);
@@ -385,8 +387,8 @@ public class ProcesVerbalDocument implements IProcesVerbalDocument{
         result.setPlusPetiteMoyenne(min);
         return result;
     }
-    
-      private void producePvFooter(Document doc, StatistiquesNote stats) throws Exception {
+
+    private void producePvFooter(Document doc, StatistiquesNote stats) throws Exception {
         Font bf = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
         float widths[] = {5, 3, 3};
         PdfPTable pourcentage = new PdfPTable(widths);
@@ -423,5 +425,5 @@ public class ProcesVerbalDocument implements IProcesVerbalDocument{
         pourcentage.setSpacingBefore(15f);
         doc.add(pourcentage);
     }
-   
+
 }
