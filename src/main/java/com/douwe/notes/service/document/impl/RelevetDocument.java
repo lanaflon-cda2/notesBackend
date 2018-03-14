@@ -800,7 +800,10 @@ public class RelevetDocument implements IRelevetDocument {
             } else {
                 aa = academiqueDao.findLastInscriptionYear(etudiant, niveau, option);
             }
+            
             System.out.println("Etudiant "+ etudiant.getNom()+" first is null "+(aa==null)+" second is null "+(annee == null)+" le niveau "+niveau.getCode());
+            if(aa == null)
+                return infos;
             if (aa.getNumeroDebut() > annee.getNumeroDebut()) {
                 aa = annee;
             }
