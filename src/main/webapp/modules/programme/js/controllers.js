@@ -1,5 +1,5 @@
-angular.module("notesApp.programme.controllers", []).controller("ProgrammeController", ["$scope", "$modal", "Programme", "Annee", "Departement", "Niveau", "$http",
-    function ($scope, $modal, Programme, Annee, Departement, Niveau, $http) {
+angular.module("notesApp.programme.controllers", []).controller("ProgrammeController", ["$scope", "$modal", "Programme", "Annee", "Departement", "Niveau", "$http", "$log",
+    function ($scope, $modal, Programme, Annee, Departement, Niveau, $http, $log) {
 
         var ans = Annee.query(function () {
             $scope.annees = ans;
@@ -17,7 +17,12 @@ angular.module("notesApp.programme.controllers", []).controller("ProgrammeContro
                     $scope.programmes = data;
                 });
             }
-        }
+            if (($scope.niveau !== undefined) && ($scope.option !== undefined)) {
+                $http.get('api/uniteEns/' + $scope.niveau + '/' + $scope.option).success(function (data) {
+                    $scope.unites = data;
+                });
+            }
+        };
 
         $scope.updateOptionsSemestre = function () {
             if ($scope.niveau !== undefined) {
@@ -35,8 +40,18 @@ angular.module("notesApp.programme.controllers", []).controller("ProgrammeContro
             }
         };
 
-        $scope.afficherFenetre = function (cle, item) {
+        var difference = function (a, b) {
+            var arr1 = _.pluck(a, "id");
+            var arr2 = _.pluck(b, "id");
+            var diff = _.difference(arr1, arr2);
+            return _.filter(a, function (obj) {
+                return diff.indexOf(obj.id) >= 0;
+            });
+        }
+
+        $scope.afficherFenetre = function () {
             if (($scope.departement !== undefined) && ($scope.niveau !== undefined) && ($scope.annee !== undefined) && ($scope.semestre !== undefined) && ($scope.option !== undefined)) {
+
                 var modelInstance = $modal.open({
                     templateUrl: 'modules/programme/views/nouveau.html',
                     controller: 'ProrammeFenetreController',
@@ -46,8 +61,7 @@ angular.module("notesApp.programme.controllers", []).controller("ProgrammeContro
                     resolve: {
                         element: function () {
                             var tt = {};
-                            tt.cle = cle;
-                            tt.element = item;
+                            tt.unites = difference($scope.unites, _.pluck($scope.programmes,"uniteEnseignement"));
                             tt.option = $scope.option;
                             tt.niveau = $scope.niveau;
                             return tt;
@@ -55,17 +69,17 @@ angular.module("notesApp.programme.controllers", []).controller("ProgrammeContro
                     }
                 });
                 modelInstance.result.then(function (resultat) {
-                    var item = resultat.item;
-                    var cle = resultat.cle;
-                    item.anneeAcademique = $scope.annee;
-                    item.semestre = $scope.semestre;
-                    if ((item.id !== undefined) && (cle !== null)) {
-                        $http.put('api/programmes/' + $scope.niveau + '/' + $scope.option + '/' + item.id, item).success(function (data) {
-                            $scope.programmes.splice(cle, 1, item);
-                        });
-                    } else {
-                        $http.post('api/programmes/' + $scope.niveau + '/' + $scope.option, item).success(function (data) {
-                            $scope.programmes.push(data);
+                    var selection = resultat.selection;
+                    if ((selection !== null) && (selection.length > 0)) {
+                        // I should probably not do it this way 
+                        _.each(selection, function (elt) {
+                            var item = {};
+                            item.anneeAcademique = $scope.annee;
+                            item.semestre = $scope.semestre;
+                            item.uniteEnseignement = elt;
+                            $http.post('api/programmes/' + $scope.niveau + '/' + $scope.option, item).success(function (data) {
+                                $scope.programmes.push(data);
+                            });
                         });
                     }
                 }, function () {
@@ -82,22 +96,17 @@ angular.module("notesApp.programme.controllers", []).controller("ProgrammeContro
                 });
             }
         };
-    }]).controller("ProrammeFenetreController", ["$scope", "$modalInstance", "element", "$http",
-    function ($scope, $modalInstance, element, $http) {
-
-        $scope.element = element.item;
-        $scope.cle = element.cle;
+    }]).controller("ProrammeFenetreController", ["$log","$scope", "$modalInstance", "element",
+    function ($log, $scope, $modalInstance, element) {
         $scope.niveau = element.niveau;
         $scope.option = element.option;
-
-        $http.get('api/uniteEns/' + $scope.niveau + '/' + $scope.option).success(function (data) {
-            $scope.unites = data;
-        });
-
+        $scope.selectedUnite = [];
+        $scope.unites = element.unites;
+        $log.log("Hello boy");
         $scope.valider = function () {
             var resultat = {};
-            resultat.item = $scope.element;
-            resultat.cle = $scope.cle;
+            resultat.selection = $scope.selectedUnite;
+            $log.log($scope.selectedUnite.length);
             $modalInstance.close(resultat);
         };
 

@@ -89,5 +89,24 @@
                 </div>
             </div>
         </form>
+        <div class="alert alert-info" ng-show="importResponse !== null">
+            <div>Vous avez correctement importé {{importResponse.nombreImporte}} notes</div>
+            <div ng-show="importResponse.erreurs.length !== 0">
+                <span>Les erreurs suivants sont survenues lors de l'importation</span>
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <th>No</th>
+                        <th>No de ligne</th>
+                        <th>Erreur</th>
+                    </tr>
+                    <tr ng-repeat="erreur in importResponse.erreurs">
+                        <td>{{$index + 1}}</td>
+                        <td>{{erreur.ligne}}</td>
+                        <td>{{erreur.raison}}</td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
     </div>
 </div>

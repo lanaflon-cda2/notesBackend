@@ -18,8 +18,8 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
 
         $scope.department = null;
 
-    }]).controller("NoteImportationController", ["Departement","Niveau", "Annee", "Cours", "Evaluation", "$scope", "$http", "$log",
-    function (Departement, Niveau, Annee, Cours, Evaluation, $scope, $http, $log) {
+    }]).controller("NoteImportationController", ["Departement","Niveau", "Annee", "$scope", "$http",
+    function (Departement, Niveau, Annee, $scope, $http) {
         var deps = Departement.query(function(){
             $scope.departements = deps;
         });
@@ -30,6 +30,10 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
         var ans = Annee.query(function () {
             $scope.annees = ans;
         });
+        
+        $scope.importResponse = null;
+        
+        $scope.importError = null;
         
         $scope.uploadFile = function (fs) {
             $scope.files = fs;
@@ -49,6 +53,7 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
             }
         };
         $scope.changerCours = function(){
+            $scope.importResponse = null;
             if($scope.cour){
                 $http.get('api/cours/'+$scope.cour+'/evaluations').success(function(data){
                    $scope.evaluations = data; 
@@ -57,6 +62,7 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
         };
         
         $scope.valider = function () {
+            $scope.importResponse = null;
             var fd = new FormData();
             //Take the first selected file
             fd.append("fichier", $scope.files[0]);
@@ -69,10 +75,10 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
                 withCredentials: true,
                 headers: {'Content-Type': undefined},
                 transformRequest: angular.identity
-            }).success(function () {
-                $log.log("Importation reussie");
-            }).error(function () {
-                $log.log("Erreur lors de l'importation");
+            }).success(function (data) {
+                $scope.importResponse = data;
+            }).error(function (data) {
+                $scope.importError = data;
             });
         };
     }]).controller("NoteModificationController", ["$scope", "$http", "Departement", "Niveau", "Annee","Note", "$modal",
@@ -101,10 +107,10 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
                     $scope.cours = data;
                 });
             }
-        }
+        };
         $scope.afficher = function(){
             if($scope.matricule){
-                $http.get('api/notes/'+$scope.matricule+'/'+$scope.cour.id+'/'+$scope.annee).success(function(data){
+                $http.get('notes/'+$scope.matricule+'/'+$scope.cour.id+'/'+$scope.annee).success(function(data){
                    $scope.notes = data; 
                 });
             }

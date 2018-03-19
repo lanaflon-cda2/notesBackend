@@ -7,16 +7,20 @@
     </div>
     <div class="panel-body">
         <form name="form" method="post" role="form" class="form-horizontal" novalidate>
-            
-            <div class="form-group">
-                <label for="unite" class="col-sm-2 control-label">Unite</label>
-                <div class="col-sm-8">
-                    <select type="text" ng-model="element.uniteEnseignement" id="unite" ng-options="unite as (unite.code +' - '+ unite.intitule)  for unite in unites track by unite.id" class="form-control"></select>
-                    <span class="error" ng-show="form.unite.code.$dirty && form.unite.code.$error.required">L'unite d'enseignement est obligatoire</span>
+            <div class="form-group">                
+                <div class="col-sm-12">
+                    <h3>Sélectionnez les unités d'enseignements concernées</h3>  
+                </div>
+            </div>
+            <div class="form-group">                
+                <div class="col-sm-offset-1 col-sm-10">
+                    <div ng-repeat="unite in unites">
+                        <input type="checkbox" data-checklist-model="selectedUnite" data-checklist-value="unite"> {{unite.code}} - {{unite.intitule}}
+                    </div>
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
+                <div class="col-sm-offset-1 col-sm-10">
                     <button type="submit" class="btn btn-primary" ng-show="element.id" ng-click="form.$valid && valider()">
                         <i class="glyphicon glyphicon-edit"></i> Modifier
                     </button>
