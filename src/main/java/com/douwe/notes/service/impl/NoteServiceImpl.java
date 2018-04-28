@@ -530,6 +530,8 @@ public class NoteServiceImpl implements INoteService {
         for (EtudiantNotes toto1 : toto) {
             // I need to keep only those with values that belongs to the right interval
             // I need to review something here
+            if(!toto1.getMoyenne().isPresent())
+                continue;
             double moyenne = toto1.getMoyenne().get();
             boolean test1 = infInclusive ? moyenne >= borneInf : moyenne > borneInf;
             boolean test2 = supInclusive ? moyenne <= borneSup : moyenne < borneSup;

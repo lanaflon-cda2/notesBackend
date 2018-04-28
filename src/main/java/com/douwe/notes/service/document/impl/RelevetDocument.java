@@ -274,7 +274,7 @@ public class RelevetDocument implements IRelevetDocument {
                 Etudiant etudiant = etudiantDao.findById(etudiantId);
                 if(etudiant != null){
                     RelevetEtudiantNotesInfos inf = infos.get(etudiant.getMatricule());
-                    if (inf.isaToutValide() && (!niveau.isTerminal() || inf.getMgpCycle() != null)) {
+                    if (/*inf.isaToutValide() && */(!niveau.isTerminal() || inf.getMgpCycle() != null)) {
                         produceRelevetEtudiant(doc, etudiant, niveau, option, annee, inf);
                         //doc.newPage();
                     }
@@ -282,7 +282,7 @@ public class RelevetDocument implements IRelevetDocument {
             } else {
                 for (Etudiant etudiant : etudiants) {
                     RelevetEtudiantNotesInfos inf = infos.get(etudiant.getMatricule());
-                    if (inf.isaToutValide() && (!niveau.isTerminal() || inf.getMgpCycle() != null)) {
+                    if (/*inf.isaToutValide() && */(!niveau.isTerminal() || inf.getMgpCycle() != null)) {
                         doc.newPage();
                         produceRelevetEtudiant(doc, etudiant, niveau, option, annee, inf);
                         
