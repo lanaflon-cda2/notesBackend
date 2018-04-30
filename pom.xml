@@ -56,19 +56,11 @@
             <version>3.10-FINAL</version>
             <type>jar</type>
         </dependency>
-        <!--        <dependency>
-            <groupId>org.glassfish.main.extras</groupId>
-            <artifactId>glassfish-embedded-static-shell</artifactId>
-            <version>4.0</version>
-            <scope>system</scope>
-            <systemPath>${glassfish.embedded-static-shell.jar}</systemPath>
-        </dependency>-->
-<!--        <dependency>
-            <groupId>org.glassfish.extras</groupId>
-            <artifactId>glassfish-embedded-all</artifactId>
-            <version>3.2-b06</version>
-        </dependency>-->
-        
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging-api</artifactId>
+            <version>1.1</version>
+        </dependency>
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
@@ -87,11 +79,6 @@
             <version>2.5</version>
             <scope>provided</scope>
         </dependency>
-<!--        <dependency>
-            <groupId>org.primefaces</groupId>
-            <artifactId>primefaces</artifactId>
-            <version>5.1</version>
-        </dependency> -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
@@ -125,18 +112,21 @@
             <artifactId>itextpdf</artifactId>
             <version>5.1.1</version>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
             <version>3.2.3.RELEASE</version>
-        </dependency>
-     
-        <!--        <dependency>
+        </dependency>-->
+        <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
-            <version>3.2.5.RELEASE</version>
-        </dependency>-->
-
+            <version>4.2.5.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>4.2.5.RELEASE</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>notes</finalName>

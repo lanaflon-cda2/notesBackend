@@ -13,125 +13,54 @@
     <body>
         <div class="row-fluid" id="main">
             <div class="col-xs-10 col-md-offset-1">
-                <header></header>
-                <div id="container">					
-                    <nav role="navigation" class="navbar" >
+                <header>
+                    <div id="account">
                         <ul class="nav nav-pills info">
                             <li class="dropdown" dropdown on-toggle="toggled(open)">
-                                <a class="dropdown-toggle" dropdown-toggle> <i class="glyphicon glyphicon-folder-open"></i>  Donn&eacute;es<b class="caret"></b></a>
-                                <ul class="dropdown-menu info" role="menu">
-                                    <li>
-                                        <a ui-sref="cycles">Cycle</a>
-                                    </li>
-                                    <li>
-                                        <a ui-sref="niveaux">Niveau</a>
-                                    </li>
-                                    <li>
-                                        <a ui-sref="parcours">Parcours</a>
-                                    </li>
-                                    <li>
-                                        <a ui-sref="departements">D&eacute;partement</a>
-                                    </li>
-                                    <li>
-                                        <a ui-sref="options">Option</a>
-                                    </li>
-                                    <li>
-                                        <a ui-sref="semestres">Semestre</a>
-                                    </li>
-                                    <li>
-                                        <a ui-sref="annees">Ann&eacute;e Acad&eacute;mique</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="dropdown" dropdown on-toggle="toggled(open)">
-                                <a class="dropdown-toggle" dropdown-toggle> <i class="glyphicon glyphicon-book"></i> Enseignements<b class="caret"></b></a>
+                                <a class="dropdown-toggle" dropdown-toggle><img src="img/douwe.png" alt="profile image" class="img img-circle img-thumbnail img-responsive"> <i>Douwe Vincent</i><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a ui-sref="cours">Cours</a>
+                                        <a ui-sref="pv"><i class="glyphicon glyphicon-picture"></i> <span> Profile</span></a>
                                     </li>
                                     <li>
-                                        <a ui-sref="credits">Cr&eacute;dits</a>
+                                        <a ui-sref="synthese"><i class="glyphicon glyphicon-lock"></i> <span> Mot de passe</span></a>
                                     </li>
                                     <li>
-                                        <a ui-sref="typecours">Type Cours</a>
-                                    </li>
-                                    <li>
-                                        <a ui-sref="uniteEns">Unit&eacute; Enseignement</a>
-                                    </li>
-                                    <li>
-                                        <a ui-sref="programmes">Programme Enseignement</a>
-                                    </li>
-                                    <li>
-                                        <a ui-sref="enseignants">Enseignant</a>
-                                    </li>
-                                    <li>
-                                        <a ui-sref="enseignements">Enseignements</a>
+                                        <a ui-sref="diplomation"> <i class="glyphicon glyphicon-log-out"></i> <span> Se d&eacute;connecter</span></a>
                                     </li>
                                 </ul>
                             </li>
-                            <li class="dropdown" dropdown on-toggle="toggled(open)">
-                                <a class="dropdown-toggle" dropdown-toggle><i class="glyphicon glyphicon-education"></i> Etudiant<b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a ui-sref="eimportation"><i class="glyphicon glyphicon-download"></i> Importation</a>
-                                    </li>
-                                    <li>
-                                        <a ui-sref="inscription"><i class="glyphicon glyphicon-pencil"></i> Inscription</a>
-                                    </li>
-                                    <li>
-                                        <a ui-sref="eliste"><i class="glyphicon glyphicon-list-alt"></i> Liste</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="dropdown" dropdown on-toggle="toggled(open)">
-                                <a class="dropdown-toggle" dropdown-toggle><i class="glyphicon glyphicon-check"></i> Notes<b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a ui-sref="evaluations"><i class="glyphicon glyphicon-edit"></i> Evaluation</a>
-                                    </li>
-                                    <li>
-                                        <a ui-sref="nimportation"><i class="glyphicon glyphicon-download"></i> Importation</a>
-                                    </li>
-                                    <li>
-                                        <a ui-sref="nexportation"><i class="glyphicon glyphicon-upload"></i> Exportation</a>
-                                    </li>
-                                    <li>
-                                        <a ui-sref="ndeliberation"><i class="glyphicon glyphicon-upload"></i> Déliberations</a>
-                                    </li>
-                                    <li>
-                                        <a ui-sref="nmodification"><i class="glyphicon glyphicon-upload"></i> Modification</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="dropdown" dropdown on-toggle="toggled(open)">
-                                <a class="dropdown-toggle" dropdown-toggle><i class="glyphicon glyphicon-list-alt"></i> Rapports<b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a ui-sref="pv">Proc&eacute;s Verbal</a>
-                                    </li>
-                                    <li>
-                                        <a ui-sref="synthese">Synth&eacute;se</a>
-                                    </li>
-                                    <li>
-                                        <a ui-sref="releves">Relev&eacute;s de Notes</a>
-                                    </li>
-                                    <li>
-                                        <a ui-sref="diplomation">Synth&eacute;se de Diplomation</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a ui-sref="statistiques"> <i class="glyphicon glyphicon-picture"></i> Statistiques</a>
-                            </li>
-                            <li>
-                                <a ui-sref="passage"><i class="glyphicon glyphicon-retweet"></i> Passage Niveau</a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <div id="content">
-                        <div id="loading" ng-if="isViewLoading"></div>
-                        <div ui-view></div>
-                        <div ng-if="isError">Une erreur est survenue lors du chargement de vos données</div>
+                        </ul> 
+                    </div>
+                </header>
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        Connexion
+                    </div>
+                    <div class="panel-body">
+                        <form name="form" method="post" role="form" class="form-horizontal" novalidate>
+                            <div class="form-group">
+                                <label for="login" class="col-sm-2 control-label">Login</label>
+                                <div class="col-sm-6">
+                                    <input id="login" name="login" ng-model="login" class="form-control" ng-required="true" placeholder="Nom d'utilisateur ou mot de passe">
+                                    <span class="error" ng-show="form.login.$dirty && form.login.$error.required">Le login est obligatoire</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="password" class="col-sm-2 control-label">Mot de passe</label>
+                                <div class="col-sm-6">
+                                    <input id="password" type="password" name="password" ng-model="password" class="form-control" ng-required="true" placeholder="Votre mot de passe">
+                                    <span class="error" ng-show="form.password.$dirty && form.password.$error.required">Le mot de passe est obligatoire</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button type="submit" class="btn btn-success btn-s" ng-click="form.$valid && login()">
+                                        <span class="glyphicon glyphicon-log-in"></span> Se connecter
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
                 <footer>
@@ -139,8 +68,8 @@
                 </footer>
             </div>
         </div>
-<!--        <script src="lib/bootstrap.js"></script>
-        <script src="lib/npm.js"></script>-->
+        <!--        <script src="lib/bootstrap.js"></script>
+                <script src="lib/npm.js"></script>-->
         <script src="lib/jquery.js"></script>
         <script src="lib/angular.js"></script>
         <script src="lib/angular-route.js"></script>
@@ -153,78 +82,82 @@
         <script src="lib/angular-file-upload.min.js"></script>
         <script src="lib/ng-infinite-scroll.min.js"></script>
         <script src="lib/checklist-model.js"></script>
-        <!--    fin d'inclusion des libreries                             -->
-        
+        <!--    fin d'inclusion des libraries                             -->
+
         <script src="js/app.js"></script>
         <script src="js/filters.js"></script>
         <script src="js/controllers.js"></script>
         <script src="js/directives.js"></script>
         <script src="js/services.js"></script>
         
+        <script src="modules/home/homeModule.js"></script>
+        <script src="modules/home/js/controllers.js"></script>
+        <script src="modules/home/js/services.js"></script>
+
         <script src="modules/annee/anneeModule.js"></script>
         <script src="modules/annee/js/controllers.js"></script>
         <script src="modules/annee/js/services.js"></script>
-        
+
         <script src="modules/typecours/typecoursModule.js"></script>
         <script src="modules/typecours/js/controllers.js"></script>
         <script src="modules/typecours/js/services.js"></script>
-        
+
         <script src="modules/departement/departementModule.js"></script>
         <script src="modules/departement/js/controllers.js"></script>
         <script src="modules/departement/js/services.js"></script>
-        
+
         <script src="modules/cours/coursModule.js"></script>
         <script src="modules/cours/js/controllers.js"></script>
         <script src="modules/cours/js/services.js"></script>
-        
+
         <script src="modules/cycle/cycleModule.js"></script>
         <script src="modules/cycle/js/controllers.js"></script>
         <script src="modules/cycle/js/services.js"></script>
-        
+
         <script src="modules/enseignant/enseignantModule.js"></script>
         <script src="modules/enseignant/js/controllers.js"></script>
         <script src="modules/enseignant/js/services.js"></script>
-        
+
         <script src="modules/evaluation/evaluationModule.js"></script>
         <script src="modules/evaluation/js/controllers.js"></script>
         <script src="modules/evaluation/js/services.js"></script>
-        
+
         <script src="modules/niveau/niveauModule.js"></script>
         <script src="modules/niveau/js/controllers.js"></script>
         <script src="modules/niveau/js/services.js"></script>
-        
+
         <script src="modules/option/optionModule.js"></script>
         <script src="modules/option/js/controllers.js"></script>
         <script src="modules/option/js/services.js"></script>
-        
+
         <script src="modules/semestre/semestreModule.js"></script>
         <script src="modules/semestre/js/controllers.js"></script>
         <script src="modules/semestre/js/services.js"></script>
-        
+
         <script src="modules/etudiant/etudiantModule.js"></script>
         <script src="modules/etudiant/js/controllers.js"></script>
         <script src="modules/etudiant/js/services.js"></script>
-        
+
         <script src="modules/uniteEnseignement/uniteenseignementModule.js"></script>
         <script src="modules/uniteEnseignement/js/controllers.js"></script>
         <script src="modules/uniteEnseignement/js/services.js"></script>
-        
+
         <script src="modules/parcours/parcoursModule.js"></script>
         <script src="modules/parcours/js/controllers.js"></script>
         <script src="modules/parcours/js/services.js"></script>
-        
+
         <script src="modules/programme/programmeModule.js"></script>
         <script src="modules/programme/js/controllers.js"></script>
         <script src="modules/programme/js/services.js"></script>
-        
+
         <script src="modules/evaluation/evaluationModule.js"></script>
         <script src="modules/evaluation/js/controllers.js"></script>
         <script src="modules/evaluation/js/services.js"></script>
-        
+
         <script src="modules/note/noteModule.js"></script>
         <script src="modules/note/js/controllers.js"></script>
         <script src="modules/note/js/services.js"></script>
-        
+
         <script src="modules/rapport/rapportModule.js"></script>
         <script src="modules/rapport/js/controllers.js"></script>
         <script src="modules/rapport/js/services.js"></script>
@@ -232,12 +165,12 @@
         <script src="modules/enseignement/enseignementModule.js"></script>
         <script src="modules/enseignement/js/controllers.js"></script>
         <script src="modules/enseignement/js/services.js"></script>
-        
-        
+
+
         <script src="modules/credit/creditModule.js"></script>
         <script src="modules/credit/js/controllers.js"></script>
         <script src="modules/credit/js/services.js"></script>
-        
+
         <script src="modules/deliberation/deliberationModule.js"></script>
         <script src="modules/deliberation/js/controllers.js"></script>
         <script src="modules/deliberation/js/services.js"></script>
