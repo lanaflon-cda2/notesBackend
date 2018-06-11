@@ -13,11 +13,13 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import lombok.Data;
 
 /**
  *
  * @author Vincent Douwe <douwevincent@yahoo.fr>
  */
+@Data
 @Entity
 @XmlRootElement(name = "semestre")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -47,55 +49,5 @@ public class Semestre implements Serializable {
      
     public Semestre(){
         
-    }
-
-    
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getIntitule() {
-        return intitule;
-    }
-
-    public void setIntitule(String intitule) {
-        this.intitule = intitule;
-    }
-
-    public Niveau getNiveau() {
-        return niveau;
-    }
-
-    public void setNiveau(Niveau niveau) {
-        this.niveau = niveau;
-    }
-
-    @JsonIgnore
-    public int getVersion() {
-        return version;
-    }
-
-    @JsonIgnore
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    @JsonIgnore
-    public int getActive() {
-        return active;
-    }
-
-    @JsonIgnore
-    public void setActive(int active) {
-        this.active = active;
-    }
-
-    @Override
-    public String toString() {
-        return "Semestre{" + "id=" + id + ", version=" + version + ", intitule=" + intitule + ", niveau=" + niveau + ", active=" + active + '}';
     }
 }

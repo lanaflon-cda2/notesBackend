@@ -6,13 +6,13 @@ import com.douwe.notes.dao.IDepartementDao;
 import com.douwe.notes.entities.Departement;
 import com.douwe.notes.entities.Option;
 import java.util.List;
-import javax.inject.Named;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author Vincent Douwe <douwevincent@yahoo.fr>
  */
-@Named
+@Repository
 public class DepartementDaoImpl extends GenericDao<Departement, Long> implements IDepartementDao{
 
     @Override

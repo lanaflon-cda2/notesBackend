@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import lombok.Data;
 
 
 /**
@@ -27,7 +28,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Vincent Douwe <douwevincent@yahoo.fr>
  */
 
-
+@Data
 @Entity
 @XmlRootElement(name = "cours")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -38,7 +39,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQuery(name = "Cours.findByIntitule",query = "SELECT c FROM Cours c WHERE c.intitule like :param"),
 //@NamedQuery(name = "Cours.findByUE",query = "select co from Cours co, UniteEnseignement ue JOIN ue.courses c_e where ue.id = :idParam and c_e.id =co.id")
 })
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"DEPARTEMENTD_ID","INTITULE"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"DEPARTEMENT_ID","INTITULE"}))
 public class Cours implements Serializable {
     
     @Id
@@ -68,72 +69,5 @@ public class Cours implements Serializable {
     private Departement departement;
        
     public Cours(){
-        
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getIntitule() {
-        return intitule;
-    }
-
-    public void setIntitule(String intitule) {
-        this.intitule = intitule;
-    }
-
-    public TypeCours getTypeCours() {
-        return typeCours;
-    }
-
-    public void setTypeCours(TypeCours typeCours) {
-        this.typeCours = typeCours;
-    }
-
-    @JsonIgnore
-    public int getVersion() {
-        return version;
-    }
-
-    @JsonIgnore
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    @JsonIgnore
-    public int getActive() {
-        return active;
-    }
-
-    @JsonIgnore
-    public void setActive(int active) {
-        this.active = active;
-    }  
-
-    public List<UniteEnseignement> getUniteEnseignements() {
-        return uniteEnseignements;
-    }
-
-    public void setUniteEnseignements(List<UniteEnseignement> uniteEnseignements) {
-        this.uniteEnseignements = uniteEnseignements;
-    }
-
-    public Departement getDepartement() {
-        return departement;
-    }
-
-    public void setDepartement(Departement departement) {
-        this.departement = departement;
-    }
-
-    @Override
-    public String toString() {
-        return "Cours{" + "id=" + id + ", version=" + version + ", intitule=" + intitule + ", typeCours=" + typeCours + ", uniteEnseignements=" + uniteEnseignements + ", active=" + active + ", departement=" + departement + '}';
-    }      
-    
 }

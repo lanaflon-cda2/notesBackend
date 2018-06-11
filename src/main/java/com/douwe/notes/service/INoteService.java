@@ -16,13 +16,11 @@ import com.douwe.notes.service.util.ImportationResult;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-import javax.ejb.Local;
 
 /**
  *
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
-@Local
 public interface INoteService {
     
     public Note saveOrUpdateNote(Note note) throws ServiceException;

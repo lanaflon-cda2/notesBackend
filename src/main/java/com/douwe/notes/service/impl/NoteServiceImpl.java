@@ -46,8 +46,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.NoResultException;
 import javax.ws.rs.WebApplicationException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -56,12 +56,14 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
-@Stateless
+@Named
+@Service
 public class NoteServiceImpl implements INoteService {
 
     @Inject
@@ -327,7 +329,7 @@ public class NoteServiceImpl implements INoteService {
                                 note.setCours(cours);
                                 note.setEtudiant(etudiant);
                                 note.setEvaluation(evaluation);
-                                if (evaluation.isIsExam()) {
+                                if (evaluation.isExam()) {
                                     Session s = Session.values()[session];
                                     note.setSession(s);
                                 }
@@ -426,7 +428,7 @@ public class NoteServiceImpl implements INoteService {
                 boolean status = false;
                 Map<String, Double> map = new HashMap<>();
                 for (Note note : notes) {
-                    if (note.getEvaluation().isIsExam()) {
+                    if (note.getEvaluation().isExam()) {
                         if (!status) {
                             status = (note.getSession() == Session.rattrapage);
                             map.put(note.getEvaluation().getCode(), note.getValeur());

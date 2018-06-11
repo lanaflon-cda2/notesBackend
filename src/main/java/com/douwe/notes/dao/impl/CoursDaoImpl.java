@@ -27,11 +27,13 @@ import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author Vincent Douwe <douwevincent@yahoo.fr>
  */
+@Repository
 public class CoursDaoImpl extends GenericDao<Cours, Long> implements ICoursDao {
 
     @Override

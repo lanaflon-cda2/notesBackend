@@ -14,11 +14,13 @@ import javax.persistence.Version;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import lombok.Data;
 
 /**
  *
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
+@Data
 @Entity
 @XmlRootElement(name = "credit")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -46,53 +48,4 @@ public class Credit implements Serializable {
     @ManyToOne    
     @JoinColumn(name = "COURS_ID")
     private Cours cours;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Integer getValeur() {
-        return valeur;
-    }
-
-    public void setValeur(Integer valeur) {
-        this.valeur = valeur;
-    }
-
-    public AnneeAcademique getAcademique() {
-        return academique;
-    }
-
-    public void setAcademique(AnneeAcademique academique) {
-        this.academique = academique;
-    }
-
-    public Parcours getParcours() {
-        return parcours;
-    }
-
-    public void setParcours(Parcours parcours) {
-        this.parcours = parcours;
-    }
-
-    public Cours getCours() {
-        return cours;
-    }
-
-    public void setCours(Cours cours) {
-        this.cours = cours;
-    }
-
-    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
-    }
-
 }

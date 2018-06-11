@@ -7,11 +7,13 @@ import com.douwe.notes.entities.AnneeAcademique;
 import com.douwe.notes.entities.Etudiant;
 import com.douwe.notes.entities.Inscription;
 import java.util.List;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author Vincent Douwe <douwevincent@yahoo.fr>
  */
+@Repository
 public class InscriptionDaoImpl extends GenericDao<Inscription, Long> implements IInscriptionDao{
 
     @Override

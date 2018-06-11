@@ -2,8 +2,6 @@ package com.douwe.notes.resource.impl;
 
 
 import com.douwe.notes.entities.Cours;
-import com.douwe.notes.entities.Niveau;
-import com.douwe.notes.entities.Option;
 import com.douwe.notes.entities.Parcours;
 import com.douwe.notes.resource.IParcoursResource;
 import com.douwe.notes.service.ICoursService;
@@ -14,7 +12,7 @@ import com.douwe.notes.service.ServiceException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -26,16 +24,16 @@ import javax.ws.rs.core.Response;
 @Path("/parcours")
 public class ParcoursResource implements IParcoursResource{
     
-    @EJB
+    @Inject
     private IParcoursService parcoursService;
     
-    @EJB
+    @Inject
     private INiveauService niveauService;
     
-    @EJB
+    @Inject
     private IOptionService optionService;
     
-    @EJB
+    @Inject
     private ICoursService coursService;
 
     public IParcoursService getParcoursService() {

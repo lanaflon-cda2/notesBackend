@@ -1,0 +1,46 @@
+<div class="panel panel-primary">
+    <div class="panel-heading" ng-hide="element.id">
+        Ajout d'un nouvel type de cours
+    </div>
+    <div class="panel-heading" ng-show="element.id">
+        Modification du type de cours
+    </div>
+    <div class="panel-body">
+        <form name="form" method="post" role="form" class="form-horizontal" novalidate>
+            <div class="form-group">
+                <label for="niveau" class="col-sm-2 control-label">Niveau</label>
+                <div class="col-sm-8">
+                    <select  name="niveau"  class="form-control " id="niveau" ng-model="element.niveau" ng-required="true" ng-options="niveau as niveau.code  for niveau in niveaux track by niveau.id"></select>
+                    <span class="error" ng-show="form.type.code.$dirty && form.niveau.code.$error.required">Le niveau est obligatoire</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="option" class="col-sm-2 control-label">Département</label>
+                <div class="col-sm-8">
+                    <select  name="option"  class="form-control " id="option" ng-model="departement" ng-change="updateOptions()" ng-required="true" ng-options="departement as departement.code  for departement in departements track by departement.id"></select>
+                    <span class="error" ng-show="form.option.code.$dirty && form.type.option.$error.required">Le departement est obligatoire</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="option" class="col-sm-2 control-label">Option</label>
+                <div class="col-sm-8">
+                    <select  name="option"  class="form-control " id="option" ng-model="element.option" ng-required="true" ng-options="option as option.code  for option in options track by option.id"></select>
+                    <span class="error" ng-show="form.option.code.$dirty && form.type.option.$error.required">L'option est obligatoire</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary" ng-show="element.id" ng-click="form.$valid && valider()">
+                       <i class="glyphicon glyphicon-edit"></i> Modifier
+                    </button>
+                    <button type="submit" class="btn btn-primary" ng-hide="element.id" ng-click="form.$valid && valider()">
+                        <i class="glyphicon glyphicon-saved"></i> Enregistrer
+                    </button>
+                    <button type="button" class="btn btn-danger pull-right" ng-click="cancel()">
+                        <i class="glyphicon glyphicon-ban-circle"></i> Annuler
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

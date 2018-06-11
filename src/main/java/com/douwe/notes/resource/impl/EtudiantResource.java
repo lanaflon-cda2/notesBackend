@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -23,7 +23,7 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 @Path("/etudiants")
 public class EtudiantResource implements IEtudiantResource {
 
-    @EJB
+    @Inject
     private IEtudiantService etudiantService;
 
     public IEtudiantService getEtudiantService() {

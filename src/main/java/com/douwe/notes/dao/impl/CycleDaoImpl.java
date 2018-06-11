@@ -5,11 +5,13 @@ import com.douwe.generic.dao.impl.GenericDao;
 import com.douwe.notes.dao.ICycleDao;
 import com.douwe.notes.entities.Cycle;
 import java.util.List;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author Vincent Douwe <douwevincent@yahoo.fr>
  */
+@Repository
 public class CycleDaoImpl extends GenericDao<Cycle, Long> implements ICycleDao{
 
     @Override

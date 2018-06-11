@@ -1,22 +1,19 @@
 package com.douwe.notes.resource;
 
-import com.douwe.notes.projection.AuthAccessElement;
-import com.douwe.notes.projection.AuthLoginElement;
-import javax.annotation.security.PermitAll;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.POST;
+import com.douwe.notes.entities.Utilisateur;
+import java.util.List;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.Produces;
 
 /**
  *
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
-@Path("/auth")
+@Path("/utilisateurs")
 public interface IUtilisateurResource {
     
-    @POST
-    @Path("login")
-    @PermitAll
-    public AuthAccessElement login(@Context HttpServletRequest request, AuthLoginElement loginElement);
+    @GET
+    @Produces(value = "application/json")
+    public List<Utilisateur> findAll();
 }

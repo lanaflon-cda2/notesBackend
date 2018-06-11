@@ -7,7 +7,7 @@ import com.douwe.notes.service.ServiceException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -19,7 +19,7 @@ import javax.ws.rs.core.Response;
 @Path("/enseignants")
 public class EnseignantResource implements IEnseignantResource{
     
-    @EJB
+    @Inject
     private IEnseignantService enseignantService;
 
     public IEnseignantService getEnseignantService() {
@@ -30,6 +30,7 @@ public class EnseignantResource implements IEnseignantResource{
         this.enseignantService = enseignantService;
     }
 
+    @Override
     public Enseignant createEnseignant(Enseignant enseignant) {
         try {
             return enseignantService.saveOrUpdateEnseignant(enseignant);
@@ -39,6 +40,7 @@ public class EnseignantResource implements IEnseignantResource{
         }
     }
 
+    @Override
     public List<Enseignant> getAllEnseignants() {
         try {
             return enseignantService.getAllEnseignants();
@@ -48,6 +50,7 @@ public class EnseignantResource implements IEnseignantResource{
         }
     }
 
+    @Override
     public Enseignant getEnseignant(long id) {
         try {
             Enseignant enseignant = enseignantService.findEnseignantById(id);
@@ -61,6 +64,7 @@ public class EnseignantResource implements IEnseignantResource{
         }
     }
 
+    @Override
     public Enseignant updateEnseignant(long id, Enseignant enseignant) {
         try {
             Enseignant enseignant1 = enseignantService.findEnseignantById(id);
@@ -75,6 +79,7 @@ public class EnseignantResource implements IEnseignantResource{
         }
     }
 
+    @Override
     public void deleteEnseignant(long id) {
         try {
             enseignantService.deleteEnseignant(id);

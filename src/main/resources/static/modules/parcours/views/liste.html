@@ -1,0 +1,37 @@
+<div>
+    <h4 class ="titre">LA LISTE DES PARCOURS</h4><br/>
+    <form name="form" method="post" role="form" class="form-horizontal" novalidate>
+        <div class="form-group">
+            <label for="departement" class="col-sm-1 control-label">Departement</label>
+            <div class="col-sm-3">
+                <select id="departement" class="form-control" ng-model="departement" ng-options="departement.code  for departement in departements"></select>
+            </div>
+            <div class="col-sm-2">
+                <button class="btn btn-default" ng-click="filtrer()">Filtrer</button>
+            </div>           
+        </div>
+    </form>
+    <table class="table table-bordered table-hover table-condensed table-striped">
+        <thead>
+            <tr class="success">
+                <th>Numero</th>
+                <th>Niveau</th>
+                <th>Departement</th>
+                <th>Option</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="par in parcours" class="inverse">
+                <td>{{$index + 1}}</td>
+                <td>{{par.niveau.code}}</td>
+                <td>{{par.option.departement.code}}</td>
+                <td>{{par.option.code}}</td>
+                <td><a ng-click="afficherFenetre(par)"><i class="glyphicon glyphicon-edit"></i>  Modifier</a> | <a ng-click="supprimerParcours(par)"><i class="glyphicon glyphicon-remove"></i> Supprimer</a></td>
+            </tr>
+        </tbody>
+    </table>
+    <form>
+        <button class="btn btn-primary" ng-click="afficherFenetre(undefined)"><i class="icon-user"></i><i class="glyphicon glyphicon-save"></i> Ajouter</button>
+    </form>
+</div>

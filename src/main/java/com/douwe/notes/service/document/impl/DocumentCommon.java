@@ -25,15 +25,17 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import java.net.URL;
 import java.util.List;
-import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.inject.Named;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
-@Stateless
+@Named
+@Service
 public class DocumentCommon {
 
     @Inject

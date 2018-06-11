@@ -6,28 +6,30 @@ import com.douwe.notes.service.document.IProcesVerbalDocument;
 import com.douwe.notes.service.document.IRelevetDocument;
 import com.douwe.notes.service.document.ISyntheseDocument;
 import java.io.OutputStream;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
 import com.douwe.notes.service.document.ISyntheseDiplomationDocument;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
-@Stateless
+@Named
+@Service
 public class DocumentServiceImpl implements IDocumentFacadeService {
 
     
-    @EJB
+    @Inject
     private IProcesVerbalDocument  procesVerbalDocument;
     
-    @EJB
+    @Inject
     private ISyntheseDocument syntheseDocument;
     
-    @EJB
+    @Inject
     private IRelevetDocument relevetDocument;
     
-    @EJB
+    @Inject
     private ISyntheseDiplomationDocument syntheseDiplomation;
 
     

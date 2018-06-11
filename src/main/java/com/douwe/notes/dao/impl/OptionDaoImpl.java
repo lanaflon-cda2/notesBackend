@@ -17,11 +17,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author Vincent Douwe <douwevincent@yahoo.fr>
  */
+@Repository
 public class OptionDaoImpl extends GenericDao<Option, Long> implements IOptionDao{
 
     @Override

@@ -2,13 +2,11 @@ package com.douwe.notes.service;
 
 import com.douwe.notes.entities.Credit;
 import java.util.List;
-import javax.ejb.Local;
 
 /**
  *
  * @author Vincent Douwe <douwevincent@yahoo.fr>
  */
-@Local
 public interface ICreditService {
     
     Credit saveOrUpdateCredit(Credit credit) throws ServiceException;

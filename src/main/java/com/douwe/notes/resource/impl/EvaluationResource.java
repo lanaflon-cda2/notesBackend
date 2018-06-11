@@ -7,7 +7,7 @@ import com.douwe.notes.service.ServiceException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -20,7 +20,7 @@ import javax.ws.rs.core.Response;
 @Path("/evaluations")
 public class EvaluationResource implements IEvaluationResource{
     
-    @EJB
+    @Inject
     private IEvaluationService evaluationService;
 
     public IEvaluationService getEvaluationService() {
@@ -74,7 +74,7 @@ public class EvaluationResource implements IEvaluationResource{
             if(evaluation1 != null){
                 evaluation1.setCode(evaluation.getCode());
                 evaluation1.setDescription(evaluation.getDescription());
-                evaluation1.setIsExam(evaluation.isIsExam());
+                evaluation1.setExam(evaluation.isExam());
                 return evaluationService.saveOrUpdateEvaluation(evaluation1);
             }
             return null;
@@ -84,6 +84,7 @@ public class EvaluationResource implements IEvaluationResource{
         }
     }
 
+    @Override
     public void deleteEvaluation(long id) {
         try {
             evaluationService.deleteEvaluation(id);

@@ -7,7 +7,6 @@ import com.douwe.notes.entities.AnneeAcademique;
 import com.douwe.notes.entities.AnneeAcademique_;
 import com.douwe.notes.entities.Cours;
 import com.douwe.notes.entities.Etudiant;
-import com.douwe.notes.entities.Etudiant_;
 import com.douwe.notes.entities.Inscription;
 import com.douwe.notes.entities.Inscription_;
 import com.douwe.notes.entities.Niveau;
@@ -29,11 +28,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author Vincent Douwe <douwevincent@yahoo.fr>
  */
+@Repository
 public class AnneeAcademiqueDaoImpl extends GenericDao<AnneeAcademique, Long> implements IAnneeAcademiqueDao {
 
     @Override

@@ -1,7 +1,6 @@
 package com.douwe.notes.entities;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,11 +12,13 @@ import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import lombok.Data;
 
 /**
  * I really think we don't need this class
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
+@Data
 @Deprecated
 @Entity
 @XmlRootElement(name = "coursUeAnnee")
@@ -39,38 +40,4 @@ public class CoursUEAnnee implements Serializable {
     @ManyToOne
     @JoinColumn(name = "ANNEEACADEMIQUE_ID")
     private AnneeAcademique anneeAcademique;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Cours getCours() {
-        return cours;
-    }
-
-    public void setCours(Cours cours) {
-        this.cours = cours;
-    }
-
-    public UniteEnseignement getUniteEnseignement() {
-        return uniteEnseignement;
-    }
-
-    public void setUniteEnseignement(UniteEnseignement uniteEnseignements) {
-        this.uniteEnseignement = uniteEnseignements;
-    }
-
-    
-
-    public AnneeAcademique getAnneeAcademique() {
-        return anneeAcademique;
-    }
-
-    public void setAnneeAcademique(AnneeAcademique anneeAcademique) {
-        this.anneeAcademique = anneeAcademique;
-    }
 }

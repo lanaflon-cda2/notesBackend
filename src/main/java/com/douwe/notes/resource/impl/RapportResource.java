@@ -4,7 +4,7 @@ import com.douwe.notes.resource.IRapportResource;
 import com.douwe.notes.service.IDocumentFacadeService;
 import java.io.IOException;
 import java.io.OutputStream;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -17,7 +17,7 @@ import javax.ws.rs.core.StreamingOutput;
 @Path("/rapport")
 public class RapportResource implements IRapportResource {
 
-    @EJB
+    @Inject
     private IDocumentFacadeService documentService;
 
     String filename = new String();

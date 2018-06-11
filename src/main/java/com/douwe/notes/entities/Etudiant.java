@@ -1,6 +1,5 @@
 package com.douwe.notes.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -17,11 +16,13 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import lombok.Data;
 
 /**
  *
  * @author Vincent Douwe <douwevincent@yahoo.fr>
  */
+@Data
 @Entity
 @XmlRootElement(name = "etudiant")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -50,7 +51,7 @@ public class Etudiant implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date dateDeNaissance;
     
-    @Column(columnDefinition = "tinyint(1) default true")
+    @Column(columnDefinition = "boolean default true")
     private boolean validDate;
     
     @Column
@@ -72,130 +73,4 @@ public class Etudiant implements Serializable {
     public Etudiant(){
         
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getMatricule() {
-        return matricule;
-    }
-
-    public void setMatricule(String matricule) {
-        this.matricule = matricule;
-    }
-
-    public String getNom() {
-        return nom;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public Date getDateDeNaissance() {
-        return dateDeNaissance;
-    }
-
-    public void setDateDeNaissance(Date dateDeNaissance) {
-        this.dateDeNaissance = dateDeNaissance;
-    }
-
-    public String getLieuDeNaissance() {
-        return lieuDeNaissance;
-    }
-
-    public void setLieuDeNaissance(String lieuDeNaissance) {
-        this.lieuDeNaissance = lieuDeNaissance;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getNumeroTelephone() {
-        return numeroTelephone;
-    }
-
-    public void setNumeroTelephone(String numeroTelephone) {
-        this.numeroTelephone = numeroTelephone;
-    }
-
-    public Genre getGenre() {
-        return genre;
-    }
-
-    public void setGenre(Genre genre) {
-        this.genre = genre;
-    }
-
-    @JsonIgnore
-    public int getVersion() {
-        return version;
-    }
-
-    @JsonIgnore
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    @JsonIgnore
-    public int getActive() {
-        return active;
-    }
-
-    @JsonIgnore
-    public void setActive(int active) {
-        this.active = active;
-    }
-
-    public boolean isValidDate() {
-        return validDate;
-    }
-
-    public void setValidDate(boolean validDate) {
-        this.validDate = validDate;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 23 * hash + (this.matricule != null ? this.matricule.hashCode() : 0);
-        hash = 23 * hash + (this.nom != null ? this.nom.hashCode() : 0);
-        return hash;
-    }
-
-    
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Etudiant other = (Etudiant) obj;
-        if ((this.matricule == null) ? (other.matricule != null) : !this.matricule.equals(other.matricule)) {
-            return false;
-        }
-        return true;
-    }
-    
-    
-
-    @Override
-    public String toString() {
-        return "Etudiant{" + "id=" + id + ", version=" + version + ", matricule=" + matricule + ", nom=" + nom + ", dateDeNaissance=" + dateDeNaissance + ", lieuDeNaissance=" + lieuDeNaissance + ", email=" + email + ", numeroTelephone=" + numeroTelephone + ", genre=" + genre + ", active=" + active + '}';
-    }
-    
-    
 }

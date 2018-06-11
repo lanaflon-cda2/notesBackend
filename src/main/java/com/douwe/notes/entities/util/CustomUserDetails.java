@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class CustomUserDetails extends Utilisateur implements UserDetails{
     
     public CustomUserDetails(Utilisateur user){
-        super();
+        super(user);
     }
 
     @Override

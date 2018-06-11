@@ -2,8 +2,6 @@ package com.douwe.notes.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,17 +12,18 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import lombok.Data;
 
 /**
  *
  * @author Vincent Douwe <douwevincent@yahoo.fr>
  */
+@Data
 @Entity
 @XmlRootElement(name = "annee")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -61,87 +60,4 @@ public class AnneeAcademique implements Serializable {
     @XmlTransient
     @Column(columnDefinition = "int default 1")
     private int active;
-   
-    
-    public AnneeAcademique(){     
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Date getDebut() {
-        return debut;
-    }
-
-    public void setDebut(Date debut) {
-        this.debut = debut;
-    }
-
-    public Date getFin() {
-        return fin;
-    }
-
-    public void setFin(Date fin) {
-        this.fin = fin;
-    }
-
-    @JsonIgnore
-    public int getVersion() {
-        return version;
-    }
-
-    @JsonIgnore
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    @JsonIgnore
-    public int getActive() {
-        return active;
-    }
-
-    @JsonIgnore
-    public void setActive(int active) {
-        this.active = active;
-    }
-
-    public Integer getNumeroDebut() {
-        return numeroDebut;
-    }
-
-    public void setNumeroDebut(Integer numeroDebut) {
-        this.numeroDebut = numeroDebut;
-    }
- 
-    @Override
-    public String toString() {
-        return String.format("%s - %s",numeroDebut, numeroDebut + 1);
-    }
-
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final AnneeAcademique other = (AnneeAcademique) obj;
-        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
-
-    
-    
-    
-    
-    
 }

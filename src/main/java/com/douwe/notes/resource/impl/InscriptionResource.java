@@ -7,7 +7,7 @@ import com.douwe.notes.service.ServiceException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -19,7 +19,7 @@ import javax.ws.rs.core.Response;
 @Path("/inscriptions")
 public class InscriptionResource implements IInscriptionResource{
     
-    @EJB
+    @Inject
     private IInscriptionService service;
 
     public IInscriptionService getService() {

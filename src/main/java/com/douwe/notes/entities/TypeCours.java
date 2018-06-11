@@ -17,11 +17,13 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import lombok.Data;
 
 /**
  *
  * @author Vincent Douwe <douwevincent@yahoo.fr>
  */
+@Data
 @Entity
 @XmlRootElement(name = "typeCours")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -47,61 +49,10 @@ public class TypeCours implements Serializable {
     private int active;
      
      
-    @OneToMany(mappedBy = "typeCours", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "typeCours")
      private List<EvaluationDetails> evaluations;
     
     public TypeCours(){
         
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNom() {
-        return nom;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    @JsonIgnore
-    public int getVersion() {
-        return version;
-    }
-
-    @JsonIgnore
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    @JsonIgnore
-    public int getActive() {
-        return active;
-    }
-
-    @JsonIgnore
-    public void setActive(int active) {
-        this.active = active;
-    }
-
-    public List<EvaluationDetails> getEvaluations() {
-        return evaluations;
-    }
-
-    public void setEvaluations(List<EvaluationDetails> evaluations) {
-        this.evaluations = evaluations;
-    }
-
-    @Override
-    public String toString() {
-        return "TypeCours{" + "id=" + id + ", version=" + version + ", nom=" + nom + ", active=" + active + '}';
-    }
-    
-    
 }

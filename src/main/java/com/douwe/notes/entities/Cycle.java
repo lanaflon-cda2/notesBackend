@@ -16,11 +16,13 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import lombok.Data;
 
 /**
  *
  * @author Vincent Douwe <douwevincent@yahoo.fr>
  */
+@Data
 @XmlRootElement(name = "cycle")
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity(name="cycles")
@@ -58,75 +60,5 @@ public class Cycle implements Serializable {
     
     public Cycle(){
         
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNom() {
-        return nom;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public String getDiplomeFr() {
-        return diplomeFr;
-    }
-
-    public void setDiplomeFr(String diplomeFr) {
-        this.diplomeFr = diplomeFr;
-    }
-
-    public String getDiplomeEn() {
-        return diplomeEn;
-    }
-
-    public void setDiplomeEn(String diplomeEn) {
-        this.diplomeEn = diplomeEn;
-    }
-    
-    
-
-    @JsonIgnore
-    public List<Niveau> getNiveaux() {
-        return niveaux;
-    }
-
-    @JsonIgnore
-    public void setNiveaux(List<Niveau> niveaux) {
-        this.niveaux = niveaux;
-    }
-
-    @JsonIgnore
-    public int getVersion() {
-        return version;
-    }
-
-    @JsonIgnore
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-
-    @JsonIgnore
-    public int getActive() {
-        return active;
-    }
-
-    @JsonIgnore
-    public void setActive(int active) {
-        this.active = active;
-    }
-
-    @Override
-    public String toString() {
-        return "Cycle{" + "id=" + id + ", version=" + version + ", nom=" + nom +  '}';
     }
 }

@@ -10,11 +10,13 @@ import java.util.logging.Logger;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
+@Repository
 public class UtilisateurDaoImpl extends GenericDao<Utilisateur, Long> implements IUtilisateurDao{
 
     @Override
@@ -47,11 +49,14 @@ public class UtilisateurDaoImpl extends GenericDao<Utilisateur, Long> implements
     @Override
     public Utilisateur findByLogin(String username) {
         try {
+            System.out.println("Execution de la méthode findByLogin");
             CriteriaBuilder cb = getManager().getCriteriaBuilder();
             CriteriaQuery<Utilisateur> cq = cb.createQuery(Utilisateur.class);
             Root<Utilisateur> utRoot = cq.from(Utilisateur.class);
             cq.where(cb.equal(utRoot.get(Utilisateur_.login), username));
-            return getManager().createQuery(cq).getSingleResult();
+            Utilisateur u = getManager().createQuery(cq).getSingleResult();
+            System.out.println("Un result "+u.getLogin()+ " et "+u.getPassword());
+            return u;
         } catch (DataAccessException ex) {
             Logger.getLogger(UtilisateurDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }

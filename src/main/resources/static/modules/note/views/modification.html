@@ -1,0 +1,80 @@
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        MODIFICATION DES NOTES
+    </div>
+    <div class="panel-body">
+        <form name="form" method="post" role="form" class="form-horizontal" novalidate>
+            <div class="form-group">
+                <label for="departement" class="col-sm-2 control-label">Departement</label>
+                <div class="col-sm-6">
+                    <select id="departement" name="departement" ng-model="departement" ng-options="departement.code for departement in departements|orderBy: 'code'" class="form-control" ng-change="updateOptions()" ng-required="true"></select>
+                    <span class="error" ng-show="form.departement.$dirty && form.departement.$error.required">Le département est obligatoire</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="niveau" class="col-sm-2 control-label">Niveau</label>
+                <div class="col-sm-6">
+                    <select id="niveau" name="niveau" ng-model="niveau" ng-options="niveau.code for niveau in niveaux|orderBy: 'code'" class="form-control" ng-change="updateOptions()" ng-required="true"></select>
+                    <span class="error" ng-show="form.niveau.$dirty && form.niveau.$error.required">Le niveau est obligatoire</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="option" class="col-sm-2 control-label">Option</label>
+                <div class="col-sm-6">
+                    <select id="option" name="option" ng-model="option" ng-options="option.code for option in options" class="form-control" ng-required="true" ng-change="changerOption()"></select>
+                    <span class="error" ng-show="form.option.$dirty && form.option.$error.required">L'option est obligatoire</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="cours" class="col-sm-2 control-label">Cours</label>
+                <div class="col-sm-6">
+                    <select id="cours" name="cours" ng-model="cour" ng-options="cour.intitule for cour in cours" class="form-control" ng-required="true"></select>
+                    <span class="error" ng-show="form.cours.$dirty && form.cours.$error.required">Le cours est obligatoire</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="annee" class="col-sm-2 control-label">Année Académique</label>
+                <div class="col-sm-6">
+                    <select name="annee" id="annee" class="form-control" ng-model="annee" ng-required="true">
+                        <option value="">Select one</option>
+                        <option ng-repeat="annee in annees|orderBy:'-debut'" value="{{annee.id}}">{{annee.debut.substring(0, 4)}}-{{annee.fin.substring(0, 4)}}</option>                      
+                    </select>
+                    <span class="error" ng-show="form.annee.$dirty && form.annee.$error.required">L'année est obligatoire</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="matricule" class="col-sm-2 control-label">Matricule</label>
+                <div class="col-sm-6">
+                    <input name="matricule" id="matricule" class="form-control" ng-model="matricule" ng-required="true">
+                    <span class="error" ng-show="form.matricule.$dirty && form.matricule.$error.required">Le matricule est obligatoire</span>
+                </div>
+            </div> 
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-success btn-s" ng-click="form.$valid && afficher()">
+                        <span class="glyphicon glyphicon-upload"></span>Afficher
+                    </button>
+                </div>
+            </div>
+        </form>
+        <div>
+            <table class="table table-bordered table-hover table-condensed table-striped">
+                <thead>
+                    <tr class="success">
+                        <th>Evaluation</th>
+                        <th>Session</th>
+                        <th>Valeur</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="(key,note) in notes">
+                        <td>{{note.evaluation}}</td>
+                        <td>{{note.session}}</td>
+                        <td>{{note.valeur}}</td>
+                        <td><a ng-click="afficherFenetre(key, note)">Modifier</a> | <a ng-click="supprimerNote(key,note)">Supprimer</a></td>
+                    </tr>
+            </table>
+        </div>
+    </div>
+</div>

@@ -22,11 +22,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author Vincent Douwe <douwevincent@yahoo.fr>
  */
+@Repository
 public class NoteDaoImpl extends GenericDao<Note, Long> implements INoteDao {
 
     @Override
@@ -87,7 +89,7 @@ public class NoteDaoImpl extends GenericDao<Note, Long> implements INoteDao {
         if (evaluation != null) {
             predicates.add(cb.equal(noteRoot.get(Note_.evaluation), evaluation));
             predicates.add(cb.equal(noteRoot.get(Note_.evaluation).get(Evaluation_.active), 1));
-            if (evaluation.isIsExam()) {
+            if (evaluation.isExam()) {
                 predicates.add(cb.equal(noteRoot.get(Note_.session), session));
             }
         }

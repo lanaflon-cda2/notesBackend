@@ -15,11 +15,13 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import lombok.Data;
 
 /**
  *
  * @author Vincent Douwe <douwevincent@yahoo.fr>
  */
+@Data
 @Entity(name = "options")
 @XmlRootElement(name = "option")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -57,72 +59,4 @@ public class Option implements Serializable {
     public Option() {
 
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getDescriptionEnglish() {
-        return descriptionEnglish;
-    }
-
-    public void setDescriptionEnglish(String descriptionEnglish) {
-        this.descriptionEnglish = descriptionEnglish;
-    }
-
-    @JsonIgnore
-    public Departement getDepartement() {
-        return departement;
-    }
-
-    @JsonIgnore
-    public void setDepartement(Departement departement) {
-        this.departement = departement;
-    }
-
-    @JsonIgnore
-    public int getVersion() {
-        return version;
-    }
-
-    @JsonIgnore
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    @JsonIgnore
-    public int getActive() {
-        return active;
-    }
-
-    @JsonIgnore
-    public void setActive(int active) {
-        this.active = active;
-    }
-
-    @Override
-    public String toString() {
-        return "Option{" + "id=" + id + ", version=" + version + ", code=" + code + ", description=" + description + ", departement=" + departement + ", active=" + active + '}';
-    }
-
 }

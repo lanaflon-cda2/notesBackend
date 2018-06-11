@@ -20,11 +20,13 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import lombok.Data;
 
 /**
  *
  * @author Vincent Douwe <douwevincent@yahoo.fr>
  */
+@Data
 @Entity
 @XmlRootElement(name = "evaluationDetail")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -62,65 +64,4 @@ public class EvaluationDetails implements Serializable {
     public EvaluationDetails(){
         
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Evaluation getEvaluation() {
-        return evaluation;
-    }
-
-    public void setEvaluation(Evaluation evaluation) {
-        this.evaluation = evaluation;
-    }
-
-    public TypeCours getTypeCours() {
-        return typeCours;
-    }
-
-    public void setTypeCours(TypeCours typeCours) {
-        this.typeCours = typeCours;
-    }
-
-    public Integer getPourcentage() {
-        return pourcentage;
-    }
-
-    public void setPourcentage(Integer pourcentage) {
-        this.pourcentage = pourcentage;
-    }
-
-    @JsonIgnore
-    public int getVersion() {
-        return version;
-    }
-
-    @JsonIgnore
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    @JsonIgnore
-    public int getActive() {
-        return active;
-    }
-
-    @JsonIgnore
-    public void setActive(int active) {
-        this.active = active;
-    }
-
-    @Override
-    public String toString() {
-        return "EvaluationDetails{" + "id=" + id + ", version=" + version + ", evaluation=" + evaluation + ", typeCours=" + typeCours + ", pourcentage=" + pourcentage + ", active=" + active + '}';
-    }
-    
-    
-    
-    
 }

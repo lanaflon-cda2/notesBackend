@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.ws.rs.Path;
 
@@ -24,7 +23,7 @@ public class NiveauResource implements INiveauResource {
     @Inject
     private IInsfrastructureService insfrastructureService;
 
-    @EJB
+    @Inject
     private INiveauService service;
 
     public INiveauService getService() {

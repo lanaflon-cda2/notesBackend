@@ -44,19 +44,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.inject.Named;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
-@Stateless
+@Named
+@Service
 public class SyntheseDocument implements ISyntheseDocument {
 
     // TODO Royken I faut eviter les dependances vers les services
-    @EJB
+    @Inject
     private INoteService noteService;
 
     @Inject

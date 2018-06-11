@@ -5,18 +5,20 @@ import com.douwe.notes.dao.ICycleDao;
 import com.douwe.notes.entities.Cycle;
 import com.douwe.notes.service.ICycleService;
 import com.douwe.notes.service.ServiceException;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.inject.Named;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
-@Stateless
+@Named
+@Transactional
 public class CycleServiceImpl implements  ICycleService{
     @Inject
     private ICycleDao cycleDao;

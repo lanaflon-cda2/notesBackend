@@ -3,13 +3,11 @@ package com.douwe.notes.service;
 import com.douwe.notes.entities.Niveau;
 import com.douwe.notes.entities.Semestre;
 import java.util.List;
-import javax.ejb.Local;
 
 /**
  *
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
-@Local
 public interface INiveauService {
     
     public Niveau saveOrUpdateNiveau(Niveau niveau) throws ServiceException;

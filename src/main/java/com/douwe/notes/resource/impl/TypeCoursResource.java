@@ -9,7 +9,7 @@ import com.douwe.notes.service.ServiceException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -21,10 +21,10 @@ import javax.ws.rs.core.Response;
 @Path("/typeCours")
 public class TypeCoursResource implements ITypeCoursResource{
     
-    @EJB
+    @Inject
     private ITypeCoursService typeCoursService;
     
-    @EJB
+    @Inject
     private IEvaluationDetailService detailService;
 
     public ITypeCoursService getTypeCoursService() {

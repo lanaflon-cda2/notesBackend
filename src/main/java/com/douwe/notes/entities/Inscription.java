@@ -18,11 +18,13 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import lombok.Data;
 
 /**
  *
  * @author Vincent Douwe <douwevincent@yahoo.fr>
  */
+@Data
 @Entity
 @XmlRootElement(name = "inscription")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -32,7 +34,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQuery(name = "Inscription.findByEtudiant",query = "SELECT i from Inscription i WHERE i.etudiant = :param1 and i.anneeAcademique = :param")
 
 })
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"ETUDIANT_ID","ANNEEACADEMIQUE_ID","PARCOURS_ID"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"ETUDIANT_ID","ANNEEACADEMIQUE_ID"}))
 public class Inscription implements Serializable {
     
     @Id
@@ -66,62 +68,4 @@ public class Inscription implements Serializable {
         
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Etudiant getEtudiant() {
-        return etudiant;
-    }
-
-    public void setEtudiant(Etudiant etudiant) {
-        this.etudiant = etudiant;
-    }
-
-    public AnneeAcademique getAnneeAcademique() {
-        return anneeAcademique;
-    }
-
-    public void setAnneeAcademique(AnneeAcademique anneeAcademique) {
-        this.anneeAcademique = anneeAcademique;
-    }
-
-    public Parcours getParcours() {
-        return parcours;
-    }
-
-    public void setParcours(Parcours parcours) {
-        this.parcours = parcours;
-    }
-
-    @JsonIgnore
-    public int getVersion() {
-        return version;
-    }
-
-    @JsonIgnore
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    @JsonIgnore
-    public int getActive() {
-        return active;
-    }
-
-    @JsonIgnore
-    public void setActive(int active) {
-        this.active = active;
-    }
-
-    @Override
-    public String toString() {
-        return "Inscription{" + "id=" + id + ", version=" + version + ", etudiant=" + etudiant + ", anneeAcademique=" + anneeAcademique + ", parcours=" + parcours + ", active=" + active + '}';
-    }
-    
-    
 }

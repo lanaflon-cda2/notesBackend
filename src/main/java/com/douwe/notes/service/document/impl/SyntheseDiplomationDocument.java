@@ -15,14 +15,7 @@ import com.douwe.notes.entities.Departement;
 import com.douwe.notes.entities.Etudiant;
 import com.douwe.notes.entities.Niveau;
 import com.douwe.notes.entities.Option;
-import com.douwe.notes.entities.Semestre;
-import com.douwe.notes.entities.Session;
-import com.douwe.notes.entities.UniteEnseignement;
 import com.douwe.notes.projection.EtudiantCycle;
-import com.douwe.notes.projection.EtudiantNiveau;
-import com.douwe.notes.projection.MoyenneUniteEnseignement;
-import com.douwe.notes.projection.RelevetEtudiantNotesInfos;
-import com.douwe.notes.projection.UEnseignementCredit;
 import com.douwe.notes.service.INoteService;
 import com.douwe.notes.service.ServiceException;
 import com.douwe.notes.service.document.ISyntheseDiplomationDocument;
@@ -42,21 +35,20 @@ import com.itextpdf.text.pdf.PdfWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.inject.Named;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author cellule
  */
-@Stateless
+@Named
+@Service
 public class SyntheseDiplomationDocument implements ISyntheseDiplomationDocument {
 
     MessageHelper msgHelper = new MessageHelper();
@@ -82,7 +74,7 @@ public class SyntheseDiplomationDocument implements ISyntheseDiplomationDocument
     @Inject
     private IUniteEnseignementDao uniteEnseignementDao;
 
-    @EJB
+    @Inject
     private INoteService noteService;
 
     @Override

@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -45,25 +45,25 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 @Path("/notes")
 public class NoteResource implements INoteResource {
 
-    @EJB
+    @Inject
     private INoteService service;
 
-    @EJB
+    @Inject
     private IOptionService optionService;
 
-    @EJB
+    @Inject
     private IAnneeAcademiqueService anneeAcademiqueService;
 
-    @EJB
+    @Inject
     private ICoursService coursService;
 
-    @EJB
+    @Inject
     private INiveauService niveauService;
 
-    @EJB
+    @Inject
     private IDocumentFacadeService documentService;
 
-    @EJB
+    @Inject
     private INoteService noteService;
 
     public INoteService getService() {

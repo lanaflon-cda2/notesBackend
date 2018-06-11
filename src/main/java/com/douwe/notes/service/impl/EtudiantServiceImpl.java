@@ -25,21 +25,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.inject.Named;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
-@Stateless
+@Named
+@Service
 public class EtudiantServiceImpl implements IEtudiantService {
 
     @Inject
@@ -57,7 +58,7 @@ public class EtudiantServiceImpl implements IEtudiantService {
     @Inject
     private INiveauDao niveauDao;
 
-    @EJB
+    @Inject
     private IInscriptionService inscriptionService;
 
     public IEtudiantDao getEtudiantDao() {

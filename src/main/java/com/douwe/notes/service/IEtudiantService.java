@@ -4,13 +4,11 @@ import com.douwe.notes.entities.Etudiant;
 import com.douwe.notes.service.util.ImportationResult;
 import java.io.InputStream;
 import java.util.List;
-import javax.ejb.Local;
 
 /**
  *
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
-@Local
 public interface IEtudiantService {
     
     public Etudiant saveOrUpdateEtudiant(Etudiant etudiant) throws ServiceException;

@@ -20,11 +20,13 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import lombok.Data;
 
 /**
  *
  * @author Vincent Douwe <douwevincent@yahoo.fr>
  */
+@Data
 @Entity
 @NamedQueries({
 @NamedQuery(name = "Note.findNoteEvaluationCours",query = "SELECT n from Note n WHERE n.etudiant = :param1 and n.evaluation = :param2 and n.cours = :param3 and n.anneeAcademique = :param4")
@@ -78,96 +80,4 @@ public class Note implements Serializable {
     public Note(){
         
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public double getValeur() {
-        return valeur;
-    }
-
-    public void setValeur(double valeur) {
-        this.valeur = valeur;
-    }
-
-    @JsonIgnore
-    public Etudiant getEtudiant() {
-        return etudiant;
-    }
-
-    @JsonIgnore
-    public void setEtudiant(Etudiant etudiant) {
-        this.etudiant = etudiant;
-    }
-
-    @JsonIgnore
-    public Evaluation getEvaluation() {
-        return evaluation;
-    }
-
-    @JsonIgnore
-    public void setEvaluation(Evaluation evaluation) {
-        this.evaluation = evaluation;
-    }
-
-    @JsonIgnore
-    public Cours getCours() {
-        return cours;
-    }
-
-    @JsonIgnore
-    public void setCours(Cours cours) {
-        this.cours = cours;
-    }
-
-    @JsonIgnore
-    public AnneeAcademique getAnneeAcademique() {
-        return anneeAcademique;
-    }
-
-    @JsonIgnore
-    public void setAnneeAcademique(AnneeAcademique anneeAcademique) {
-        this.anneeAcademique = anneeAcademique;
-    }
-
-    public Session getSession() {
-        return session;
-    }
-
-    public void setSession(Session session) {
-        this.session = session;
-    }
-
-    @JsonIgnore
-    public int getVersion() {
-        return version;
-    }
-
-    @JsonIgnore
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    @JsonIgnore
-    public int getActive() {
-        return active;
-    }
-
-    @JsonIgnore
-    public void setActive(int active) {
-        this.active = active;
-    }
-
-    @JsonIgnore
-    @Override
-    public String toString() {
-        return "Note{" + "id=" + id + ", version=" + version + ", valeur=" + valeur + ", etudiant=" + etudiant + ", evaluation=" + evaluation + ", cours=" + cours + ", anneeAcademique=" + anneeAcademique + ", session=" + session + ", active=" + active + '}';
-    }
-    
-    
 }

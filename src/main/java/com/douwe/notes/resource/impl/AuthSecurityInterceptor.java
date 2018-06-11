@@ -2,16 +2,13 @@ package com.douwe.notes.resource.impl;
 
 import com.douwe.notes.projection.AuthAccessElement;
 import com.douwe.notes.service.IUtilisateurService;
-import com.douwe.notes.service.ServiceException;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -30,7 +27,7 @@ public class AuthSecurityInterceptor implements ContainerRequestFilter{
     // 401 - Access denied
     private static final Response ACCESS_UNAUTHORIZED = Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized.").build();
  
-    @EJB
+    @Inject
     IUtilisateurService utilisateurService;
  
     @Context

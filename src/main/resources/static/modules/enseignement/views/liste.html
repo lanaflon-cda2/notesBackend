@@ -1,0 +1,44 @@
+<div>
+    <h4 class ="titre">LA LISTE DES ENSEIGNEMENTS</h4>
+    <form name="form" method="post" role="form" class="form-horizontal" novalidate>
+        <div class="form-group">
+            <div class="col-sm-2">
+                <label for="annee" class="control-label">Année Académique</label>            
+                <select id="annee" class="form-control" ng-model="annee" ng-options="annee.id as ((annee.debut|date:'yyyy') +'-' + (annee.fin|date:'yyyy'))  for annee in annees |orderBy:'-debut'"></select>
+            </div>
+            <div class="col-sm-2">
+                <label for="departement" class="col-sm-1 control-label">Departement</label>            
+                <select id="departement" class="form-control" ng-model="departement" ng-change="modificationDepartement()" ng-options="departement.id as departement.code  for departement in departements | orderBy:'code'"></select>
+            </div>            
+            <div class="col-sm-2">
+                <label for="niveau" class="col-sm-1 control-label">Niveau</label>            
+                <select id="niveau" class="form-control" ng-model="niveau" ng-change="modificationDepartement()" ng-options="niveau.id as niveau.code  for niveau in niveaux | orderBy:'code'"></select>
+            </div>            
+            <div class="col-sm-2">
+                <label for="options" class="col-sm-1 control-label">Option</label>            
+                <select id="options" class="form-control" ng-model="option" ng-change="filtrer()"  ng-options="option.id as option.code  for option in options | orderBy: 'code'"></select>
+            </div>
+        </div>
+    </form>
+    <table class="table table-bordered table-hover table-condensed table-striped">
+        <thead>
+            <tr class="success">
+                <th>N<sup>o</sup></th>
+                <th>Cours</th>
+                <th>Enseignant(s)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="(cle,enseignement) in enseignements |orderBy:'cours.intitule'" class="inverse">
+                <td>{{$index + 1}}</td>
+                <td>{{enseignement.cours.intitule}}</td>
+                <td> <ul class="inline-elements"><li ng-repeat="enseignant in enseignement.enseignants"> {{enseignant.nom}} </li></ul> </td>
+                <td><a ng-click="afficherFenetre(cle,enseignement)"><i class="glyphicon glyphicon-edit"></i>  Modifier</a> | <a ng-click="supprimerEnseignement(cle,enseignement)"><i class="glyphicon glyphicon-remove"></i> Supprimer</a></td>
+            </tr>
+        </tbody>
+    </table>
+    <form>
+        <button class="btn btn-primary" ng-click="afficherFenetre()"><i class="glyphicon glyphicon-save"></i> Ajouter un Enseignement</button>
+    </form>
+</div>

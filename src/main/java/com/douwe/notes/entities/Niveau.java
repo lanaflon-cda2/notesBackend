@@ -15,11 +15,13 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import lombok.Data;
 
 /**
  *
  * @author Vincent Douwe <douwevincent@yahoo.fr>
  */
+@Data
 @Entity
 @XmlRootElement(name = "niveau")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -51,67 +53,4 @@ public class Niveau implements Serializable {
     public Niveau(){
         
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public boolean isTerminal() {
-        return terminal;
-    }
-
-    public void setTerminal(boolean terminal) {
-        this.terminal = terminal;
-    }
-    
-    
-
-    @JsonIgnore
-    public Cycle getCycle() {
-        return cycle;
-    }
-
-    @JsonIgnore
-    public void setCycle(Cycle cycle) {
-        this.cycle = cycle;
-    }
-
-    @JsonIgnore
-    public int getVersion() {
-        return version;
-    }
-
-    @JsonIgnore
-    public void setVersion(int version) {
-        this.version = version;
-    }
-    @JsonIgnore
-    public int getActive() {
-        return active;
-    }
-
-    @JsonIgnore
-    public void setActive(int active) {
-        this.active = active;
-    }   
-
-    @Override
-    public String toString() {
-        return "Niveau{" + "id=" + id + ", version=" + version + ", code=" + code +  ", active=" + active + '}';
-    }
-    
-    
-   
 }

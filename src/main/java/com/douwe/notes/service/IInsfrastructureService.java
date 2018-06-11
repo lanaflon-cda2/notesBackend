@@ -1,21 +1,15 @@
 package com.douwe.notes.service;
 
-import com.douwe.generic.dao.DataAccessException;
 import com.douwe.notes.entities.AnneeAcademique;
 import com.douwe.notes.entities.Cycle;
 import com.douwe.notes.entities.Departement;
 import com.douwe.notes.entities.Niveau;
-import com.douwe.notes.service.impl.InfrastructureServiceImpl;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.ejb.Local;
 
 /**
  *
  * @author Vincent Douwe <douwevincent@yahoo.fr>
  */
-@Local
 public interface IInsfrastructureService {
 
     public Departement saveOrUpdateDepartement(Departement departement) throws ServiceException;

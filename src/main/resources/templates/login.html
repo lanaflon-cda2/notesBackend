@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Gestion des notes</title>
+        <link href="../static/css/bootstrap.css"  th:href="@{css/bootstrap.css}"  rel="stylesheet"/>
+        <link href="../static/css/bootstrap-theme.css" th:href="@{css/bootstrap-theme.css}" rel="stylesheet"/>
+        <link href="../static/css/notes.css" rel="stylesheet" th:href="@{css/notes.css}" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <div class="row-fluid" id="main">
+            <div class="col-xs-10 col-md-offset-1">
+                <header>
+
+                </header>
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        Connexion
+                    </div>
+                    <div class="panel-body">
+                        <div th:if="${param.error}">
+                            <div class="alert alert-danger">
+                                Utilisateur ou mot de passe invalide
+                            </div>
+                        </div>
+                        <div th:if="${param.logout}">
+                            <div class="alert alert-info">
+                                Vous venez de vous deconnecter
+                            </div>
+                        </div>
+                        <form name="form" method="post" role="form" class="form-horizontal" novalidate="novalidate" th:action="@{login}">
+                            <div class="form-group">
+                                <label for="login" class="col-sm-2 control-label">Login</label>
+                                <div class="col-sm-6">
+                                    <input id="login" name="username"  class="form-control" placeholder="Nom d'utilisateur" autofocus="true"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="password" class="col-sm-2 control-label">Mot de passe</label>
+                                <div class="col-sm-6">
+                                    <input id="password" type="password" name="password"  class="form-control" placeholder="Votre mot de passe"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button type="submit" class="btn btn-success">
+                                        <span class="glyphicon glyphicon-log-in"></span> Se connecter
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <footer>
+                    &copy; Tous droits reserv&eacute;s
+                </footer>
+            </div>
+        </div>
+    </body>
+</html>

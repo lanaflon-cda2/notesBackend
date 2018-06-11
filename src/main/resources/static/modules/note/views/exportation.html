@@ -1,0 +1,55 @@
+<div>
+    <h4 class ="titre">EXPORTATION DES NOTES</h4><br/>
+    <div class="panel-body">
+        <form name="form" method="post" role="form" class="form-horizontal" novalidate>
+            <div class="form-group">
+                <label for="code" class="col-sm-2 control-label">Fichier</label>
+                <div class="col-sm-6">
+                    <input type="file" name="fichier" id="code"  class="form-control" ng-required="true" onchange="angular.element(this).scope().uploadFile(this.files)"/>
+                    <span class="error" ng-show="form.code.$dirty && form.code.$error.required">Le fichier est obligatoire</span>
+                </div>
+
+            </div>
+            <div class="form-group">
+                <label for="cours" class="col-sm-2 control-label">Cours</label>
+                <div class="col-sm-6">
+                    <select name="cours" id="cours" class="form-control" ng-model="cour" ng-required="true">
+                        <option value="">Select one</option>
+                        <option ng-repeat="cors in cours">{{cors.intitule}}</option>
+
+                    </select>
+                    <span class="error" ng-show="form.cycle.$dirty && form.cycle.$error.required">Le cours est obligatoire</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="evaluation" class="col-sm-2 control-label">Evaluation</label>
+                <div class="col-sm-6">
+                    <select name="evaluation" id="evaluation" class="form-control" ng-model="evaluation" ng-required="true">
+                        <option value="">Select one</option>
+                        <option ng-repeat="evaluation in evaluations">{{ evaluation.code}}</option>
+
+                    </select>
+                    <span class="error" ng-show="form.cycle.$dirty && form.cycle.$error.required">L'ann&eacute;e est obligatoire</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="annee" class="col-sm-2 control-label">Année Académique</label>
+                <div class="col-sm-6">
+                    <select name="annee" id="annee" class="form-control" ng-model="annee" ng-required="true">
+                        <option value="">Select one</option>
+                        <option ng-repeat="annee in annees" value="{{annee.id}}">{{annee.debut.substring(0, 4)}}-{{annee.fin.substring(0, 4)}}</option>
+
+                    </select>
+                    <span class="error" ng-show="form.cycle.$dirty && form.cycle.$error.required">L'&eacute;valuation est obligatoire</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-success btn-s" ng-click="form.$valid && valider()">
+                        <span class="glyphicon glyphicon-upload"></span> Charger
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

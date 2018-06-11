@@ -38,11 +38,13 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author Vincent Douwe <douwevincent@yahoo.fr>
  */
+@Repository
 public class EtudiantDaoImpl extends GenericDao<Etudiant, Long> implements IEtudiantDao {
 
     @Override
