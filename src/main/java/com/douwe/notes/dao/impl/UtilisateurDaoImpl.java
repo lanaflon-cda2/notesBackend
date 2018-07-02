@@ -48,14 +48,12 @@ public class UtilisateurDaoImpl extends GenericDao<Utilisateur, Long> implements
 
     @Override
     public Utilisateur findByLogin(String username) {
-        try {
-            System.out.println("Execution de la méthode findByLogin");
+        try {            
             CriteriaBuilder cb = getManager().getCriteriaBuilder();
             CriteriaQuery<Utilisateur> cq = cb.createQuery(Utilisateur.class);
             Root<Utilisateur> utRoot = cq.from(Utilisateur.class);
             cq.where(cb.equal(utRoot.get(Utilisateur_.login), username));
             Utilisateur u = getManager().createQuery(cq).getSingleResult();
-            System.out.println("Un result "+u.getLogin()+ " et "+u.getPassword());
             return u;
         } catch (DataAccessException ex) {
             Logger.getLogger(UtilisateurDaoImpl.class.getName()).log(Level.SEVERE, null, ex);

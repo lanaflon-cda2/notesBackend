@@ -17,10 +17,13 @@
                 <td>{{$index + 1}}</td>
                 <td>{{utilisateur.nom}}</td>
                 <td>{{utilisateur.prenom}}</td>
-                <td>{{utilsateur.email}}</td>
+                <td>{{utilisateur.email}}</td>
                 <td>{{utilisateur.role}}</td>
-                <td> <span ng-repeat="dep in utilisateur.departements">{{dep.code}}</span> </td>                
-                <td>{{$index + 1}}</td>
+                <td> <ul class="inline-elements"><li ng-repeat="dep in utilisateur.departements"> {{dep.code}} </li></ul> </td>                
+                <td>
+                    <button class="btn btn-primary btn-xs" ng-click="editer(utilisateur, $index)"><span class="glyphicon glyphicon-edit"></span>Editer</button>
+                    <button class="btn btn-danger btn-xs" ng-click="supprimer(utilisateur, $index)"><span class="glyphicon glyphicon-trash"></span>Supprimer</button>
+                </td>
                 <!--<td>{{utilisateur.intitule}}</td>
                 <td>{{utilisateur.niveau.code}}</td>
                 <td><a ng-click="afficherFenetre(semestre)">Modifier</a> | <a ng-click="supprimerSemestre(semestre)">Supprimer</a></td> -->
@@ -28,6 +31,6 @@
         </tbody>
     </table>
     <form>
-        <button class="btn btn-primary" ng-click="afficherFenetre(undefined)"><i class="icon-user"></i>Ajouter</button>
+        <button class="btn btn-primary" ng-click="afficherFenetre({}, undefined)"><i class="glyphicon glyphicon-save"></i>Ajouter</button>
     </form>
 </div>

@@ -1,8 +1,8 @@
 package com.douwe.notes.service;
 
-import com.douwe.generic.dao.DataAccessException;
 import com.douwe.notes.entities.Utilisateur;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -10,11 +10,18 @@ import java.util.List;
  */
 public interface IUtilisateurService {
     
-    public Utilisateur createOrUpdate(Utilisateur u) throws DataAccessException;
+    public Utilisateur create(Utilisateur u);
+    
+    
+    public Utilisateur update(long id, Utilisateur u);
+    
+    public void delete(long id);
     
 //    public AuthAccessElement findByLoginAndPassword(AuthLoginElement loginElement) throws ServiceException;
 //    
 //    public boolean isAuthorized(String authId, String authToken, Set<String> rolesAllowed) throws ServiceException;
     
     public List<Utilisateur> findAll();
+
+    public Map<String, Object> changePassword(long id, String oldPassword, String newPassword);
 }

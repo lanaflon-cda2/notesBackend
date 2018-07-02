@@ -14,16 +14,16 @@
         <div class="row-fluid" id="main">
             <div class="col-xs-10 col-md-offset-1">
                 <header>
-                    <div id="account">
+                    <div id="account" ng-controller="MainController" ng-show="utilisateur" ng-cloak="ng-cloak" class="ng-cloak">
                         <ul class="nav nav-pills info">
                             <li class="dropdown" data-dropdown data-on-toggle="toggled(open)">
-                                <a class="dropdown-toggle" data-dropdown-toggle><img src="img/douwe.png" alt="profile image" class="img img-circle img-thumbnail img-responsive"> <i>Douwe Vincent</i><b class="caret"></b></a>
+                                <a class="dropdown-toggle" data-dropdown-toggle><!-- <img src="img/douwe.png" alt="profile image" class="img img-circle img-thumbnail img-responsive">--> <i> {{utilisateur.nom }}&nbsp;{{utilisateur.prenom}}</i><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a data-ui-sref="pv"><i class="glyphicon glyphicon-picture"></i> <span> Profile</span></a>
+                                        <a ng-click="showProfile()"><i class="glyphicon glyphicon-picture"></i> <span> Profile</span></a>
                                     </li>
                                     <li>
-                                        <a data-ui-sref="synthese"><i class="glyphicon glyphicon-lock"></i> <span> Mot de passe</span></a>
+                                        <a ng-click="changePassword()"><i class="glyphicon glyphicon-lock"></i> <span> Mot de passe</span></a>
                                     </li>
                                     <li>
                                         <a href="/notes/logout"> <i class="glyphicon glyphicon-log-out"></i> <span> Se d&eacute;connecter</span></a>
