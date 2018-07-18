@@ -26,7 +26,7 @@ public class Main {
                 u.setLogin("admin");
                 u.setNom("administrateur");
                 u.setEmail("admin@admin.info");
-                u.setPassword(new BCryptPasswordEncoder().encode("admin"));
+                u.setPassword(new BCryptPasswordEncoder().encode("admin123"));
                 utilisateurDao.create(u);
                 
             }
