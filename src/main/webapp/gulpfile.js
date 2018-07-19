@@ -1,7 +1,9 @@
 var gulp = require('gulp');
 var uglify = require('gulp-uglify');
+var minify = require('gulp-minify');
 var concat = require('gulp-concat');
 var cssmin = require('gulp-cssmin');
+var ngAnnotate = require('gulp-ng-annotate');
 var htmlsrc = require('gulp-html-src');
 var pump = require('pump');
 
@@ -18,11 +20,11 @@ gulp.task('scripts', function(fo){
     pump([
             gulp.src('./index.html'),
             htmlsrc(),
+            ngAnnotate(),
+            uglify(),
             concat('app.min.js'),
             gulp.dest('./../resources/static/js/')
         ], fo);
 });
 
-gulp.task('default', ['styles', 'scripts'], function(){
-
-});
+gulp.task('default', ['styles', 'scripts'], function(){});

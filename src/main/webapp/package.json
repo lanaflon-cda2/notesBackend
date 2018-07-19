@@ -21,6 +21,7 @@
     "gulp-cssmin": "^0.2.0",
     "gulp-html-src": "^1.0.0",
     "gulp-minify": "^3.1.0",
+    "gulp-ng-annotate": "^2.1.0",
     "gulp-uglify": "^3.0.0",
     "pump": "^3.0.0"
   },
