@@ -122,6 +122,7 @@
             <version>1.4</version>
             <scope>runtime</scope>
         </dependency>
+        
         <!-- Used to generate meta data for entity classes -->
     </dependencies>
     <build>
@@ -148,6 +149,41 @@
                             <version>4.3.10.Final</version>
                         </path>                        
                     </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>install node and npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>v8.11.1</nodeVersion>
+                            <npmVersion>5.6.0</npmVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm install</id>
+                        <goals>
+                          <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                          <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <goals>
+                            <goal>gulp</goal>
+                        </goals>
+                        <id>gulp build</id>
+                    </execution>
+                </executions>
+                <configuration>
+                    <workingDirectory>src/main/webapp</workingDirectory>
                 </configuration>
             </plugin>
         </plugins>
