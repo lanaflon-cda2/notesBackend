@@ -9,6 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -24,6 +26,10 @@ import lombok.Data;
 @Entity
 @XmlRootElement(name = "utilisateur")
 @XmlAccessorType(XmlAccessType.FIELD)
+@NamedQueries({
+    @NamedQuery(name = "Utilisateur.findAllActive", query = "select u from Utilisateur u where u.active = 1 ORDER BY u.nom")
+})
+    
 public class Utilisateur implements Serializable{
 
     public Utilisateur() {
@@ -50,6 +56,9 @@ public class Utilisateur implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    
+    @Column(columnDefinition = "int default 1")
+    private int active;
     
     @Column (nullable = false)
     private String nom;

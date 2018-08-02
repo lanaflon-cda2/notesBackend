@@ -5,6 +5,7 @@ import com.douwe.generic.dao.impl.GenericDao;
 import com.douwe.notes.dao.IUtilisateurDao;
 import com.douwe.notes.entities.Utilisateur;
 import com.douwe.notes.entities.Utilisateur_;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -27,6 +28,11 @@ public class UtilisateurDaoImpl extends GenericDao<Utilisateur, Long> implements
         cq.where(cb.and(cb.like(utRoot.get(Utilisateur_.login), login), cb.like(utRoot.get(Utilisateur_.password), password)));
         return getManager().createQuery(cq).getSingleResult();
     }
+    
+//    @Override
+//    public List<Utilisateur> findAllActive() throws DataAccessException{
+//        return getManager().createNamedQuery("Utilisateur.findAllActive").getResultList();
+//    }
 
 //    @Override
 //    public Utilisateur findByUsernameAndAuthToken(String username, String token) throws DataAccessException {

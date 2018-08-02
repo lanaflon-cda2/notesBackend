@@ -23,5 +23,11 @@ public interface IUtilisateurService {
     
     public List<Utilisateur> findAll();
 
+    public Utilisateur findOne(long id);
+    
+    public void activate(long id);
+    
+    public void reset(long id);
+    
     public Map<String, Object> changePassword(long id, String oldPassword, String newPassword);
 }

@@ -2,6 +2,7 @@ package com.douwe.notes.resource;
 
 import com.douwe.notes.entities.Cours;
 import com.douwe.notes.entities.Evaluation;
+import java.security.Principal;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
@@ -24,7 +25,7 @@ public interface ICoursResource {
     @GET
     @Produces(value = "application/json")
     @RolesAllowed({"ADMIN"})
-    List<Cours> getAllCours();
+    List<Cours> getAllCours(Principal user);
     
     @GET
     @Path(value = "{niveauId : \\d+}/{optionId : \\d+}")

@@ -1,126 +1,64 @@
-<div id="container">					
-    <nav role="navigation" class="navbar" >
+<div id=container>
+    <nav role=navigation class=navbar>
         <ul class="nav nav-pills info">
-            <li class="dropdown" dropdown on-toggle="toggled(open)">
-                <a class="dropdown-toggle" dropdown-toggle> <i class="glyphicon glyphicon-folder-open"></i>  Donn&eacute;es<b class="caret"></b></a>
-                <ul class="dropdown-menu info" role="menu">
-                    <li>
-                        <a ui-sref="cycles">Cycle</a>
-                    </li>
-                    <li>
-                        <a ui-sref="niveaux">Niveau</a>
-                    </li>
-                    <li>
-                        <a ui-sref="parcours">Parcours</a>
-                    </li>
-                    <li>
-                        <a ui-sref="departements">D&eacute;partement</a>
-                    </li>
-                    <li>
-                        <a ui-sref="options">Option</a>
-                    </li>
-                    <li>
-                        <a ui-sref="semestres">Semestre</a>
-                    </li>
-                    <li>
-                        <a ui-sref="annees">Ann&eacute;e Acad&eacute;mique</a>
-                    </li>
+            <li class=dropdown dropdown on-toggle=toggled(open)><a class=dropdown-toggle dropdown-toggle><i class="glyphicon glyphicon-folder-open"></i> Donn&eacute;es<b class=caret></b></a>
+                <ul class="dropdown-menu info" role=menu>
+                    <li><a ui-sref=cycles>Cycle</a></li>
+                    <li><a ui-sref=niveaux>Niveau</a></li>
+                    <li><a ui-sref=parcours>Parcours</a></li>
+                    <li><a ui-sref=departements>D&eacute;partement</a></li>
+                    <li><a ui-sref=options>Option</a></li>
+                    <li><a ui-sref=semestres>Semestre</a></li>
+                    <li><a ui-sref=annees>Ann&eacute;e Acad&eacute;mique</a></li>
                 </ul>
             </li>
-            <li class="dropdown" dropdown on-toggle="toggled(open)">
-                <a class="dropdown-toggle" dropdown-toggle> <i class="glyphicon glyphicon-book"></i> Enseignements<b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a ui-sref="cours">Cours</a>
-                    </li>
-                    <li>
-                        <a ui-sref="credits">Cr&eacute;dits</a>
-                    </li>
-                    <li>
-                        <a ui-sref="typecours">Type Cours</a>
-                    </li>
-                    <li>
-                        <a ui-sref="uniteEns">Unit&eacute; Enseignement</a>
-                    </li>
-                    <li>
-                        <a ui-sref="programmes">Programme Enseignement</a>
-                    </li>
-                    <li>
-                        <a ui-sref="enseignants">Enseignant</a>
-                    </li>
-                    <li>
-                        <a ui-sref="enseignements">Enseignements</a>
-                    </li>
+            <li class=dropdown dropdown on-toggle=toggled(open)><a class=dropdown-toggle dropdown-toggle><i class="glyphicon glyphicon-book"></i> Enseignements<b class=caret></b></a>
+                <ul class=dropdown-menu>
+                    <li><a ui-sref=cours>Cours</a></li>
+                    <li><a ui-sref=credits>Cr&eacute;dits</a></li>
+                    <li><a ui-sref=typecours>Type Cours</a></li>
+                    <li><a ui-sref=uniteEns>Unit&eacute; Enseignement</a></li>
+                    <li><a ui-sref=programmes>Programme Enseignement</a></li>
+                    <li><a ui-sref=enseignants>Enseignant</a></li>
+                    <li><a ui-sref=enseignements>Enseignements</a></li>
                 </ul>
             </li>
-            <li class="dropdown" dropdown on-toggle="toggled(open)">
-                <a class="dropdown-toggle" dropdown-toggle><i class="glyphicon glyphicon-education"></i> Etudiant<b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a ui-sref="eimportation"><i class="glyphicon glyphicon-download"></i> Importation</a>
-                    </li>
-                    <li>
-                        <a ui-sref="inscription"><i class="glyphicon glyphicon-pencil"></i> Inscription</a>
-                    </li>
-                    <li>
-                        <a ui-sref="eliste"><i class="glyphicon glyphicon-list-alt"></i> Liste</a>
-                    </li>
+            <li class=dropdown dropdown on-toggle=toggled(open)><a class=dropdown-toggle dropdown-toggle><i class="glyphicon glyphicon-education"></i> Etudiant<b class=caret></b></a>
+                <ul class=dropdown-menu>
+                    <li><a ui-sref=eimportation><i class="glyphicon glyphicon-download"></i> Importation</a></li>
+                    <li><a ui-sref=inscription><i class="glyphicon glyphicon-pencil"></i> Inscription</a></li>
+                    <li><a ui-sref=eliste><i class="glyphicon glyphicon-list-alt"></i> Liste</a></li>
                 </ul>
             </li>
-            <li class="dropdown" dropdown on-toggle="toggled(open)">
-                <a class="dropdown-toggle" dropdown-toggle><i class="glyphicon glyphicon-check"></i> Notes<b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a ui-sref="evaluations"><i class="glyphicon glyphicon-edit"></i> Evaluation</a>
-                    </li>
-                    <li>
-                        <a ui-sref="nimportation"><i class="glyphicon glyphicon-download"></i> Importation</a>
-                    </li>
-                    <li>
-                        <a ui-sref="nexportation"><i class="glyphicon glyphicon-upload"></i> Exportation</a>
-                    </li>
-                    <li>
-                        <a ui-sref="ndeliberation"><i class="glyphicon glyphicon-upload"></i> Déliberations</a>
-                    </li>
-                    <li>
-                        <a ui-sref="nmodification"><i class="glyphicon glyphicon-upload"></i> Modification</a>
-                    </li>
+            <li class=dropdown dropdown on-toggle=toggled(open)><a class=dropdown-toggle dropdown-toggle><i class="glyphicon glyphicon-check"></i> Notes<b class=caret></b></a>
+                <ul class=dropdown-menu>
+                    <li><a ui-sref=evaluations><i class="glyphicon glyphicon-edit"></i> Evaluation</a></li>
+                    <li><a ui-sref=nimportation><i class="glyphicon glyphicon-download"></i> Importation</a></li>
+                    <li><a ui-sref=nexportation><i class="glyphicon glyphicon-upload"></i> Exportation</a></li>
+                    <li><a ui-sref=ndeliberation><i class="glyphicon glyphicon-upload"></i> Déliberations</a></li>
+                    <li><a ui-sref=nmodification><i class="glyphicon glyphicon-upload"></i> Modification</a></li>
                 </ul>
             </li>
-            <li class="dropdown" dropdown on-toggle="toggled(open)">
-                <a class="dropdown-toggle" dropdown-toggle><i class="glyphicon glyphicon-list-alt"></i> Rapports<b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a ui-sref="pv">Proc&eacute;s Verbal</a>
-                    </li>
-                    <li>
-                        <a ui-sref="synthese">Synth&eacute;se</a>
-                    </li>
-                    <li>
-                        <a ui-sref="releves">Relev&eacute;s de Notes</a>
-                    </li>
-                    <li>
-                        <a ui-sref="diplomation">Synth&eacute;se de Diplomation</a>
-                    </li>
+            <li class=dropdown dropdown on-toggle=toggled(open)><a class=dropdown-toggle dropdown-toggle><i class="glyphicon glyphicon-list-alt"></i> Rapports<b class=caret></b></a>
+                <ul class=dropdown-menu>
+                    <li><a ui-sref=pv>Proc&eacute;s Verbal</a></li>
+                    <li><a ui-sref=synthese>Synth&eacute;se</a></li>
+                    <li><a ui-sref=releves>Relev&eacute;s de Notes</a></li>
+                    <li><a ui-sref=diplomation>Synth&eacute;se de Diplomation</a></li>
                 </ul>
             </li>
-            <li>
-                <a ui-sref="statistiques"> <i class="glyphicon glyphicon-picture"></i> Statistiques</a>
-            </li>
-            <li>
-                <a ui-sref="passage"><i class="glyphicon glyphicon-retweet"></i> Passage Niveau</a>
-            </li>
-            <li class="dropdown" dropdown on-toggle="toggled(open)">
-                <a class="dropdown-toggle" dropdown-toggle><i class="glyphicon glyphicon-tower"></i> Administration<b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a ui-sref="utilisateurs"><i class="glyphicon glyphicon-user"></i> Utilisateurs</a>
-                    </li>
+            <li><a ui-sref=statistiques><i class="glyphicon glyphicon-picture"></i> Statistiques</a></li>
+            <li><a ui-sref=passage><i class="glyphicon glyphicon-retweet"></i> Passage Niveau</a></li>
+            <li class=dropdown dropdown on-toggle=toggled(open)><a class=dropdown-toggle dropdown-toggle><i class="glyphicon glyphicon-tower"></i> Administration<b class=caret></b></a>
+                <ul class=dropdown-menu>
+                    <li><a ui-sref=utilisateurs><i class="glyphicon glyphicon-user"></i> Utilisateurs</a></li>
                 </ul>
-                </nav>
-                <div id="content">
-                    <div id="loading" ng-if="isViewLoading"></div>
-                    <div ui-view></div>
-                    <div ng-if="isError">Une erreur est survenue lors du chargement de vos données</div>
-                </div>
-                </div>
+            </li>
+        </ul>
+    </nav>
+    <div id=content>
+        <div id=loading ng-if=isViewLoading></div>
+        <div ui-view></div>
+        <div ng-if=isError>Une erreur est survenue lors du chargement de vos données</div>
+    </div>
+</div>

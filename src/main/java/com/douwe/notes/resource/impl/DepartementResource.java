@@ -4,6 +4,8 @@ import com.douwe.notes.entities.Cours;
 import com.douwe.notes.resource.IDepartementResource;
 import com.douwe.notes.entities.Departement;
 import com.douwe.notes.entities.Option;
+import com.douwe.notes.entities.Role;
+import com.douwe.notes.entities.Utilisateur;
 import com.douwe.notes.service.IDepartementService;
 import com.douwe.notes.service.ServiceException;
 import java.util.List;
@@ -13,6 +15,8 @@ import javax.inject.Inject;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  *
@@ -20,7 +24,7 @@ import javax.ws.rs.core.Response;
  */
 @Path("/departements")
 public class DepartementResource implements IDepartementResource {
-
+    
     @Inject
     private IDepartementService departementService;
 
@@ -122,8 +126,13 @@ public class DepartementResource implements IDepartementResource {
     @Override
     public List<Departement> getAllDepartement() {
         try {
-            List<Departement> deps = departementService.getAllDepartements();
-            return deps;
+            Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
+            Utilisateur user = (auth == null) ? null : (Utilisateur) auth.getPrincipal();
+            if(user == null)
+                return null;
+            if(user.getRole() == Role.ADMINISTRATEUR)
+                return departementService.getAllDepartements();
+            return user.getDepartements();
         } catch (ServiceException ex) {
             Logger.getLogger(DepartementResource.class.getName()).log(Level.SEVERE, null, ex);
             return null;
@@ -174,7 +183,6 @@ public class DepartementResource implements IDepartementResource {
     }
 
     @Override
-    //@RolesAllowed({"ADMIN"})
     public List<Cours> getAllCours(long id) {
         try {
             return departementService.getAllCours(id);

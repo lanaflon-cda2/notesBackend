@@ -1,168 +1,97 @@
 <!DOCTYPE html>
-<html ng-app="notesApp">
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta charset="utf-8" />
-        <title>Gestion des notes</title>
-        <link href="css/styles.min.css" rel="stylesheet"/>
-    </head>
-    <body>
-        <div class="row-fluid" id="main">
-            <div class="col-xs-10 col-md-offset-1">
-                <header>
-                    <div id="account" ng-controller="MainController" ng-show="utilisateur" ng-cloak="ng-cloak" class="ng-cloak">
-                        <ul class="nav nav-pills info">
-                            <li class="dropdown" data-dropdown data-on-toggle="toggled(open)">
-                                <a class="dropdown-toggle" data-dropdown-toggle><!-- <img src="img/douwe.png" alt="profile image" class="img img-circle img-thumbnail img-responsive">--> <i> {{utilisateur.nom }}&nbsp;{{utilisateur.prenom}}</i><b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a ng-click="showProfile()"><i class="glyphicon glyphicon-picture"></i> <span> Profile</span></a>
-                                    </li>
-                                    <li>
-                                        <a ng-click="changePassword()"><i class="glyphicon glyphicon-lock"></i> <span> Mot de passe</span></a>
-                                    </li>
-                                    <li>
-                                        <a href="/notes/logout"> <i class="glyphicon glyphicon-log-out"></i> <span> Se d&eacute;connecter</span></a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul> 
-                    </div>
-                </header>
-                <div id="container">					
-                    <nav role="navigation" class="navbar">
-                        <ul class="nav nav-pills info">
-                            <li class="dropdown" data-dropdown data-on-toggle="toggled(open)">
-                                <a class="dropdown-toggle" data-dropdown-toggle> <i class="glyphicon glyphicon-folder-open"></i>  Donn&eacute;es<b class="caret"></b></a>
-                                <ul class="dropdown-menu info" role="menu">
-                                    <li>
-                                        <a data-ui-sref="cycles">Cycle</a>
-                                    </li>
-                                    <li>
-                                        <a data-ui-sref="niveaux">Niveau</a>
-                                    </li>
-                                    <li>
-                                        <a data-ui-sref="parcours">Parcours</a>
-                                    </li>
-                                    <li>
-                                        <a data-ui-sref="departements">D&eacute;partement</a>
-                                    </li>
-                                    <li>
-                                        <a data-ui-sref="options">Option</a>
-                                    </li>
-                                    <li>
-                                        <a data-ui-sref="semestres">Semestre</a>
-                                    </li>
-                                    <li>
-                                        <a data-ui-sref="annees">Ann&eacute;e Acad&eacute;mique</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="dropdown" data-dropdown data-on-toggle="toggled(open)">
-                                <a class="dropdown-toggle" data-dropdown-toggle> <i class="glyphicon glyphicon-book"></i> Enseignements<b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a data-ui-sref="cours">Cours</a>
-                                    </li>
-                                    <li>
-                                        <a data-ui-sref="credits">Cr&eacute;dits</a>
-                                    </li>
-                                    <li>
-                                        <a data-ui-sref="typecours">Type Cours</a>
-                                    </li>
-                                    <li>
-                                        <a data-ui-sref="uniteEns">Unit&eacute; Enseignement</a>
-                                    </li>
-                                    <li>
-                                        <a data-ui-sref="programmes">Programme Enseignement</a>
-                                    </li>
-                                    <li>
-                                        <a data-ui-sref="enseignants">Enseignant</a>
-                                    </li>
-                                    <li>
-                                        <a data-ui-sref="enseignements">Enseignements</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="dropdown" data-dropdown data-on-toggle="toggled(open)">
-                                <a class="dropdown-toggle" data-dropdown-toggle><i class="glyphicon glyphicon-education"></i> Etudiant<b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a data-ui-sref="eimportation"><i class="glyphicon glyphicon-download"></i> Importation</a>
-                                    </li>
-                                    <li>
-                                        <a data-ui-sref="inscription"><i class="glyphicon glyphicon-pencil"></i> Inscription</a>
-                                    </li>
-                                    <li>
-                                        <a data-ui-sref="eliste"><i class="glyphicon glyphicon-list-alt"></i> Liste</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="dropdown" data-dropdown data-on-toggle="toggled(open)">
-                                <a class="dropdown-toggle" data-dropdown-toggle><i class="glyphicon glyphicon-check"></i> Notes<b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a data-ui-sref="evaluations"><i class="glyphicon glyphicon-edit"></i> Evaluation</a>
-                                    </li>
-                                    <li>
-                                        <a data-ui-sref="nimportation"><i class="glyphicon glyphicon-download"></i> Importation</a>
-                                    </li>
-                                    <li>
-                                        <a data-ui-sref="nexportation"><i class="glyphicon glyphicon-upload"></i> Exportation</a>
-                                    </li>
-                                    <li>
-                                        <a data-ui-sref="ndeliberation"><i class="glyphicon glyphicon-upload"></i> Déliberations</a>
-                                    </li>
-                                    <li>
-                                        <a data-ui-sref="nmodification"><i class="glyphicon glyphicon-upload"></i> Modification</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="dropdown" data-dropdown data-on-toggle="toggled(open)">
-                                <a class="dropdown-toggle" data-dropdown-toggle><i class="glyphicon glyphicon-list-alt"></i> Rapports<b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a data-ui-sref="pv">Proc&eacute;s Verbal</a>
-                                    </li>
-                                    <li>
-                                        <a data-ui-sref="synthese">Synth&eacute;se</a>
-                                    </li>
-                                    <li>
-                                        <a data-ui-sref="releves">Relev&eacute;s de Notes</a>
-                                    </li>
-                                    <li>
-                                        <a data-ui-sref="diplomation">Synth&eacute;se de Diplomation</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a data-ui-sref="statistiques"> <i class="glyphicon glyphicon-picture"></i> Statistiques</a>
-                            </li>
-                            <li>
-                                <a data-ui-sref="passage"><i class="glyphicon glyphicon-retweet"></i> Passage Niveau</a>
-                            </li>
-                            <li class="dropdown" data-dropdown data-on-toggle="toggled(open)">
-                                <a class="dropdown-toggle" data-dropdown-toggle><i class="glyphicon glyphicon-tower"></i> Administration<b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a data-ui-sref="utilisateurs"><i class="glyphicon glyphicon-user"></i> Utilisateurs</a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </nav>
-                    <div id="content" ng-cloak class="ng-cloak">
-                        <div id="loading" ng-if="isViewLoading"></div>
-                        <div data-ui-view></div>
-                        <div ng-if="isError">Une erreur est survenue lors du chargement de vos données</div>
-                    </div>
-                </div>
+<html ng-app=notesApp>
 
-                <footer>
-                    &copy; Tous droits reserv&eacute;s
-                </footer>
+<head>
+    <meta name=viewport content="width=device-width, initial-scale=1.0">
+    <meta charset=utf-8>
+    <title>Gestion des notes</title>
+    <link rel=stylesheet type=text/css href=css/styles.min.css>
+</head>
+
+<body>
+    <div class=row-fluid id=main ng-controller=MainController>
+        <div class="col-xs-10 col-md-offset-1">
+            <header>
+                <div id=account ng-show=utilisateur ng-cloak=ng-cloak class=ng-cloak>
+                    <ul class="nav nav-pills info">
+                        <li class=dropdown data-dropdown data-on-toggle=toggled(open)><a class=dropdown-toggle data-dropdown-toggle><i>{{utilisateur.nom }}&nbsp;{{utilisateur.prenom}}</i><b class=caret></b></a>
+                            <ul class=dropdown-menu>
+                                <li><a ng-click=showProfile()><i class="glyphicon glyphicon-picture"></i> <span>Profile</span></a></li>
+                                <li><a ng-click=changePassword()><i class="glyphicon glyphicon-lock"></i> <span>Mot de passe</span></a></li>
+                                <li><a href=/logout><i class="glyphicon glyphicon-log-out"></i> <span>Se d&eacute;connecter</span></a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </header>
+            <div id=container>
+                <nav role=navigation class=navbar>
+                    <ul class="nav nav-pills info">
+                        <li class=dropdown data-dropdown data-on-toggle=toggled(open)><a class=dropdown-toggle data-dropdown-toggle ng-show=utilisateur><i class="glyphicon glyphicon-folder-open"></i> Donn&eacute;es<b class=caret></b></a>
+                            <ul class="dropdown-menu info" role=menu>
+                                <li ng-show="utilisateur.role === 'ADMINISTRATEUR'"><a data-ui-sref=cycles>Cycle</a></li>
+                                <li ng-show="utilisateur.role === 'ADMINISTRATEUR'"><a data-ui-sref=niveaux>Niveau</a></li>
+                                <li><a data-ui-sref=parcours>Parcours</a></li>
+                                <li ng-show="utilisateur.role === 'ADMINISTRATEUR'"><a data-ui-sref=departements>D&eacute;partement</a></li>
+                                <li><a data-ui-sref=options>Option</a></li>
+                                <li ng-show="utilisateur.role === 'ADMINISTRATEUR'"><a data-ui-sref=semestres>Semestre</a></li>
+                                <li ng-show="utilisateur.role === 'ADMINISTRATEUR'"><a data-ui-sref=annees>Ann&eacute;e Acad&eacute;mique</a></li>
+                            </ul>
+                        </li>
+                        <li class=dropdown data-dropdown data-on-toggle=toggled(open) ng-show="utilisateur.role != 'ADMINISTRATEUR'"><a class=dropdown-toggle data-dropdown-toggle><i class="glyphicon glyphicon-book"></i> Enseignements<b class=caret></b></a>
+                            <ul class=dropdown-menu>
+                                <li><a data-ui-sref=cours>Cours</a></li>
+                                <li><a data-ui-sref=credits>Cr&eacute;dits</a></li>
+                                <li><a data-ui-sref=typecours>Type Cours</a></li>
+                                <li><a data-ui-sref=uniteEns>Unit&eacute; Enseignement</a></li>
+                                <li><a data-ui-sref=programmes>Programme Enseignement</a></li>
+                                <li><a data-ui-sref=enseignants>Enseignant</a></li>
+                                <li><a data-ui-sref=enseignements>Enseignements</a></li>
+                            </ul>
+                        </li>
+                        <li class=dropdown data-dropdown data-on-toggle=toggled(open) ng-show="utilisateur.role != 'ADMINISTRATEUR'"><a class=dropdown-toggle data-dropdown-toggle><i class="glyphicon glyphicon-education"></i> Etudiant<b class=caret></b></a>
+                            <ul class=dropdown-menu>
+                                <li><a data-ui-sref=eimportation><i class="glyphicon glyphicon-download"></i> Importation</a></li>
+                                <li><a data-ui-sref=inscription><i class="glyphicon glyphicon-pencil"></i> Inscription</a></li>
+                                <li><a data-ui-sref=eliste><i class="glyphicon glyphicon-list-alt"></i> Liste</a></li>
+                            </ul>
+                        </li>
+                        <li class=dropdown data-dropdown data-on-toggle=toggled(open)><a class=dropdown-toggle data-dropdown-toggle><i class="glyphicon glyphicon-check"></i> Notes<b class=caret></b></a>
+                            <ul class=dropdown-menu>
+                                <li><a data-ui-sref=evaluations><i class="glyphicon glyphicon-edit"></i> Evaluation</a></li>
+                                <li ng-show="utilisateur.role != 'ADMINISTRATEUR'"><a data-ui-sref=nimportation><i class="glyphicon glyphicon-download"></i> Importation</a></li>
+                                <li ng-show="utilisateur.role != 'ADMINISTRATEUR'"><a data-ui-sref=nexportation><i class="glyphicon glyphicon-upload"></i> Exportation</a></li>
+                                <li ng-show="utilisateur.role != 'ADMINISTRATEUR'"><a data-ui-sref=ndeliberation><i class="glyphicon glyphicon-upload"></i> Déliberations</a></li>
+                                <li ng-show="utilisateur.role != 'ADMINISTRATEUR'"><a data-ui-sref=nmodification><i class="glyphicon glyphicon-upload"></i> Modification</a></li>
+                            </ul>
+                        </li>
+                        <li class=dropdown data-dropdown data-on-toggle=toggled(open) ng-show="utilisateur.role != 'ADMINISTRATEUR'"><a class=dropdown-toggle data-dropdown-toggle><i class="glyphicon glyphicon-list-alt"></i> Rapports<b class=caret></b></a>
+                            <ul class=dropdown-menu>
+                                <li><a data-ui-sref=pv>Proc&eacute;s Verbal</a></li>
+                                <li><a data-ui-sref=synthese>Synth&eacute;se</a></li>
+                                <li><a data-ui-sref=releves>Relev&eacute;s de Notes</a></li>
+                                <li><a data-ui-sref=diplomation>Synth&eacute;se de Diplomation</a></li>
+                            </ul>
+                        </li>
+                        <li ng-show="utilisateur.role !== 'ADMINISTRATEUR'"><a data-ui-sref=statistiques><i class="glyphicon glyphicon-picture"></i> Statistiques</a></li>
+                        <li ng-show="utilisateur.role !== 'ADMINISTRATEUR'"><a data-ui-sref=passage><i class="glyphicon glyphicon-retweet"></i> Passage Niveau</a></li>
+                        <li class=dropdown data-dropdown data-on-toggle=toggled(open) ng-show="utilisateur.role === 'ADMINISTRATEUR'"><a class=dropdown-toggle data-dropdown-toggle><i class="glyphicon glyphicon-tower"></i> Administration<b class=caret></b></a>
+                            <ul class=dropdown-menu>
+                                <li><a data-ui-sref=utilisateurs><i class="glyphicon glyphicon-user"></i> Utilisateurs</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+                <div id=content ng-cloak class=ng-cloak>
+                    <div id=loading ng-if=isViewLoading></div>
+                    <div data-ui-view></div>
+                    <div ng-if=isError>Une erreur est survenue lors du chargement de vos données</div>
+                </div>
             </div>
+            <footer>&copy; Tous droits reserv&eacute;s</footer>
         </div>
-        <script src="js/app.min.js"></script>
-    </body>
+    </div>
+    <script type=text/javascript src=js/app.min.js></script>
+</body>
+
 </html>

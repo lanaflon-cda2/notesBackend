@@ -2,6 +2,7 @@ package com.douwe.notes.service.impl;
 
 import com.douwe.generic.dao.DataAccessException;
 import com.douwe.notes.dao.IUtilisateurDao;
+import com.douwe.notes.entities.Role;
 import com.douwe.notes.entities.Utilisateur;
 import com.douwe.notes.entities.util.CustomUserDetails;
 import com.douwe.notes.service.IUtilisateurService;
@@ -69,7 +70,7 @@ public class UtilisateurServiceImpl implements IUtilisateurService, UserDetailsS
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Utilisateur user = utilisateurDao.findByLogin(username);
-        if(user == null){
+        if(user == null || user.getActive() == 0){
             System.out.println("Aucun utilisateur avec username "+username);
             throw new UsernameNotFoundException("User not found "+ username);
         }
@@ -93,7 +94,13 @@ public class UtilisateurServiceImpl implements IUtilisateurService, UserDetailsS
     @Override
     public Utilisateur create(Utilisateur u) {
         try {
-            u.setPassword(new BCryptPasswordEncoder().encode("admin123"));
+            System.out.println("L'utilisateur est null? "+ u == null);
+            if(u.getRole() == Role.DEPARTEMENT && (u.getDepartements() == null || u.getDepartements().size() > 1)){
+                System.out.println("Cannot have a HOD with more than one department");
+                return null;
+            }
+            u.setActive(1);
+            u.setPassword(new BCryptPasswordEncoder().encode("password"));
             return utilisateurDao.create(u);
         } catch (DataAccessException ex) {
             Logger.getLogger(UtilisateurServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -105,6 +112,10 @@ public class UtilisateurServiceImpl implements IUtilisateurService, UserDetailsS
     public Utilisateur update(long id, Utilisateur u) {
         try {
             Utilisateur util = utilisateurDao.findById(id);
+            if(util.getRole() == Role.DEPARTEMENT && u.getDepartements().size() > 1){
+                System.out.println("Cannot have HOD with more than one department");
+                return null;
+            }
             if(util != null){
                 util.setDepartements(u.getDepartements());
                 util.setEmail(u.getEmail());
@@ -123,9 +134,11 @@ public class UtilisateurServiceImpl implements IUtilisateurService, UserDetailsS
     @Override
     public void delete(long id) {
         try {
-            Utilisateur  u = utilisateurDao.findById(id);
-            if(u != null)
-                utilisateurDao.delete(u);
+            Utilisateur u = utilisateurDao.findById(id);
+            if(u != null){
+                u.setActive(0);
+                utilisateurDao.update(u);
+            }
         } catch (DataAccessException ex) {
             Logger.getLogger(UtilisateurServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -149,5 +162,41 @@ public class UtilisateurServiceImpl implements IUtilisateurService, UserDetailsS
             Logger.getLogger(UtilisateurServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
+    }
+
+    @Override
+    public void activate(long id) {
+        try {
+            Utilisateur utilisateur = utilisateurDao.findById(id);
+            if(utilisateur != null){
+                utilisateur.setActive(1);
+                utilisateurDao.update(utilisateur);
+            }
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        } catch (DataAccessException ex) {
+            Logger.getLogger(UtilisateurServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public void reset(long id) {
+        try {
+            Utilisateur utilisateur = utilisateurDao.findById(id);
+            if(utilisateur != null){
+                utilisateur.setPassword(new BCryptPasswordEncoder().encode("password"));
+            }
+        } catch (DataAccessException ex) {
+            Logger.getLogger(UtilisateurServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public Utilisateur findOne(long id) {
+        try {
+            return utilisateurDao.findById(id);
+        } catch (DataAccessException ex) {
+            Logger.getLogger(UtilisateurServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 }

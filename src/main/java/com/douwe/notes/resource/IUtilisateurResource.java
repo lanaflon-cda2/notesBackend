@@ -5,6 +5,7 @@ import com.douwe.notes.web.security.CurrentUser;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -14,6 +15,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  *
@@ -24,7 +27,7 @@ public interface IUtilisateurResource {
     
     @GET
     @Produces(value = "application/json")
-    public List<Utilisateur> findAll();
+    public List<Utilisateur> find();
     
     @POST
     @Produces(value = "application/json")
@@ -36,10 +39,19 @@ public interface IUtilisateurResource {
     public Utilisateur update(@PathParam("id")long id, Utilisateur utilisateur);
     
     @Path("{id}")
-    @PUT
+    @DELETE
     @Produces(value = "application/json")
     public void delete(@PathParam("id")long id);
     
+    @PUT
+    @Path("{id}/activate")
+    @Produces(value = "application/json")
+    public void activate(@PathParam("id")long id);
+    
+    @PUT
+    @Path("{id}/reset")
+    @Produces(value = "application/json")
+    public void reset(@PathParam("id")long id);
     
     @GET
     @Path("/logged")

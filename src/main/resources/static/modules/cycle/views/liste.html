@@ -1,8 +1,8 @@
 <div>
-    <h4 class="titre">LA LISTE DES CYCLES</h4>
+    <h4 class=titre>LA LISTE DES CYCLES</h4>
     <table class="table table-bordered table-hover table-condensed table-striped">
         <thead>
-            <tr class="success">
+            <tr class=success>
                 <th>Numero</th>
                 <th>Nom</th>
                 <th>Diplôme</th>
@@ -14,11 +14,9 @@
                 <td>{{$index + 1}}</td>
                 <td>{{cycle.nom}}</td>
                 <td>{{cycle.diplomeFr}}</td>
-                <td><a ng-click="afficherFenetre(cycle)"><i class="glyphicon glyphicon-edit"></i> Modifier</a> | <a ng-click="supprimerCycle(cycle)"><i class="glyphicon glyphicon-remove"></i> Supprimer</a></td>
+                <td><a ng-click=afficherFenetre(cycle)><i class="glyphicon glyphicon-edit"></i> Modifier</a> | <a ng-click=supprimerCycle(cycle)><i class="glyphicon glyphicon-remove"></i> Supprimer</a></td>
             </tr>
         </tbody>
     </table>
-    <form>
-        <button class="btn btn-primary" ng-click="afficherFenetre(undefined)"><i class="glyphicon glyphicon-save"></i> Ajouter Cycle</button>
-    </form>
+    <form><button class="btn btn-primary" ng-click=afficherFenetre(undefined)><i class="glyphicon glyphicon-save"></i> Ajouter Cycle</button></form>
 </div>

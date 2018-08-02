@@ -11,6 +11,21 @@
                     <span class="error" ng-show="form.nom.$dirty && form.nom.$error.required">Le nom de l'utilisateur est obligatoire</span>
                 </div>
             </div>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html> -->
+
+
             <div class="form-group">
                 <label for="prenom" class="col-sm-2 control-label">Prenom</label>
                 <div class="col-sm-8">
@@ -36,6 +51,7 @@
                 <label for="role" class="col-sm-2 control-label">Role</label>
                 <div class="col-sm-8">
                     <select name="role"  id="role" class="form-control" ng-model="element.role" ng-required="true">
+                        <option value="">Veuillez choisir un role</option>
                         <option value="ADMINISTRATEUR">ADMINISTRATEUR</option>
                         <option value="CELLULE">CELLULE</option>
                         <option value="DEPARTEMENT">DEPARTEMENT</option>
@@ -44,8 +60,14 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">Departements</label>
-                <div class="col-sm-8" >
+                <label class="col-sm-2 checkbox-inline">Departements</label>
+                <div ng-show="element.role === 'DEPARTEMENT'" class="col-sm-8">
+                    <select id="departement" name="departement" ng-model="dept" ng-options="departement as departement.code for departement in departements track by departement.id">
+                        <option value="">Veuillez choisir un departement</option>
+                    </select>
+                    <span class="error" ng-show="form.departements.$dirty && form.departements.$error.required">Les départements sont obligatoires</span>
+                </div>
+                <div ng-show="element.role !== 'DEPARTEMENT'" class="col-sm-8" >
                     <tags-input ng-model="tags" id="departements" display-property="code" key-property="id" placeholder="Ajouter un département" add-from-autocomplete-only="true">
                         <auto-complete source="loadItems($query)"></auto-complete>
                     </tags-input>

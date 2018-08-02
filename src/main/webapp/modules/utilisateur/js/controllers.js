@@ -13,9 +13,25 @@ angular.module("notesApp.utilisateurs.controllers", []).controller("UtilisateurC
         };
 
         $scope.supprimer = function (item, cle) {
-            if (confirm("Voulez vous vraiment supprimer cet utilisateur?")) {
+            if (confirm("Voulez vous vraiment desactiver cet utilisateur ?")) {
                 Utilisateur.remove({id: item.id}, function () {
-                    $scope.utilisateurs.splice(cle, 1);
+                    item.active = 0;
+                });
+            }
+        };
+
+        $scope.activate = function(item, cle) {
+            if(confirm("Voulez vous vraiment activer cet utilisateur ?")){
+                Utilisateur.activate({id: item.id}, function (){
+                    item.active = 1;
+                });
+            }
+        };
+
+        $scope.resetPassword = function(item, cle) {
+            if(confirm("Voulez vous vraiment reinitialiser le mot de passe de cet utilisateur ?")){
+                Utilisateur.reset({id: item.id}, function (){
+                    alert("Le mot de passe a ete reinitialiser avec succes");
                 });
             }
         };
@@ -68,10 +84,16 @@ angular.module("notesApp.utilisateurs.controllers", []).controller("UtilisateurC
 
         $scope.valider = function () {
             var resultat = {};
+            if($scope.element.role == 'DEPARTEMENT'){
+                $scope.tags = [];
+                $scope.tags.push($scope.dept);
+            }
+            // $log.log($scope.tags);
             $scope.element.departements = $scope.tags;
             resultat.item = $scope.element;
             resultat.cle = $scope.cle;
             $modalInstance.close(resultat);
+
         };
         
         $scope.cancel = function () {

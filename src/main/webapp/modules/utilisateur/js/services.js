@@ -13,6 +13,14 @@ angular.module("notesApp.utilisateurs.services", []).factory('Utilisateur', func
         logged: {
             method: 'GET',
             url: "api/utilisateurs/logged"
+        },
+        activate: {
+            method: 'PUT',
+            url: "api/utilisateurs/:id/activate"
+        },
+        reset: {
+            method: 'PUT',
+            url: "api/utilisateurs/:id/reset"
         }
     }
     );

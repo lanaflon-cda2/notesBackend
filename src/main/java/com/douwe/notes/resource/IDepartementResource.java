@@ -3,6 +3,7 @@ package com.douwe.notes.resource;
 import com.douwe.notes.entities.Cours;
 import com.douwe.notes.entities.Departement;
 import com.douwe.notes.entities.Option;
+import java.security.Principal;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;

@@ -3,6 +3,7 @@ package com.douwe.notes.dao;
 import com.douwe.generic.dao.DataAccessException;
 import com.douwe.generic.dao.IDao;
 import com.douwe.notes.entities.Utilisateur;
+import java.util.List;
 
 /**
  *
@@ -17,4 +18,6 @@ public interface IUtilisateurDao extends IDao<Utilisateur, Long>{
 //    public Utilisateur findByAuthToken(String token) throws DataAccessException;
 
     public Utilisateur findByLogin(String username);
+    
+//    public List<Utilisateur> findAllActive() throws DataAccessException; 
 }

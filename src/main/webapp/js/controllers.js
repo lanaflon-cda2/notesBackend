@@ -23,14 +23,13 @@ angular.module("notesApp.controllers", []).controller("LoginController", ["$scop
         };
     }]).controller("MainController", ["$log", "$scope", "$http", "$modal", "Utilisateur", function ($log, $scope, $http, $modal, Utilisateur) {
         $scope.utilisateur = null;
-        //$http.get("api/utilisateurs/logged").success(function (data) {
-        //    $scope.utilisateur = data;
-        //});
-        
-        Utilisateur.logged(function(data){
-            $scope.utilisateur = data;
+        $http.get("api/utilisateurs/logged").success(function (data) {
+           $scope.utilisateur = data;
         });
-
+        
+        // Utilisateur.logged(function(data){
+        //     $scope.utilisateur = data;
+        // });
 
         $scope.showProfile = function () {
             var modelInstance = $modal.open({

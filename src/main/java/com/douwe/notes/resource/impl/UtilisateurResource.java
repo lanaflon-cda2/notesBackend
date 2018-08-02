@@ -1,12 +1,15 @@
 package com.douwe.notes.resource.impl;
 
+import com.douwe.notes.entities.Role;
 import com.douwe.notes.entities.Utilisateur;
 import com.douwe.notes.resource.IUtilisateurResource;
 import com.douwe.notes.service.IUtilisateurService;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.ws.rs.Path;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
@@ -20,8 +23,16 @@ public class UtilisateurResource implements IUtilisateurResource{
     private IUtilisateurService utilisateurService;
 
     @Override
-    public List<Utilisateur> findAll() {
-        return utilisateurService.findAll();
+    public List<Utilisateur> find() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Utilisateur utilisateur = (auth == null)? null: (Utilisateur)auth.getPrincipal();
+        if(utilisateur.getRole() == Role.ADMINISTRATEUR)
+            return utilisateurService.findAll();
+        else{
+            List<Utilisateur> util = new ArrayList<>();
+            util.add(utilisateurService.findOne(utilisateur.getId()));
+            return util;
+        }
     }
 
     @Override
@@ -49,7 +60,18 @@ public class UtilisateurResource implements IUtilisateurResource{
 
     @Override
     public Map<String, Object> changePassword(long id, String oldPassword, String newPassword) {
-        return utilisateurService.changePassword(id,oldPassword, newPassword);
+        return utilisateurService.changePassword(id, oldPassword, newPassword);
+    }
+
+    @Override
+    public void activate(long id) {
+         utilisateurService.activate(id);
+    }
+
+    @Override
+    public void reset(long id) {
+        utilisateurService.reset(id);
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     

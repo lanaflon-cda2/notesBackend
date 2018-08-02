@@ -1,36 +1,20 @@
 <div class="panel panel-primary">
-    <div class="panel-heading" ng-hide="element.id">
-        Ajout d'un nouveau programme
-    </div>
-    <div class="panel-heading" ng-show="element.id">
-        Modification du programme
-    </div>
-    <div class="panel-body">
-        <form name="form" method="post" role="form" class="form-horizontal" novalidate>
-            <div class="form-group">                
-                <div class="col-sm-12">
-                    <h3>Sélectionnez les unités d'enseignements concernées</h3>  
+    <div class=panel-heading ng-hide=element.id>Ajout d'un nouveau programme</div>
+    <div class=panel-heading ng-show=element.id>Modification du programme</div>
+    <div class=panel-body>
+        <form name=form method=post role=form class=form-horizontal novalidate>
+            <div class=form-group>
+                <div class=col-sm-12>
+                    <h3>Sélectionnez les unités d'enseignements concernées</h3>
                 </div>
             </div>
-            <div class="form-group">                
+            <div class=form-group>
                 <div class="col-sm-offset-1 col-sm-10">
-                    <div ng-repeat="unite in unites">
-                        <input type="checkbox" data-checklist-model="selectedUnite" data-checklist-value="unite"> {{unite.code}} - {{unite.intitule}}
-                    </div>
+                    <div ng-repeat="unite in unites"><input type=checkbox data-checklist-model=selectedUnite data-checklist-value=unite> {{unite.code}} - {{unite.intitule}}</div>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="col-sm-offset-1 col-sm-10">
-                    <button type="submit" class="btn btn-primary" ng-show="element.id" ng-click="form.$valid && valider()">
-                        <i class="glyphicon glyphicon-edit"></i> Modifier
-                    </button>
-                    <button type="submit" class="btn btn-primary" ng-hide="element.id" ng-click="form.$valid && valider()">
-                        <i class="glyphicon glyphicon-saved"></i> Enregistrer
-                    </button>
-                    <button type="button" class="btn btn-danger pull-right" ng-click="cancel()">
-                        <i class="glyphicon glyphicon-ban-circle"></i> Annuler
-                    </button>
-                </div>
+            <div class=form-group>
+                <div class="col-sm-offset-1 col-sm-10"><button type=submit class="btn btn-primary" ng-show=element.id ng-click="form.$valid && valider()"><i class="glyphicon glyphicon-edit"></i> Modifier</button> <button type=submit class="btn btn-primary" ng-hide=element.id ng-click="form.$valid && valider()"><i class="glyphicon glyphicon-saved"></i> Enregistrer</button>                    <button type=button class="btn btn-danger pull-right" ng-click=cancel()><i class="glyphicon glyphicon-ban-circle"></i> Annuler</button></div>
             </div>
         </form>
     </div>

@@ -15,6 +15,7 @@ public class WebConfigurer implements WebMvcConfigurer{
     public void addViewControllers(ViewControllerRegistry registry) {
         WebMvcConfigurer.super.addViewControllers(registry);
         registry.addViewController("/login").setViewName("login.html");
+        registry.addViewController("/error/403").setViewName("403.html");
         registry.addViewController("/logout").setViewName("login.html");
     }
     

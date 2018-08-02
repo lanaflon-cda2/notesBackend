@@ -6,6 +6,8 @@ import com.douwe.notes.dao.IDepartementDao;
 import com.douwe.notes.entities.Cours;
 import com.douwe.notes.entities.Departement;
 import com.douwe.notes.entities.Option;
+import com.douwe.notes.entities.Role;
+import com.douwe.notes.entities.Utilisateur;
 import com.douwe.notes.service.IDepartementService;
 import com.douwe.notes.service.ServiceException;
 import java.util.Collections;
@@ -14,6 +16,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

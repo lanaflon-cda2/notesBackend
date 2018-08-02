@@ -6,6 +6,7 @@ import com.douwe.notes.resource.ICoursResource;
 import com.douwe.notes.service.ICoursService;
 import com.douwe.notes.service.IEvaluationService;
 import com.douwe.notes.service.ServiceException;
+import java.security.Principal;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,8 +56,7 @@ public class CoursResource implements ICoursResource {
     }
 
     @Override
-    //@RolesAllowed({"ADMIN"})
-    public List<Cours> getAllCours() {
+    public List<Cours> getAllCours(Principal user) {
         try {
             return coursService.getAllCours();
         } catch (ServiceException ex) {
