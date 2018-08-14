@@ -9,14 +9,14 @@ import java.io.OutputStream;
 import com.douwe.notes.service.document.ISyntheseDiplomationDocument;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
 @Named
-@Service
+@Transactional
 public class DocumentServiceImpl implements IDocumentFacadeService {
 
     

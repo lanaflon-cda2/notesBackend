@@ -1,6 +1,5 @@
 package com.douwe.notes.resource;
 
-import com.douwe.notes.entities.Enseignant;
 import com.douwe.notes.resource.impl.AnneeResource;
 import com.douwe.notes.resource.impl.CoursResource;
 import com.douwe.notes.resource.impl.CreditResource;
@@ -26,6 +25,7 @@ import javax.ws.rs.ApplicationPath;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.RequestContextFilter;
 
 /**
  *
@@ -36,7 +36,13 @@ import org.springframework.stereotype.Component;
 public class MyConfig extends ResourceConfig {
 
     public MyConfig() {
+        super();
+        registerComponents();
+    }
+
+    private void registerComponents() {
         register(MultiPartFeature.class);
+        register(RequestContextFilter.class);
         register(AnneeResource.class);
         register(CoursResource.class);
         register(CreditResource.class);
