@@ -1,6 +1,5 @@
 package com.douwe.notes.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 //import org.codehaus.jackson.annotate.JsonIgnore;
 import java.io.Serializable;
 import javax.persistence.Column;

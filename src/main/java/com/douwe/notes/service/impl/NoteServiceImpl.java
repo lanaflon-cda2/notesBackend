@@ -67,7 +67,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class NoteServiceImpl implements INoteService {
-
     @Inject
     private INoteDao noteDao;
 

@@ -16,11 +16,15 @@ import javax.inject.Inject;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
+@Component
+@Transactional
 @Path("/parcours")
 public class ParcoursResource implements IParcoursResource{
     

@@ -18,7 +18,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -26,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Kenfack Valmy-Roi <roykenvalmy@gmail.com>
  */
 @Named
-@Service
 @Transactional
 public class UtilisateurServiceImpl implements IUtilisateurService, UserDetailsService{
     
@@ -74,10 +72,10 @@ public class UtilisateurServiceImpl implements IUtilisateurService, UserDetailsS
             System.out.println("Aucun utilisateur avec username "+username);
             throw new UsernameNotFoundException("User not found "+ username);
         }
-        /*BCryptPasswordEncoder be = new BCryptPasswordEncoder();
+        BCryptPasswordEncoder be = new BCryptPasswordEncoder();
         System.out.println("L'email de l'utilisateur "+ username + " est "+user.getRole().toString());
         System.out.println("Toto "+be.matches(user.getPassword(), be.encode("admin123")));
-        System.out.println("Tata "+be.encode("admin123"));*/
+        System.out.println("Tata "+be.encode("admin123"));
         return new CustomUserDetails(user);
     }
 
