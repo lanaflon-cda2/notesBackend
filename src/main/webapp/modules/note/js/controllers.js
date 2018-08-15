@@ -1,5 +1,5 @@
-angular.module("notesApp.notes.controllers", []).controller("NoteController", ["Departement","Cours", "Evaluation","Annee",  "$scope", 
-    function (Departement,Cours, Evaluation, Annee,  $scope) {
+angular.module("notesApp.notes.controllers", []).controller("NoteController", ["Departement","Cours", "Evaluation","Annee",  "$scope", "$log",
+    function (Departement, Cours, Evaluation, Annee,  $scope, $log) {
         var ans = Annee.query(function(){
             $scope.annees = ans;
         });
@@ -18,8 +18,8 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
 
         $scope.department = null;
 
-    }]).controller("NoteImportationController", ["Departement","Niveau", "Annee", "$scope", "$http",
-    function (Departement, Niveau, Annee, $scope, $http) {
+    }]).controller("NoteImportationController", ["Departement","Niveau", "Annee", "$scope", "$http", "$log",
+    function (Departement, Niveau, Annee, $scope, $http, $log) {
         var deps = Departement.query(function(){
             $scope.departements = deps;
         });
@@ -34,10 +34,36 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
         $scope.importResponse = null;
         
         $scope.importError = null;
-        
+
+        $scope.headerNames = [];
+
         $scope.uploadFile = function (fs) {
             $scope.files = fs;
+            var reader = new FileReader();
+            reader.onload = function(){
+                var data = reader.result;
+                var wb = XLSX.read(data, {type: 'binary'});
+                var header = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1 })[0];
+                var index = 0;
+                for(hdr in header){
+                    var head = new Object();
+                    head.name = header[index];
+                    head.index = index;
+                    $scope.headerNames.push(head);
+                    index += 1;
+                    console.log(header);
+                }
+                console.log($scope.headerNames);
+                $scope.$digest();
+            };
+            reader.onerror = function(ex){
+                console.log(ex);
+            };
+            reader.readAsBinaryString($scope.files[0]);
         };
+
+        console.log($scope.header_name);
+
         $scope.changerDepartement = function(){
             if(($scope.departement !== undefined) && ($scope.niveau !== undefined)){
                 $http.get('api/options/' + $scope.departement + '/' + $scope.niveau).success(function(data){
@@ -62,25 +88,27 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
         };
         
         $scope.valider = function () {
-            $scope.importResponse = null;
-            var fd = new FormData();
-            //Take the first selected file
-            fd.append("fichier", $scope.files[0]);
-            fd.append("courId", $scope.cour);
-            fd.append("evaluationId", $scope.evaluation.id);
-            fd.append("anneeId", $scope.annee);
-            if ($scope.session)
-                fd.append("session", $scope.session);
-            $http.post('api/notes/import', fd, {
-                withCredentials: true,
-                headers: {'Content-Type': undefined},
-                transformRequest: angular.identity
-            }).success(function (data) {
-                $scope.importResponse = data;
-            }).error(function (data) {
-                $scope.importError = data;
-            });
+            // $scope.importResponse = null;
+            // var fd = new FormData();
+            // //Take the first selected file
+            // fd.append("fichier", $scope.files[0]);
+            // fd.append("courId", $scope.cour);
+            // fd.append("evaluationId", $scope.evaluation.id);
+            // fd.append("anneeId", $scope.annee);
+            // if ($scope.session)
+            //     fd.append("session", $scope.session);
+            // $http.post('api/notes/import', fd, {
+            //     withCredentials: true,
+            //     headers: {'Content-Type': undefined},
+            //     transformRequest: angular.identity
+            // }).success(function (data) {
+            //     $scope.importResponse = data;
+            // }).error(function (data) {
+            //     $scope.importError = data;
+            // });
         };
+
+        
     }]).controller("NoteModificationController", ["$scope", "$http", "Departement", "Niveau", "Annee","Note", "$modal",
     function ($scope, $http, Departement, Niveau, Annee, Note, $modal) {
         var deps = Departement.query(function () {

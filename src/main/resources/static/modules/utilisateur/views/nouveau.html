@@ -20,7 +20,7 @@
                         class=error ng-show="form.role.$dirty && form.role.$error.required">Le role de l'utilisateur est obligatoire</span>
                 </div>
             </div>
-            <div class=form-group><label class="col-sm-2 checkbox-inline">Departements</label>
+            <div class=form-group><label class=col-sm-2>Departements</label>
                 <div ng-show="element.role === 'DEPARTEMENT'" class=col-sm-8><select id=departement name=departement ng-model=dept ng-options="departement as departement.code for departement in departements track by departement.id"><option value>Veuillez choisir un departement</option></select><span class=error
                         ng-show="form.departements.$dirty && form.departements.$error.required">Les départements sont obligatoires</span></div>
                 <div ng-show="element.role !== 'DEPARTEMENT'" class=col-sm-8>

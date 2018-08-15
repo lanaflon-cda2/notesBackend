@@ -5,38 +5,25 @@
             <div class=form-group><label for=code class="col-sm-2 control-label">Fichier</label>
                 <div class=col-sm-6><input type=file name=fichier id=code class="form-control-file form-control-lg" ng-required=true onchange=angular.element(this).scope().uploadFile(this.files)> <span class=error ng-show="form.code.$dirty && form.code.$error.required">Le fichier est obligatoire</span></div>
             </div>
-            <div class=form-group><label for=annee class="col-sm-2 control-label">Année Académique</label>
-                <div class=col-sm-6><select name=annee id=annee class=form-control ng-model=annee ng-required=true><option value>-- Veuillez selectionner une année --</option><option ng-repeat="annee in annees|orderBy:'-debut'" value={{annee.id}}>{{annee.debut.substring(0, 4)}}-{{annee.fin.substring(0, 4)}}</option></select>
-                    <span
-                        class=error ng-show="form.cycle.$dirty && form.cycle.$error.required">L'Ann&eacute;e est obligatoire</span>
-                </div>
-            </div>
-            <div class=form-group><label for=departement class="col-sm-2 control-label">Département</label>
-                <div class=col-sm-6><select name=departement id=departement class=form-control ng-model=departement ng-change=changerDepartement()><option value>-- Veuillez selectionner un département --</option><option ng-repeat="departement in departements|orderBy:'code'" value={{departement.id}}>{{departement.code}}</option></select></div>
-            </div>
-            <div class=form-group><label for=niveau class="col-sm-2 control-label">Niveau</label>
-                <div class=col-sm-6><select name=niveau id=niveau class=form-control ng-model=niveau ng-change=changerDepartement() ng-options="niveau.id as niveau.code from niveau in niveaux|orderBy:'code' track by niveau.id"><option value>-- Veuillez selectionner un niveau --</option></select></div>
-            </div>
-            <div class=form-group><label for=option class="col-sm-2 control-label">Option</label>
-                <div class=col-sm-6><select name=option id=option class=form-control ng-model=option ng-change=changerOption()><option value>-- Veuillez selectionner une option --</option><option ng-repeat="option in options|orderBy:'code'" value={{option.id}}>{{option.code}}</option></select></div>
-            </div>
-            <div class=form-group><label for=cours class="col-sm-2 control-label">Cours</label>
-                <div class=col-sm-6><select name=cours id=cours class=form-control ng-model=cour ng-required=true ng-change=changerCours()><option value>-- Veuillez selectionner un cours --</option><option ng-repeat="cors in cours" value={{cors.id}}>{{cors.intitule}}-{{cors.departement.code}}</option></select>
-                    <span
-                        class=error ng-show="form.cycle.$dirty && form.cycle.$error.required">Le cours est obligatoire</span>
-                </div>
-            </div>
-            <div class=form-group><label for=evaluation class="col-sm-2 control-label">Evaluation</label>
-                <div class=col-sm-6><select name=evaluation id=evaluation class=form-control ng-model=evaluation ng-required=true ng-options="evaluat as evaluat.code for evaluat in evaluations"><option value>-- Veuillez selectionner une évaluation --</option></select>
-                    <span
-                        class=error ng-show="form.cycle.$dirty && form.cycle.$error.required">L'évaluation est obligatoire</span>
-                </div>
-            </div>
-            <div class=form-group ng-show=evaluation.isExam><label for=session class="col-sm-2 control-label">Session</label>
-                <div class=col-sm-6><select name=session id=session class=form-control ng-model=session ng-required=evaluation.isExam><option value>-- Veuillez selectionner la session --</option><option value=0>Normale</option><option value=1>Rattrapage</option></select>
-                    <span
-                        class=error ng-show="form.cycle.$dirty && form.cycle.$error.required">La session est obligatoire</span>
-                </div>
+            <div ng-show="headerNames.length !== 0">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Header</th>
+                            <th>Header value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="header in headerNames">
+                            <td>{{header.name}} - {{header.index}}:</td>
+                            <td>
+                                <div class=form-group>
+                                    <div class=col-sm-5><select id=hdr name=head class=form-control mg-model=header.index><option disabled value>-- Veuillez choisir une en-tete --</option><option ng-repeat="headerName in headerNames" value=headerName.index ng-selected="header.name === headerName.name">{{headerName.name}}</option></select></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             <div class=form-group>
                 <div class="col-sm-offset-2 col-sm-10"><button type=submit class="btn btn-success btn-s" ng-click="form.$valid && valider()"><span class="glyphicon glyphicon-upload"></span> Charger</button></div>

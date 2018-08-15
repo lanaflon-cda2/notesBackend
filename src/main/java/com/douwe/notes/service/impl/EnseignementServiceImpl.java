@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
  */
 @Named
 @Service
+@Transactional
 public class EnseignementServiceImpl implements IEnseignementService {
 
     @Inject

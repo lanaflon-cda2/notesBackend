@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
  */
 @Named
 @Service
+@Transactional
 public class TypeCourServiceImpl implements ITypeCoursService {
 
     @Inject
@@ -92,7 +94,9 @@ public class TypeCourServiceImpl implements ITypeCoursService {
     @Override
     public List<TypeCours> getAllTypeCours() throws ServiceException {
         try {
-            return typeCoursDao.findAllActive();
+            List<TypeCours> toto = typeCoursDao.findAllActive();
+            toto.forEach(t -> t.getEvaluations().size());
+            return toto;
         } catch (DataAccessException ex) {
             Logger.getLogger(TypeCourServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new ServiceException("La ressource demandée est introuvable");

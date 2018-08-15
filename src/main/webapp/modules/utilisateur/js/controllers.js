@@ -2,6 +2,7 @@ angular.module("notesApp.utilisateurs.controllers", []).controller("UtilisateurC
     function ($scope, $modal, $log, Utilisateur, Departement) {
         var uts = Utilisateur.query(function () {
             $scope.utilisateurs = uts;
+            $log.log(uts);
         });
 
         var deps = Departement.query(function () {

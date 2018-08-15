@@ -10,6 +10,7 @@ import com.douwe.notes.service.document.ISyntheseDiplomationDocument;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
  */
 @Named
 @Service
+@Transactional
 public class DocumentServiceImpl implements IDocumentFacadeService {
 
     

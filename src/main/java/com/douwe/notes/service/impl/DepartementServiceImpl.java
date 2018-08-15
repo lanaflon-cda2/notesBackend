@@ -126,7 +126,9 @@ public class DepartementServiceImpl implements IDepartementService{
         try {
             Departement departement = departementDao.findById(id);
             if(departement != null){
-                return coursDao.findByDepartement(departement);
+                List<Cours> toto = coursDao.findByDepartement(departement);
+                toto.forEach(t -> t.getUniteEnseignements().size());
+                return toto;
             }
         } catch (DataAccessException ex) {
             Logger.getLogger(DepartementServiceImpl.class.getName()).log(Level.SEVERE, null, ex);

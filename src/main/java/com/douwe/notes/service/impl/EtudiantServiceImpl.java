@@ -34,6 +34,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -41,6 +42,7 @@ import org.springframework.stereotype.Service;
  */
 @Named
 @Service
+@Transactional
 public class EtudiantServiceImpl implements IEtudiantService {
 
     @Inject
