@@ -3,6 +3,7 @@ package com.douwe.notes.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -50,12 +51,10 @@ public class Parcours implements Serializable {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "NIVEAU_ID")
-    @EqualsAndHashCode.Exclude
     private Niveau niveau;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "OPTION_ID")
-    @EqualsAndHashCode.Exclude
     private Option option;
 
     @XmlTransient
@@ -69,4 +68,39 @@ public class Parcours implements Serializable {
     public Parcours() {
 
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 89 * hash + Objects.hashCode(this.niveau);
+        hash = 89 * hash + Objects.hashCode(this.option);
+        hash = 89 * hash + this.active;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Parcours other = (Parcours) obj;
+        if (this.active != other.active) {
+            return false;
+        }
+        if (!Objects.equals(this.niveau, other.niveau)) {
+            return false;
+        }
+        if (!Objects.equals(this.option, other.option)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 }

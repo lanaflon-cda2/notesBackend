@@ -1,11 +1,10 @@
 package com.douwe.notes.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -60,7 +59,6 @@ public class UniteEnseignement implements Serializable {
     @ManyToOne(optional = false)
     @XmlTransient
     @JoinColumn(name = "PARCOURS_ID")
-    @EqualsAndHashCode.Exclude
     private Parcours parcours;
     
     @ManyToMany
@@ -74,4 +72,43 @@ public class UniteEnseignement implements Serializable {
     public UniteEnseignement() {
 
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 83 * hash + Objects.hashCode(this.intitule);
+        hash = 83 * hash + Objects.hashCode(this.code);
+        hash = 83 * hash + (this.hasOptionalChoices ? 1 : 0);
+        hash = 83 * hash + Objects.hashCode(this.parcours);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final UniteEnseignement other = (UniteEnseignement) obj;
+        if (this.hasOptionalChoices != other.hasOptionalChoices) {
+            return false;
+        }
+        if (!Objects.equals(this.intitule, other.intitule)) {
+            return false;
+        }
+        if (!Objects.equals(this.code, other.code)) {
+            return false;
+        }
+        if (!Objects.equals(this.parcours, other.parcours)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 }

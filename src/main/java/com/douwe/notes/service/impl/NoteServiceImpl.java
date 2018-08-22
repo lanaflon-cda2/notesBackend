@@ -274,21 +274,30 @@ public class NoteServiceImpl implements INoteService {
         List<Etudiant> etudiants = etudiantDao.listeEtudiantAvecNotes(academique, niveau, option, cours, session);
         //System.out.println("Bravo j'ai trouve " + etudiants.size() + " etudiants");
         for (Etudiant etudiant : etudiants) {
-            EtudiantNotes et = new EtudiantNotes();
-            et.setMatricule(etudiant.getMatricule());
-            et.setNom(etudiant.getNom());
-            Map<String, Double> notes = new HashMap<>();
-            List<Note> nn = noteDao.listeNoteCours(etudiant, cours, academique, session);
-            for (Note nn1 : nn) {
-                notes.put(nn1.getEvaluation().getCode(), nn1.getValeur());
-            }
-            et.setNote(notes);
-            // TODO I need to review this
-            et.setAnnee(academique);
-            et.setDetails(calc);
+            EtudiantNotes et = rechercherNoteEtudiant(etudiant, cours, academique, session, calc);
             result.add(et);
         }
         return result;
+    }
+
+    private EtudiantNotes rechercherNoteEtudiant(Etudiant etudiant, Cours cours, AnneeAcademique academique, Session session, Map<String, Integer> calc) throws DataAccessException {
+        EtudiantNotes et = new EtudiantNotes();
+        et.setMatricule(etudiant.getMatricule());
+        et.setNom(etudiant.getNom());
+        Map<String, Double> notes = new HashMap<>();
+        List<Note> nn = noteDao.listeNoteCours(etudiant, cours, academique, session);
+        for (Note nn1 : nn) {
+            notes.put(nn1.getEvaluation().getCode(), nn1.getValeur());
+        }
+        et.setNote(notes);
+        // TODO I need to review this
+        et.setAnnee(academique);
+        et.setDetails(calc);
+        return et;
+    }
+    private EtudiantNotes rechercherNoteEtudiant(Etudiant etudiant, Cours cours, AnneeAcademique academique, Session session) throws DataAccessException {
+         Map<String, Integer> calc = getEvaluationDetails(cours);
+         return rechercherNoteEtudiant(etudiant, cours, academique, session, calc);
     }
 
     private Map<String, Integer> getEvaluationDetails(Cours cours) throws DataAccessException {
