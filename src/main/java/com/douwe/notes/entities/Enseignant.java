@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  *
@@ -46,6 +47,7 @@ public class Enseignant implements Serializable {
 
     @ManyToMany(mappedBy = "enseignants")
     @XmlTransient
+    @EqualsAndHashCode.Exclude
     private List<Enseignement> enseignements;
 
     @XmlTransient

@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  *
@@ -43,12 +44,15 @@ public class Enseignement implements Serializable {
     private int version;
 
     @ManyToOne(optional = false)
+    @EqualsAndHashCode.Exclude
     private AnneeAcademique anneeAcademique;
 
     @ManyToMany()
+    @EqualsAndHashCode.Exclude
     private List<Enseignant> enseignants;
 
     @ManyToOne(optional = false)
+    @EqualsAndHashCode.Exclude
     private Cours cours;
 
     @ManyToOne(optional = false)

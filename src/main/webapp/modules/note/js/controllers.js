@@ -9,33 +9,38 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
         var deps = Departement.query(function () {
             $scope.departements = deps;
         });
-        var evals = Evaluation.query(function(){
-           $scope.evaluations = evals; 
-        });
+
         $scope.uploadFile = function (fs) {
             $scope.files = fs;
         };
 
         $scope.department = null;
 
-    }]).controller("NoteImportationController", ["Departement","Niveau", "Annee", "$scope", "$http", "$log",
-    function (Departement, Niveau, Annee, $scope, $http, $log) {
+    }]).controller("NoteImportationController", ["Departement","Niveau", "Annee", "Cours", "Option", "Evaluation", "$scope", "$http", "$log",
+    function (Departement, Niveau, Annee, Cours, Option, Evaluation,$scope, $http, $log) {
         var deps = Departement.query(function(){
             $scope.departements = deps;
         });
         
+        var opt = Option.query(function(){
+            $scope.options = opt; 
+        });
         var nivs = Niveau.query(function(){
             $scope.niveaux = nivs;
         });
         var ans = Annee.query(function () {
             $scope.annees = ans;
         });
-        
+
+        $scope.evaluations = [];
+
         $scope.importResponse = null;
         
         $scope.importError = null;
 
         $scope.headerNames = [];
+
+        $scope.sessionShow = false;
 
         $scope.uploadFile = function (fs) {
             $scope.files = fs;
@@ -48,12 +53,9 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
                 for(hdr in header){
                     var head = new Object();
                     head.name = header[index];
-                    head.index = index;
+                    head.index = index++;
                     $scope.headerNames.push(head);
-                    index += 1;
-                    console.log(header);
                 }
-                console.log($scope.headerNames);
                 $scope.$digest();
             };
             reader.onerror = function(ex){
@@ -62,7 +64,7 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
             reader.readAsBinaryString($scope.files[0]);
         };
 
-        console.log($scope.header_name);
+        console.log()
 
         $scope.changerDepartement = function(){
             if(($scope.departement !== undefined) && ($scope.niveau !== undefined)){
@@ -82,30 +84,52 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
             $scope.importResponse = null;
             if($scope.cour){
                 $http.get('api/cours/'+$scope.cour+'/evaluations').success(function(data){
-                   $scope.evaluations = data; 
+                   var evals = new Object();
+                   evals.name = "Matricules";
+                   evals.index = 0;
+                   $scope.evaluations.push(evals);
+                   evals = new Object();
+                   evals.name = "Noms & Prenoms";
+                   evals.index = 1;
+                   $scope.evaluations.push(evals);
+                   var index = 0;
+                   for(i in data){
+                       var evals  = new Object();
+                       evals.name = data[index].code;
+                       evals.index = 2 + index++;
+                       $scope.evaluations.push(evals);
+                       if(evals.name === 'EE')
+                        $scope.sessionShow = true;
+                   }
+                }).error(function(data){
+                    console.log(data);
                 });
             }
         };
         
         $scope.valider = function () {
-            // $scope.importResponse = null;
-            // var fd = new FormData();
-            // //Take the first selected file
-            // fd.append("fichier", $scope.files[0]);
-            // fd.append("courId", $scope.cour);
-            // fd.append("evaluationId", $scope.evaluation.id);
-            // fd.append("anneeId", $scope.annee);
-            // if ($scope.session)
-            //     fd.append("session", $scope.session);
-            // $http.post('api/notes/import', fd, {
-            //     withCredentials: true,
-            //     headers: {'Content-Type': undefined},
-            //     transformRequest: angular.identity
-            // }).success(function (data) {
-            //     $scope.importResponse = data;
-            // }).error(function (data) {
-            //     $scope.importError = data;
-            // });
+            $scope.importResponse = null;
+            var fd = new FormData();
+            var header = new Object();
+            var index = 0;
+            for(i in $scope.evaluations){
+                header[$scope.evaluations[index].name] = index++;
+            }
+            fd.append("fichier", $scope.files[0]);
+            fd.append("courId", $scope.cour);
+            fd.append("headers", JSON.stringify(header));
+            fd.append("anneeId", $scope.annee);
+            if ($scope.session)
+                fd.append("session", $scope.session);
+            $http.post('api/notes/import', fd, {
+                withCredentials: true,
+                headers: {'Content-Type': undefined},
+                transformRequest: angular.identity
+            }).success(function (data) {
+                $scope.importResponse = data;
+            }).error(function (data) {
+                $scope.importError = data;
+            });
         };
 
         
@@ -152,8 +176,6 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
                 });
             }
         };
-
-        // la modification d'une notes
 
     $scope.afficherFenetre = function (key,item) {
             var modelInstance = $modal.open({

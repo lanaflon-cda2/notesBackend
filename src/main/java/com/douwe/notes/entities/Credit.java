@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  *
@@ -39,13 +40,16 @@ public class Credit implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "ANNEEACADEMIQUE_ID")
+    @EqualsAndHashCode.Exclude
     private AnneeAcademique academique;
 
     @ManyToOne
     @JoinColumn(name = "PARCOURS_ID")
+    @EqualsAndHashCode.Exclude
     private Parcours parcours;
 
     @ManyToOne    
     @JoinColumn(name = "COURS_ID")
+    @EqualsAndHashCode.Exclude
     private Cours cours;
 }

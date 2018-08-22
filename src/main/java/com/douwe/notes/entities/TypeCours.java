@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  *
@@ -50,7 +51,8 @@ public class TypeCours implements Serializable {
      
      
     @OneToMany(mappedBy = "typeCours")
-     private List<EvaluationDetails> evaluations;
+    @EqualsAndHashCode.Exclude
+    private List<EvaluationDetails> evaluations;
     
     public TypeCours(){
         

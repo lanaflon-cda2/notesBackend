@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  *
@@ -64,6 +65,7 @@ public class Etudiant implements Serializable {
     private String numeroTelephone;
     
     @Column
+    @EqualsAndHashCode.Exclude
     private Genre genre;
     
      @XmlTransient

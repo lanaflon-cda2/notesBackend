@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  *
@@ -37,6 +38,7 @@ public class Semestre implements Serializable {
     private String intitule;
     
     @ManyToOne(optional = false)
+    @EqualsAndHashCode.Exclude
     private Niveau niveau;
     
      @XmlTransient

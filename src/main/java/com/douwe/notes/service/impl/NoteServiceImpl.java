@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -50,12 +51,16 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.NoResultException;
 import javax.ws.rs.WebApplicationException;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+//import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+//import org.apache.poi.ss.usermodel.Sheet;
+//import org.apache.poi.ss.usermodel.Workbook;
+//import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -251,7 +256,6 @@ public class NoteServiceImpl implements INoteService {
     @Override
     public List<EtudiantNotes> getAllNotesEtudiants(Niveau niveau, Option option, Cours cours, UniteEnseignement ue, AnneeAcademique academique, Session session) throws ServiceException {
 
-        //boolean state = false;
         try {
             return listeNoteEtudiant(cours, academique, niveau, option, session);
         } catch (DataAccessException ex) {
@@ -297,73 +301,184 @@ public class NoteServiceImpl implements INoteService {
     }
 
     @Override
-    public ImportationResult importNotes(InputStream stream, Long coursId, Long evaluationId, Long anneeId, int session) throws ServiceException {
+    public ImportationResult importNotes(InputStream stream, String Headers, Long coursId, Long anneeId, int session) throws ServiceException {
         ImportationResult result = new ImportationResult();
         List<ImportationError> erreurs = new ArrayList<>();
-        int count = 0;
-        try {
+        JSONObject header = new JSONObject(Headers);
+        try {            
             Cours cours = coursDao.findById(coursId);
-            Evaluation evaluation = evaluationDao.findById(evaluationId);
+            List<Evaluation> evaluations = evaluationDao.evaluationForCourses(cours);
             AnneeAcademique academique = academiqueDao.findById(anneeId);
-            Workbook workbook = WorkbookFactory.create(stream);
-            final Sheet sheet = workbook.getSheetAt(0);
-            int index = 1;
-            Row row = sheet.getRow(index++);
-            String matricule;
-            String nom;
-            while (row != null) {
-                Etudiant etudiant;
-                if (row.getCell(1) != null) {
-                    matricule = row.getCell(1).getStringCellValue();
-                    etudiant = etudiantDao.findByMatricule(matricule);
-                    /*} else {
-                     nom = row.getCell(2).getStringCellValue();
-                     etudiant = etudiantDao.findByName(nom);
-                     }*/
-                    if (etudiant != null) {
-                        if (row.getCell(3) != null) {
-                            if (row.getCell(3).getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                                Note note = new Note();
-                                note.setValeur(row.getCell(3).getNumericCellValue());
-                                note.setActive(1);
-                                note.setAnneeAcademique(academique);
-                                note.setCours(cours);
-                                note.setEtudiant(etudiant);
-                                note.setEvaluation(evaluation);
-                                if (evaluation.isExam()) {
-                                    Session s = Session.values()[session];
-                                    note.setSession(s);
-                                }
-                                try {
-                                    noteDao.create(note);
-                                    count++;
-                                } catch (DataAccessException ex) {
-                                    ImportationError err = new ImportationError(index, ex.getMessage());
-                                    erreurs.add(err);
-                                }
-                            } else {
-                                ImportationError err = new ImportationError(index, "Note invalide");
-                                erreurs.add(err);
-                            }
-                        } else {
-                            //ImportationError err = new ImportationError(index, "Note indisponible");
-                            //erreurs.add(err);
-                        }
-                    } else {
-                        ImportationError err = new ImportationError(index, "Matricule indisponible");
+            XSSFWorkbook workbook = new XSSFWorkbook(stream);
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rowIterator = sheet.iterator();
+            boolean hdr = true;
+            XSSFRow row;
+            String matricule = null;
+            Etudiant etudiant = null;
+            int count = 0, index = 1;
+            while(rowIterator.hasNext()){
+                row = (XSSFRow) rowIterator.next();
+                if(row.getPhysicalNumberOfCells() == 5 && hdr){
+                    row = (XSSFRow) rowIterator.next();
+                    hdr = false;
+                }
+                
+                Cell cell = row.getCell(header.getInt("Matricules"));
+                if(cell.getCellType() == Cell.CELL_TYPE_STRING){
+                    if(cell.getStringCellValue().matches("[0-9]{2}[A-Z][0-9]{3}[S,P]"))
+                        matricule = cell.getStringCellValue();
+                    else{
+                        ImportationError err = new ImportationError(index, "Matricule incorrecte");
                         erreurs.add(err);
                     }
                 }
-                row = sheet.getRow(index++);
+                etudiant = etudiantDao.findByMatricule(matricule);
+                if(etudiant != null){
+                    for (Evaluation eval : evaluations) {
+                        Note note = new Note();
+                        cell = row.getCell(header.getInt(eval.getCode()));
+                        if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC || (0 <= cell.getNumericCellValue() && cell.getNumericCellValue() >= 20)){
+                            note.setValeur(cell.getNumericCellValue());
+                            note.setActive(1);
+                            note.setAnneeAcademique(academique);
+                            note.setCours(cours);
+                            note.setEtudiant(etudiant);
+                            note.setEvaluation(eval);
+                            Session s = Session.values()[session];
+                            note.setSession(s);
+                            try{
+                                noteDao.create(note);
+                                count++;  
+                            } catch(DataAccessException ex){
+                                ImportationError err = new ImportationError(index, ex.getMessage());
+                                erreurs.add(err);
+                            }
+                        } else {
+                            ImportationError err = new ImportationError(index, "Note invalide");
+                            erreurs.add(err);
+                        }
+                    }
+                } else {
+                    ImportationError err = new ImportationError(index, "Etudiant introuvable");
+                    erreurs.add(err);
+                }
+                index++;
+//                
+//                    if(json.containsKey("CC")){
+//                        Note note = new Note();
+//                        evaluation = evaluationDao.
+//                        cell = row.getCell(Integer.parseInt(json.get("CC").toString()));
+//                        if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC)
+//                            note.setValeur(cell.getNumericCellValue());
+//                        note.setActive(1);
+//                        note.setAnneeAcademique(academique);
+//                        note.setCours(cours);
+//                        note.setEtudiant(etudiant);
+//                        note.setEvaluation(evaluation);
+//                        System.out.println(note);
+//                        noteDao.create(note);
+//                        count++;
+//                    }
+//                    if(json.containsKey("TPE")){
+//                        Note note = new Note();
+//                        evaluation = evaluationDao.findByCode("TPE");
+//                        cell = row.getCell(Integer.parseInt(json.get("TPE").toString()));
+//                        if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC)
+//                            note.setValeur(cell.getNumericCellValue());
+//                        note.setActive(1);
+//                        note.setAnneeAcademique(academique);
+//                        note.setCours(cours);
+//                        note.setEtudiant(etudiant);
+//                        note.setEvaluation(evaluation);
+//                        noteDao.create(note);
+//                        count++;
+//                    }
+//                    if(json.containsKey("EE")){
+//                        Note note = new Note();
+//                        evaluation = evaluationDao.findByCode("EE");
+//                        cell = row.getCell(Integer.parseInt(json.get("EE").toString()));
+//                        if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC)
+//                            note.setValeur(cell.getNumericCellValue());
+//                        note.setActive(1);
+//                        note.setAnneeAcademique(academique);
+//                        note.setCours(cours);
+//                        note.setEtudiant(etudiant);
+//                        note.setEvaluation(evaluation);
+//                        noteDao.create(note);
+//                        count++;
+//                    }
             }
-
-        } catch (IOException | InvalidFormatException ex) {
-            Logger.getLogger(EtudiantServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (DataAccessException ex) {
-            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        List<ImportationError> erreurs = new ArrayList<>();
+//        int count = 0;
+//        try {
+//            Cours cours = coursDao.findById(coursId);
+//            Evaluation evaluation = evaluationDao.findById(evaluationId);
+//            AnneeAcademique academique = academiqueDao.findById(anneeId);
+//            Workbook workbook = WorkbookFactory.create(stream);
+//            final Sheet sheet = workbook.getSheetAt(0);
+//            int index = 1;
+//            Row row = sheet.getRow(index++);
+//            String matricule;
+//            String nom;
+//            while (row != null) {
+//                Etudiant etudiant;
+//                if (row.getCell(1) != null) {
+//                    matricule = row.getCell(1).getStringCellValue();
+//                    etudiant = etudiantDao.findByMatricule(matricule);
+//                    /*} else {
+//                     nom = row.getCell(2).getStringCellValue();
+//                     etudiant = etudiantDao.findByName(nom);
+//                     }*/
+//                    if (etudiant != null) {
+//                        if (row.getCell(3) != null) {
+//                            if (row.getCell(3).getCellType() == Cell.CELL_TYPE_NUMERIC) {
+//                                Note note = new Note();
+//                                note.setValeur(row.getCell(3).getNumericCellValue());
+//                                note.setActive(1);
+//                                note.setAnneeAcademique(academique);
+//                                note.setCours(cours);
+//                                note.setEtudiant(etudiant);
+//                                note.setEvaluation(evaluation);
+//                                if (evaluation.isExam()) {
+//                                    Session s = Session.values()[session];
+//                                    note.setSession(s);
+//                                }
+//                                try {
+//                                    noteDao.create(note);
+//                                    count++;
+//                                } catch (DataAccessException ex) {
+//                                    ImportationError err = new ImportationError(index, ex.getMessage());
+//                                    erreurs.add(err);
+//                                }
+//                            } else {
+//                                ImportationError err = new ImportationError(index, "Note invalide");
+//                                erreurs.add(err);
+//                            }
+//                        } else {
+//                            //ImportationError err = new ImportationError(index, "Note indisponible");
+//                            //erreurs.add(err);
+//                        }
+//                    } else {
+//                        ImportationError err = new ImportationError(index, "Matricule indisponible");
+//                        erreurs.add(err);
+//                    }
+//                }
+//                row = sheet.getRow(index++);
+//            }
+//
+//        } catch (IOException | InvalidFormatException ex) {
+//            Logger.getLogger(EtudiantServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (DataAccessException ex) {
+//            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+//        }
         result.setNombreImporte(count);
         result.setErreurs(erreurs);
+        } catch (DataAccessException ex) {
+            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return result;
     }
 

@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 
 /**
@@ -54,10 +55,12 @@ public class Cours implements Serializable {
     private String intitule;
     
     @ManyToOne(optional = false)
+    @EqualsAndHashCode.Exclude
     private TypeCours typeCours;
     
     @XmlTransient
     @ManyToMany(mappedBy = "cours")
+    @EqualsAndHashCode.Exclude
     private List<UniteEnseignement> uniteEnseignements;
     
     @XmlTransient
@@ -66,8 +69,11 @@ public class Cours implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "DEPARTEMENT_ID")
+    @EqualsAndHashCode.Exclude
     private Departement departement;
        
     public Cours(){
     }
+    
+    
 }

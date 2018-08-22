@@ -2,10 +2,31 @@
     <div class=panel-heading>IMPORTATION DES NOTES</div>
     <div class=panel-body>
         <form name=form method=post role=form class=form-horizontal novalidate>
+            <div class=form-group><label for=annee class="col-sm-2 control-label">Année Académique</label>
+                <div class=col-sm-6><select name=annee id=annee class=form-control ng-model=annee ng-required=true><option disabled selected value>-- Veuillez selectionner une année --</option><option ng-repeat="annee in annees|orderBy:'-debut'" value={{annee.id}}>{{annee.debut.substring(0, 4)}}-{{annee.fin.substring(0, 4)}}</option></select>
+                    <span
+                        class=error ng-show="form.cycle.$dirty && form.cycle.$error.required">L'Ann&eacute;e est obligatoire</span>
+                </div>
+            </div>
+            <div class=form-group><label for=departement class="col-sm-2 control-label">Département</label>
+                <div class=col-sm-6><select name=departement id=departement class=form-control ng-model=departement ng-change=changerDepartement()><option disabled selected value>-- Veuillez selectionner un département --</option><option ng-repeat="departement in departements|orderBy:'code'" value={{departement.id}}>{{departement.code}}</option></select></div>
+            </div>
+            <div class=form-group><label for=niveau class="col-sm-2 control-label">Niveau</label>
+                <div class=col-sm-6><select name=niveau id=niveau class=form-control ng-model=niveau ng-change=changerDepartement()><option disabled selected value>-- Veuillez selectionner un niveau --</option><option ng-repeat="niveau in niveaux|orderBy:'code' track by niveau.id" value={{niveau.id}}>{{niveau.code}}</option></select></div>
+            </div>
+            <div class=form-group><label for=option class="col-sm-2 control-label">Option</label>
+                <div class=col-sm-6><select name=option id=option class=form-control ng-model=option ng-change=changerOption()><option disabled selected value>-- Veuillez selectionner une option --</option><option ng-repeat="option in options|orderBy:'code'" value={{option.id}}>{{option.code}}</option></select></div>
+            </div>
+            <div class=form-group><label for=cours class="col-sm-2 control-label">Cours</label>
+                <div class=col-sm-6><select name=cours id=cours class=form-control ng-model=cour ng-required=true ng-change=changerCours()><option disabled selected value>-- Veuillez selectionner un cours --</option><option ng-repeat="cors in cours" value={{cors.id}}>{{cors.intitule}}-{{cors.departement.code}}</option></select>
+                    <span
+                        class=error ng-show="form.cycle.$dirty && form.cycle.$error.required">Le cours est obligatoire</span>
+                </div>
+            </div>
             <div class=form-group><label for=code class="col-sm-2 control-label">Fichier</label>
                 <div class=col-sm-6><input type=file name=fichier id=code class="form-control-file form-control-lg" ng-required=true onchange=angular.element(this).scope().uploadFile(this.files)> <span class=error ng-show="form.code.$dirty && form.code.$error.required">Le fichier est obligatoire</span></div>
             </div>
-            <div ng-show="headerNames.length !== 0">
+            <div class="col-sm-offset-2 col-sm-8" ng-show="evaluations.length !== 0 && headerNames.length !== 0">
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -14,11 +35,22 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="header in headerNames">
-                            <td>{{header.name}} - {{header.index}}:</td>
+                        <tr ng-repeat="eval in evaluations">
+                            <td>{{eval.name}} - {{eval.index}}:</td>
                             <td>
                                 <div class=form-group>
-                                    <div class=col-sm-5><select id=hdr name=head class=form-control mg-model=header.index><option disabled value>-- Veuillez choisir une en-tete --</option><option ng-repeat="headerName in headerNames" value=headerName.index ng-selected="header.name === headerName.name">{{headerName.name}}</option></select></div>
+                                    <div class=col-sm-5><select id=hdr name=head class=form-control ng-model=eval.index><option selected value>-- Veuillez choisir une en-tete --</option><option ng-repeat="headerName in headerNames" value={{headerName.index}}>{{headerName.name}}</option></select></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr ng-show=sessionShow>
+                            <td>Session:</td>
+                            <td>
+                                <div class=form-group>
+                                    <div class=col-sm-5><select id=sn name=session class=form-control ng-model=session><option disabled value>-- Veuillez choisir une session --</option><option selected value=0>Normale</option><option value=1>Rattrapage</option></select>
+                                        <span
+                                            class=error ng-show="form.cycle.$dirty && form.cycle.$error.required">La session est obligatoire</span>
+                                    </div>
                                 </div>
                             </td>
                         </tr>

@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  *
@@ -48,16 +49,19 @@ public class Inscription implements Serializable {
     @ManyToOne(optional = false)
     @JoinColumn(name = "ETUDIANT_ID")
     @XmlTransient
+    @EqualsAndHashCode.Exclude
     private Etudiant etudiant;
     
     @ManyToOne(optional = false)
     @JoinColumn(name = "ANNEEACADEMIQUE_ID")
     @XmlTransient
+    @EqualsAndHashCode.Exclude
     private AnneeAcademique anneeAcademique;
     
     @ManyToOne(optional = false)
     @JoinColumn(name = "PARCOURS_ID")
     @XmlTransient
+    @EqualsAndHashCode.Exclude
     private Parcours parcours;
     
      @XmlTransient

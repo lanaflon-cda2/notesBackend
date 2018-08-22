@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  *
@@ -33,10 +34,10 @@ import lombok.Data;
 @XmlAccessorType(XmlAccessType.FIELD)
 @NamedQueries({
     @NamedQuery(name = "UE.deleteActive", query = "update UniteEnseignement ue set ue.active = 0 where ue.id = :idParam"),
-    @NamedQuery(name = "UE.findAllActive", query = "select ue from UniteEnseignement ue where ue.active=1")
-
+    @NamedQuery(name = "UE.findAllActive", query = "select ue from UniteEnseignement ue where ue.active=1"),
+    @NamedQuery(name = "UE.findByNiveauOption", query = "SELECT ue from UniteEnseignement ue where ue.parcours.id = :idParam")
 })
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"CODE","PARCOURS_ID"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"CODE","PARCOURS_ID"}), name = "uniteenseignement")
 public class UniteEnseignement implements Serializable {
 
     @Id
@@ -59,9 +60,11 @@ public class UniteEnseignement implements Serializable {
     @ManyToOne(optional = false)
     @XmlTransient
     @JoinColumn(name = "PARCOURS_ID")
+    @EqualsAndHashCode.Exclude
     private Parcours parcours;
     
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
+    @EqualsAndHashCode.Exclude
     private List<Cours> cours;
 
     @XmlTransient

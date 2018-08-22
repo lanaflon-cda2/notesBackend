@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  *
@@ -46,21 +47,25 @@ public class Programme implements Serializable {
     
     @ManyToOne(optional = false)
     @JoinColumn(name = "ANNEEACADEMIQUE_ID")
+    @EqualsAndHashCode.Exclude
     private AnneeAcademique anneeAcademique;
     
     @ManyToOne(optional = false)
     @JoinColumn(name = "UNITEENSEIGNEMENT_ID")
+    @EqualsAndHashCode.Exclude
     private UniteEnseignement uniteEnseignement;
     
     @ManyToOne(optional = false)
     @JoinColumn(name = "PARCOURS_ID")
+    @EqualsAndHashCode.Exclude
     private Parcours parcours;
     
     @ManyToOne(optional = false)
     @JoinColumn(name = "SEMESTRE_ID")
+    @EqualsAndHashCode.Exclude
     private Semestre semestre;
     
-     @XmlTransient
+    @XmlTransient
     @Column(columnDefinition = "int default 1")
     private int active;
     

@@ -45,12 +45,20 @@ public class UtilisateurResource implements IUtilisateurResource{
 
     @Override
     public Utilisateur save(Utilisateur utilisateur) {
-        return utilisateurService.create(utilisateur);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Utilisateur util = (auth == null)? null: (Utilisateur)auth.getPrincipal();
+        if(util.getRole() == Role.ADMINISTRATEUR || util.getId() == utilisateur.getId())
+            return utilisateurService.create(utilisateur);
+        return null;
     }
 
     @Override
     public Utilisateur update(long id, Utilisateur utilisateur) {
-        return utilisateurService.update(id,utilisateur);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Utilisateur util = (auth == null)? null: (Utilisateur)auth.getPrincipal();
+        if(util.getRole() == Role.ADMINISTRATEUR || util.getId() == id)
+            return utilisateurService.update(id,utilisateur);
+        return null;
     }
 
     @Override

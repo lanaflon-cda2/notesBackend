@@ -228,9 +228,9 @@ public class NoteResource implements INoteResource {
     }
 
     @Override
-    public ImportationResult importNotes(InputStream fichier, FormDataContentDisposition fileDisposition, Long coursId, Long evaluationId, Long anneeId, int session) {
+    public ImportationResult importNotes(InputStream fichier, FormDataContentDisposition fileDisposition, String Headers, Long coursId, /*Long evaluationId*/ Long anneeId, int session) {
         try {
-            return noteService.importNotes(fichier, coursId, evaluationId, anneeId, session);
+            return noteService.importNotes(fichier, Headers, coursId, anneeId, session);
         } catch (ServiceException ex) {
             Logger.getLogger(NoteResource.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -311,6 +311,16 @@ public class NoteResource implements INoteResource {
             Logger.getLogger(NoteResource.class.getName()).log(Level.SEVERE, null, ex);
             throw new WebApplicationException(400);
         }
+    }
+
+    @Override
+    public Cours getCour(long id) {
+        try {
+            return coursService.findCoursById(id);
+        } catch (ServiceException ex) {
+            Logger.getLogger(NoteResource.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
 }

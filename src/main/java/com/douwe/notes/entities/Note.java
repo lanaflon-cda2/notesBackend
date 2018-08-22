@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  *
@@ -51,28 +52,33 @@ public class Note implements Serializable {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "ETUDIANT_ID")
+    @EqualsAndHashCode.Exclude
     private Etudiant etudiant;
     
     //les trois derniers a mettre à l'interface importation
     @ManyToOne(optional = false)
     @JoinColumn(name = "EVALUATION_ID")
     @XmlTransient
+    @EqualsAndHashCode.Exclude
     private Evaluation evaluation;
     
     @ManyToOne(optional = false)
     @JoinColumn(name = "COURS_ID")
     @XmlTransient
+    @EqualsAndHashCode.Exclude
     private Cours cours;
     
     @ManyToOne(optional = false)
     @JoinColumn(name = "ANNEEACADEMIQUE_ID")
     @XmlTransient
+    @EqualsAndHashCode.Exclude
     private AnneeAcademique anneeAcademique;
     
     @Column(name = "SESSIONS", nullable = false)
+    @EqualsAndHashCode.Exclude
     private Session session = Session.normale;
     
-     @XmlTransient
+    @XmlTransient
     @Column(columnDefinition = "int default 1")
     private int active;
     

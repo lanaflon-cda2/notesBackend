@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * I really think we don't need this class
@@ -30,14 +31,17 @@ public class CoursUEAnnee implements Serializable {
     private Long id;
     
     @ManyToOne
-    @JoinColumn(name = "COURS_ID")
+    @JoinColumn(name = "COURS_ID")    
+    @EqualsAndHashCode.Exclude
     private Cours cours;
     
     @ManyToOne
     @JoinColumn(name = "UNITEENSEIGNEMENT_ID")
+    @EqualsAndHashCode.Exclude
     private UniteEnseignement uniteEnseignement;
     
     @ManyToOne
     @JoinColumn(name = "ANNEEACADEMIQUE_ID")
+    @EqualsAndHashCode.Exclude
     private AnneeAcademique anneeAcademique;
 }

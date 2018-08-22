@@ -1,8 +1,9 @@
-angular.module("notesApp.uniteenseignements.controllers", []).controller("UniteEnseignementController", ["$scope", "$modal", "UniteEns", "Departement", "Niveau", "$http",
-    function ($scope, $modal, UniteEns, Departement, Niveau, $http) {
+angular.module("notesApp.uniteenseignements.controllers", []).controller("UniteEnseignementController", ["$scope", "$modal", "Cours","UniteEns", "Departement", "Niveau", "$http",
+    function ($scope, $modal, UniteEns, Departement, Cours, Niveau, $http) {
 
-        var deps = Departement.query(function () {
-            $scope.departements = deps;
+        $http.get("api/departements").success(function(data){
+            $scope.departements = data;
+            console.log($scope.departements);
         });
 
         var nivs = Niveau.query(function () {
@@ -17,6 +18,7 @@ angular.module("notesApp.uniteenseignements.controllers", []).controller("UniteE
                 $scope.option = null;
             }
         };
+
         $scope.filtrer = function () {
             if (($scope.niveau) && ($scope.option)) {
                 $http.get('api/uniteEns/' + $scope.niveau + '/' + $scope.option).success(function (data, status, config, headers) {
@@ -31,6 +33,7 @@ angular.module("notesApp.uniteenseignements.controllers", []).controller("UniteE
                         );
             }
         };
+
         $scope.departement = null;
         $scope.niveau = null;
         $scope.option = null;
@@ -56,6 +59,7 @@ angular.module("notesApp.uniteenseignements.controllers", []).controller("UniteE
                     }
                 }
             });
+
             modelInstance.result.then(function (resultat) {
                 var item = resultat.element;
                 var cle = resultat.cle;
@@ -71,24 +75,32 @@ angular.module("notesApp.uniteenseignements.controllers", []).controller("UniteE
             });
 
         };
+
         $scope.supprimerUniteEns = function (cle, item) {
             if (confirm("Voulez vous vraiment supprimer cette unité d'enseignement?")) {
-                UniteEns.remove({
-                    id: item.id
-                }, function () {
-                    if (cle){
-                        $scope.unites.splice(cle, 1);
-                    }
+                // UniteEns.remove({id: item.id}, function () {
+                //     // if (cle){
+                //         $scope.unites.splice(cle, 1);
+                //     // }
+                // });
+                $http.delete('api/uniteEns/' + item.id).success(function(data){
+                    $scope.unites.splice(cle, 1);
                 });
             }
         };
+
     }]).controller("UniteEnsFenetreController", ["$scope", "$modalInstance", "valeurs", "Departement", "Niveau", "Cours", "$http",
     function ($scope, $modalInstance, valeurs, Departement, Niveau, Cours, $http) {
+
         $scope.element = valeurs.element;
         $scope.departement = valeurs.departement;
         $scope.niveau = valeurs.niveau;
         $scope.cle = valeurs.cle;
-        
+
+        var deps = Departement.query(function () {
+            $scope.departements = deps;
+        });
+
         $scope.modificationDepartement = function () {
             if (($scope.departement) && ($scope.niveau)) {
                 $http.get('api/options/' + $scope.departement + '/' + $scope.niveau).success(function (data, status, config, headers) {
@@ -97,16 +109,29 @@ angular.module("notesApp.uniteenseignements.controllers", []).controller("UniteE
                 $scope.option = {};
             }
         };
+
         $scope.modificationDepartement();
         $scope.option = valeurs.option;
+
+        if($scope.option){
+            $http.get('api/cours').success(function(data){
+                $scope.cours = data;
+            });
+        }
+
+        $scope.modificationOption = function (){
+            // if(($scope.option) && ($scope.niveau)){
+                $http.get('api/cours').success(function(data){
+                    $scope.cours = data;
+                });
+                // $scope.cour = {};
+            // }
+        };
+
+       
         $scope.tags = valeurs.element.cours;
-        var deps = Departement.query(function () {
-            $scope.departements = deps;
-        });
-//        var cours = Cours.query(function () {
-//            $scope.cours = cours;
-//        });
-        $scope.cours = valeurs.cours;
+  
+        console.log("loading out"+$scope.cours);
         var nivs = Niveau.query(function () {
             $scope.niveaux = nivs;
         });
@@ -116,6 +141,7 @@ angular.module("notesApp.uniteenseignements.controllers", []).controller("UniteE
                 return hello.intitule.indexOf(start) > -1;
             });
         };
+
         $scope.valider = function () {
             var result = {};
             result.element = $scope.element;

@@ -96,3 +96,7 @@ ul.inline-elements li{
 [ng\:cloak], [ng-cloak], .ng-cloak {
   display: none !important;
 }
+
+a{
+    cursor: pointer;
+}

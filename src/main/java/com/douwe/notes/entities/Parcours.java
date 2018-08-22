@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  *
@@ -49,10 +50,12 @@ public class Parcours implements Serializable {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "NIVEAU_ID")
+    @EqualsAndHashCode.Exclude
     private Niveau niveau;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "OPTION_ID")
+    @EqualsAndHashCode.Exclude
     private Option option;
 
     @XmlTransient
@@ -60,6 +63,7 @@ public class Parcours implements Serializable {
     private int active;
     
     @OneToMany(mappedBy = "parcours")
+    @EqualsAndHashCode.Exclude
     private List<UniteEnseignement> uniteEnseignements;
 
     public Parcours() {

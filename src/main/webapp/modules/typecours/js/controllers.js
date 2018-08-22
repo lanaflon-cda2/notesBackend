@@ -106,8 +106,8 @@ angular.module("notesApp.typecours.controllers", []).controller("TypecoursContro
                         }
                     });
                 } else {
-                    TypeCours.save(item, function () {
-                        $scope.typecours.push(item);
+                    var type_cours = TypeCours.save(item, function () {
+                        $scope.typecours.push(type_cours);
                     });
                 }
             }, function () {

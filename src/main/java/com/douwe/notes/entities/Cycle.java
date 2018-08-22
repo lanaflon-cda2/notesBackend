@@ -3,6 +3,7 @@ package com.douwe.notes.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -61,4 +62,42 @@ public class Cycle implements Serializable {
     public Cycle(){
         
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 53 * hash + Objects.hashCode(this.nom);
+        hash = 53 * hash + Objects.hashCode(this.diplomeFr);
+        hash = 53 * hash + Objects.hashCode(this.diplomeEn);
+        hash = 53 * hash + this.active;
+        return hash;
+    }    
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Cycle other = (Cycle) obj;
+        if (this.active != other.active) {
+            return false;
+        }
+        if (!Objects.equals(this.nom, other.nom)) {
+            return false;
+        }
+        if (!Objects.equals(this.diplomeFr, other.diplomeFr)) {
+            return false;
+        }
+        if (!Objects.equals(this.diplomeEn, other.diplomeEn)) {
+            return false;
+        }
+        return true;
+    }
+    
 }

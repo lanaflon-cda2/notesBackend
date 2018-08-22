@@ -72,10 +72,10 @@ public class UtilisateurServiceImpl implements IUtilisateurService, UserDetailsS
             System.out.println("Aucun utilisateur avec username "+username);
             throw new UsernameNotFoundException("User not found "+ username);
         }
-        BCryptPasswordEncoder be = new BCryptPasswordEncoder();
-        System.out.println("L'email de l'utilisateur "+ username + " est "+user.getRole().toString());
-        System.out.println("Toto "+be.matches(user.getPassword(), be.encode("admin123")));
-        System.out.println("Tata "+be.encode("admin123"));
+//        BCryptPasswordEncoder be = new BCryptPasswordEncoder();
+//        System.out.println("L'email de l'utilisateur "+ username + " est "+user.getRole().toString());
+//        System.out.println("Toto "+be.matches(user.getPassword(), be.encode("admin123")));
+//        System.out.println("Tata "+be.encode("admin123"));
         return new CustomUserDetails(user);
     }
 

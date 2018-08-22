@@ -217,6 +217,7 @@ public class CoursServiceImpl implements ICoursService {
             Niveau niveau = niveauDao.findById(niveauId);
             Option option = optionDao.findById(optionId);
             Parcours parcours = parcoursDao.findByNiveauOption(niveau, option);
+            System.out.println(parcours);
             return coursDao.findByParcours(parcours);
         } catch (DataAccessException ex) {
             Logger.getLogger(CoursServiceImpl.class.getName()).log(Level.SEVERE, null, ex);

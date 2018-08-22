@@ -2,6 +2,7 @@ package com.douwe.notes.dao.impl;
 
 import com.douwe.generic.dao.DataAccessException;
 import com.douwe.generic.dao.impl.GenericDao;
+import com.douwe.notes.dao.IParcoursDao;
 import com.douwe.notes.dao.IUniteEnseignementDao;
 import com.douwe.notes.entities.AnneeAcademique;
 import com.douwe.notes.entities.Cours;
@@ -21,6 +22,7 @@ import com.douwe.notes.entities.UniteEnseignement_;
 import com.douwe.notes.projection.UEnseignementCredit;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
@@ -36,7 +38,14 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class UniteEnseignementDaoImpl extends GenericDao<UniteEnseignement, Long> implements IUniteEnseignementDao {
-
+    
+    @Inject
+    private IParcoursDao parcoursDao;
+    
+    public IParcoursDao getParcoursDao() {
+        return parcoursDao;
+    }
+    
     @Override
     public void deleteActive(UniteEnseignement ue) throws DataAccessException {
         getManager().createNamedQuery("UE.deleteActive").setParameter("idParam", ue.getId());
@@ -150,15 +159,17 @@ public class UniteEnseignementDaoImpl extends GenericDao<UniteEnseignement, Long
 
     @Override
     public List<UniteEnseignement> findUniteByNiveauOption(Niveau niveau, Option option) throws DataAccessException {
-        CriteriaBuilder cb = getManager().getCriteriaBuilder();
-        CriteriaQuery<UniteEnseignement> cq = cb.createQuery(UniteEnseignement.class);
-        Root<UniteEnseignement> uniteRoot = cq.from(UniteEnseignement.class);
-        Path<Parcours> parcoursPath = uniteRoot.get(UniteEnseignement_.parcours);
-        Path<Niveau> niveauPath = parcoursPath.get(Parcours_.niveau);
-        Path<Option> optionPath = parcoursPath.get(Parcours_.option);
-        cq.where(cb.and(cb.equal(optionPath, option), cb.equal(niveauPath, niveau)));
-        cq.orderBy(cb.asc(uniteRoot.get(UniteEnseignement_.code)));
-        return getManager().createQuery(cq).getResultList();
+//        CriteriaBuilder cb = getManager().getCriteriaBuilder();
+//        CriteriaQuery<UniteEnseignement> cq = cb.createQuery(UniteEnseignement.class);
+//        Root<UniteEnseignement> uniteRoot = cq.from(UniteEnseignement.class);
+//        Path<Parcours> parcoursPath = uniteRoot.get(UniteEnseignement_.parcours);
+//        Path<Niveau> niveauPath = parcoursPath.get(Parcours_.niveau);
+//        Path<Option> optionPath = parcoursPath.get(Parcours_.option);
+//        cq.where(cb.and(cb.equal(optionPath, option), cb.equal(niveauPath, niveau)));
+//        cq.orderBy(cb.asc(uniteRoot.get(UniteEnseignement_.code)));
+//        return getManager().createQuery(cq).getResultList();
+        Parcours parcours = parcoursDao.findByNiveauOption(niveau, option);
+        return getManager().createNamedQuery("UE.findByNiveauOption").setParameter("idParam", parcours.getId()).getResultList();
     }
 
 }

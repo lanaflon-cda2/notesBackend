@@ -1,5 +1,6 @@
 package com.douwe.notes.resource;
 
+import com.douwe.notes.entities.Cours;
 import com.douwe.notes.entities.Note;
 import com.douwe.notes.projection.EtudiantNotes;
 import com.douwe.notes.projection.MoyenneUniteEnseignement;
@@ -60,7 +61,13 @@ public interface INoteResource {
     @POST
     @Path("import")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public ImportationResult importNotes(@FormDataParam("fichier") InputStream fichier, @FormDataParam("fichier") FormDataContentDisposition fileDisposition, @FormDataParam("courId") Long coursId, @FormDataParam("evaluationId") Long evaluationId, @FormDataParam("anneeId") Long anneeId, @DefaultValue("0") @FormDataParam("session") int session);
+    public ImportationResult importNotes(@FormDataParam("fichier") InputStream fichier,
+                                         @FormDataParam("fichier") FormDataContentDisposition fileDisposition,
+                                         @FormDataParam("headers") String Headers,
+                                         @FormDataParam("courId") Long coursId,
+//                                         @FormDataParam("evaluationId") Long evaluationId,
+                                         @FormDataParam("anneeId") Long anneeId,
+                                         @DefaultValue("0") @FormDataParam("session") int session);
     
     @POST
     @Path("deliberation")
@@ -101,7 +108,10 @@ public interface INoteResource {
     @Produces(value = "application/json")
     OutputStream produirePv();
     
-    
+    @GET
+    @Path(value = "{id}/cour")
+    @Produces(value = "application/json")
+    public Cours getCour(@PathParam(value = "id") long id);
     
     @GET
     @Path(value = "/salut/{matricule}/{niveauId: \\d+}/{coursId: \\d+}/{anneeId: \\d+}")

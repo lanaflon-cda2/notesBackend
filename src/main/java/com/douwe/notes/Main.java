@@ -1,10 +1,18 @@
 package com.douwe.notes;
 
 import com.douwe.generic.dao.DataAccessException;
+import com.douwe.notes.dao.IEtudiantDao;
+import com.douwe.notes.dao.impl.EtudiantDaoImpl;
+import com.douwe.notes.entities.Etudiant;
+import com.douwe.notes.entities.Genre;
 import com.douwe.notes.entities.Role;
 import com.douwe.notes.entities.Utilisateur;
+import com.douwe.notes.service.IEtudiantService;
 import com.douwe.notes.service.IUtilisateurService;
+import com.douwe.notes.service.ServiceException;
+import java.time.Instant;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.ObjectProvider;
@@ -58,7 +66,7 @@ public class Main extends JpaBaseConfiguration {
         return Collections.singletonMap("eclipselink.weaving", "false");
     }
 
-    public static void main(String[] args) throws DataAccessException {
+    public static void main(String[] args) throws DataAccessException, ServiceException {
 
         ApplicationContext cxt = SpringApplication.run(Main.class, args);
         IUtilisateurService utilisateurDao = cxt.getBean(IUtilisateurService.class);
@@ -72,6 +80,22 @@ public class Main extends JpaBaseConfiguration {
             u.setPassword(new BCryptPasswordEncoder().encode("admin123"));
             utilisateurDao.create(u);
 
+        }
+        IEtudiantService etudiantDao = cxt.getBean(IEtudiantService.class);
+        if(etudiantDao.getAllEtudiant().isEmpty()){
+            Etudiant e = new Etudiant();
+            e.setActive(1);
+            e.setDateDeNaissance(Date.from(Instant.now()));
+            e.setEmail("etudiantToto@enspm.cm");
+            e.setGenre(Genre.masculin);
+            e.setId(Long.MAX_VALUE);
+            e.setLieuDeNaissance("Touloum");
+            e.setMatricule("14A500S");
+            e.setNom("Mankreo Philippe");
+            e.setNumeroTelephone("+237658563102");
+            e.setValidDate(true);
+            e.setVersion(0);
+            etudiantDao.saveOrUpdateEtudiant(e);
         }
 
     }

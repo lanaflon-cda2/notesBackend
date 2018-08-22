@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  *
@@ -45,11 +46,13 @@ public class EvaluationDetails implements Serializable {
     
     @ManyToOne(optional = false)
     @JoinColumn(name = "EVALUATION_ID")
+    @EqualsAndHashCode.Exclude
     private Evaluation evaluation;
     
     @ManyToOne(optional = false)
     @JoinColumn(name = "TYPECOURS_ID")
     @XmlTransient
+    @EqualsAndHashCode.Exclude
     private TypeCours typeCours;
     
     @Column
@@ -57,7 +60,7 @@ public class EvaluationDetails implements Serializable {
     @Max(100)
     private Integer pourcentage;
     
-     @XmlTransient
+    @XmlTransient
     @Column(columnDefinition = "int default 1")
     private int active;
     

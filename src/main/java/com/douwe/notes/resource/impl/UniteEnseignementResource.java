@@ -150,7 +150,6 @@ public class UniteEnseignementResource implements IUniteEnseignementResource {
         } catch (ServiceException ex) {
             Logger.getLogger(UniteEnseignementResource.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
 

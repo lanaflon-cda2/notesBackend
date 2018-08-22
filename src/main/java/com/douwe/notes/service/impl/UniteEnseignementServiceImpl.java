@@ -91,11 +91,10 @@ public class UniteEnseignementServiceImpl implements IUniteEnseignementService {
     public void deleteUniteEnseignement(Long id) throws ServiceException {
         try {
             UniteEnseignement uniteEnseignement = uniteEnseignementDao.findById(id);
-            if (uniteEnseignement != null) {
+            if(uniteEnseignement != null){
                 uniteEnseignement.setActive(0);
-                uniteEnseignementDao.update(uniteEnseignement);
+                uniteEnseignementDao.deleteActive(uniteEnseignement);
             }
-
         } catch (DataAccessException ex) {
             Logger.getLogger(UniteEnseignementServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new ServiceException("La ressource demandée est introuvable");

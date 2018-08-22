@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  *
@@ -82,6 +83,7 @@ public class Utilisateur implements Serializable{
     @Column
     private byte[] picture;
     
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany
+    @EqualsAndHashCode.Exclude
     private List<Departement> departements;
 }
