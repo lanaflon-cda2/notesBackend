@@ -28,7 +28,13 @@ public class InscriptionDaoImpl extends GenericDao<Inscription, Long> implements
 
     @Override
     public Inscription findInscriptionByEtudiant(Etudiant etudiant, AnneeAcademique academique) throws DataAccessException {
-        return ((Inscription)getManager().createNamedQuery("Inscription.findByEtudiant").setParameter("param1", etudiant.getId()).setParameter("param2", academique.getId()).getSingleResult());
+        List<Inscription> inscription = getManager().createNamedQuery("Inscription.findByEtudiant").setParameter("param1", etudiant.getId()).setParameter("param2", academique.getId()).getResultList();
+        return inscription.get(0);
+    }
+
+    @Override
+    public List<Inscription> findInscriptionByEtudiantOrdered(Etudiant etudiant) throws DataAccessException {
+        return getManager().createNamedQuery("Inscription.findByEtudiantOrdered").setParameter("idParam", etudiant.getId()).getResultList();
     }
     
 }

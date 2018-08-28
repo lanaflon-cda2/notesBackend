@@ -65,9 +65,12 @@ public interface INoteResource {
                                          @FormDataParam("fichier") FormDataContentDisposition fileDisposition,
                                          @FormDataParam("headers") String Headers,
                                          @FormDataParam("courId") Long coursId,
+                                         @FormDataParam("niveauId") Long niveauId,
+                                         @FormDataParam("optionId") Long optionId,
 //                                         @FormDataParam("evaluationId") Long evaluationId,
                                          @FormDataParam("anneeId") Long anneeId,
-                                         @DefaultValue("0") @FormDataParam("session") int session);
+                                         @FormDataParam("session") String session,
+                                         @FormDataParam("importNow") boolean importNow);
     
     @POST
     @Path("deliberation")

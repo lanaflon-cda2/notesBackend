@@ -1,0 +1,38 @@
+<div>
+        <!-- ng-show="evaluations.length !== 0 && headerNames.length !== 0" -->
+<div class="col-sm-offset-2 col-sm-8">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Header</th>
+                <th>Header value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="eval in evaluations">
+                <td>{{eval.name}}: </td>
+                <td>
+                    <div class="form-group">
+                        <div class="col-sm-5">
+                            <select id="hdr" name="head" class="form-control" ng-model="eval.index">
+                                <option selected value="-1"> -- Veuillez choisir une en-tete -- </option>
+                                <option ng-repeat="headerName in headerNames" value="{{headerName.index}}">{{headerName.name}}</option>
+                            </select>
+                            <span class="error" ng-show="form.cycle.$dirty && form.cycle.$error.required">{{eval.name}} est obligatoire</span>
+                        </div>
+                        <div ng-show="eval.isExam" class="col-sm-5">
+                            <select id="sn" name="sessionName" class="form-control" ng-model="eval.session">
+                                <option selected value=""> -- Veuillez choisir une session -- </option>
+                                <option value="0">Normale</option>
+                                <option value="1">Rattrapage</option>
+                            </select>
+                            <span class="error" ng-show="form.cycle.$dirty && form.cycle.$error.required">La session est obligatoire</span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+  
+</div>

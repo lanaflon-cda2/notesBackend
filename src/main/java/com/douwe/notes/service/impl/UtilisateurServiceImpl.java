@@ -1,7 +1,9 @@
 package com.douwe.notes.service.impl;
 
 import com.douwe.generic.dao.DataAccessException;
+import com.douwe.notes.dao.IInscriptionDao;
 import com.douwe.notes.dao.IUtilisateurDao;
+import com.douwe.notes.entities.Etudiant;
 import com.douwe.notes.entities.Role;
 import com.douwe.notes.entities.Utilisateur;
 import com.douwe.notes.entities.util.CustomUserDetails;
@@ -30,6 +32,9 @@ public class UtilisateurServiceImpl implements IUtilisateurService, UserDetailsS
     
     @Inject
     private IUtilisateurDao utilisateurDao;
+    
+    @Inject
+    private IInscriptionDao inscriptionDao;
 
 //    @Override
 //    public AuthAccessElement findByLoginAndPassword(AuthLoginElement loginElement) throws ServiceException {

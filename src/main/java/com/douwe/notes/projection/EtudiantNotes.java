@@ -33,7 +33,7 @@ public class EtudiantNotes {
                 isClean = false;
             }
         }
-        if (isClean || annee.getNumeroDebut() < 2017){
+        if (isClean /*|| annee.getNumeroDebut() < 2017*/){
             return Optional.of(res / 100);
         }
         return Optional.empty();

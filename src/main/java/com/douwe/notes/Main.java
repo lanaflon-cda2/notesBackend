@@ -2,17 +2,22 @@ package com.douwe.notes;
 
 import com.douwe.generic.dao.DataAccessException;
 import com.douwe.notes.dao.IEtudiantDao;
+import com.douwe.notes.dao.IInscriptionDao;
 import com.douwe.notes.dao.impl.EtudiantDaoImpl;
+import com.douwe.notes.dao.impl.InscriptionDaoImpl;
 import com.douwe.notes.entities.Etudiant;
 import com.douwe.notes.entities.Genre;
+import com.douwe.notes.entities.Inscription;
 import com.douwe.notes.entities.Role;
 import com.douwe.notes.entities.Utilisateur;
 import com.douwe.notes.service.IEtudiantService;
+import com.douwe.notes.service.IInscriptionService;
 import com.douwe.notes.service.IUtilisateurService;
 import com.douwe.notes.service.ServiceException;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.ObjectProvider;
@@ -82,8 +87,8 @@ public class Main extends JpaBaseConfiguration {
 
         }
         IEtudiantService etudiantDao = cxt.getBean(IEtudiantService.class);
+        Etudiant e = new Etudiant();
         if(etudiantDao.getAllEtudiant().isEmpty()){
-            Etudiant e = new Etudiant();
             e.setActive(1);
             e.setDateDeNaissance(Date.from(Instant.now()));
             e.setEmail("etudiantToto@enspm.cm");
@@ -97,6 +102,5 @@ public class Main extends JpaBaseConfiguration {
             e.setVersion(0);
             etudiantDao.saveOrUpdateEtudiant(e);
         }
-
     }
 }

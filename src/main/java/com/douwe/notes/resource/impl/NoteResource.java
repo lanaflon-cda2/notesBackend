@@ -228,9 +228,9 @@ public class NoteResource implements INoteResource {
     }
 
     @Override
-    public ImportationResult importNotes(InputStream fichier, FormDataContentDisposition fileDisposition, String Headers, Long coursId, /*Long evaluationId*/ Long anneeId, int session) {
+    public ImportationResult importNotes(InputStream fichier, FormDataContentDisposition fileDisposition, String Headers, Long coursId, Long niveauId, Long optionId, Long anneeId, String session, boolean importNow) {
         try {
-            return noteService.importNotes(fichier, Headers, coursId, anneeId, session);
+            return noteService.importNotes(fichier, Headers, coursId, niveauId, optionId, anneeId, session, importNow);
         } catch (ServiceException ex) {
             Logger.getLogger(NoteResource.class.getName()).log(Level.SEVERE, null, ex);
         }

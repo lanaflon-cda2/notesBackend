@@ -8,9 +8,11 @@ import com.douwe.notes.dao.IDepartementDao;
 import com.douwe.notes.dao.IEtudiantDao;
 import com.douwe.notes.dao.IEvaluationDao;
 import com.douwe.notes.dao.IEvaluationDetailsDao;
+import com.douwe.notes.dao.IInscriptionDao;
 import com.douwe.notes.dao.INiveauDao;
 import com.douwe.notes.dao.INoteDao;
 import com.douwe.notes.dao.IOptionDao;
+import com.douwe.notes.dao.IParcoursDao;
 import com.douwe.notes.dao.ISemestreDao;
 import com.douwe.notes.dao.IUniteEnseignementDao;
 import com.douwe.notes.entities.AnneeAcademique;
@@ -20,9 +22,11 @@ import com.douwe.notes.entities.Departement;
 import com.douwe.notes.entities.Etudiant;
 import com.douwe.notes.entities.Evaluation;
 import com.douwe.notes.entities.EvaluationDetails;
+import com.douwe.notes.entities.Inscription;
 import com.douwe.notes.entities.Niveau;
 import com.douwe.notes.entities.Note;
 import com.douwe.notes.entities.Option;
+import com.douwe.notes.entities.Parcours;
 import com.douwe.notes.entities.Semestre;
 import com.douwe.notes.entities.Session;
 import com.douwe.notes.entities.UniteEnseignement;
@@ -45,6 +49,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
@@ -107,7 +112,26 @@ public class NoteServiceImpl implements INoteService {
 
     @Inject
     private IDepartementDao departementDao;
+    
+    @Inject
+    private IInscriptionDao inscriptionDao;
+    
+    @Inject
+    private IParcoursDao parcoursDao;
+    
+    public IParcoursDao getIParcoursDao(){
+        return parcoursDao;
+    }
+    
+    public void setParcoursDao(IParcoursDao parcoursDao){
+        this.parcoursDao = parcoursDao;
+    }
 
+    public IInscriptionDao getIInscriptionDao(){
+        return inscriptionDao;
+    }
+    
+    
     public INoteDao getNoteDao() {
         return noteDao;
     }
@@ -203,6 +227,10 @@ public class NoteServiceImpl implements INoteService {
     public void setCycleDao(ICycleDao cycleDao) {
         this.cycleDao = cycleDao;
     }
+    
+    public void setInscriptionDao(IInscriptionDao inscriptionDao){
+        this.inscriptionDao = inscriptionDao;
+    }
 
     @Override
     public Note saveOrUpdateNote(Note note) throws ServiceException {
@@ -295,9 +323,43 @@ public class NoteServiceImpl implements INoteService {
         et.setDetails(calc);
         return et;
     }
-    private EtudiantNotes rechercherNoteEtudiant(Etudiant etudiant, Cours cours, AnneeAcademique academique, Session session) throws DataAccessException {
+    
+    private Optional<Double> rechercherNoteEtudiant(Etudiant etudiant, Cours cours, Session session) throws DataAccessException {
          Map<String, Integer> calc = getEvaluationDetails(cours);
-         return rechercherNoteEtudiant(etudiant, cours, academique, session, calc);
+         List<Inscription> inscription = inscriptionDao.findInscriptionByEtudiantOrdered(etudiant);
+         if(inscription.size() > 1){
+             for (Inscription ins : inscription) {
+                 if(rechercherNoteEtudiant(etudiant, cours, ins.getAnneeAcademique(), session, calc).getMoyenne().isPresent())
+                     return rechercherNoteEtudiant(etudiant, cours, ins.getAnneeAcademique(), session, calc).getMoyenne();                 
+             }
+         }
+         return Optional.empty();
+    }
+    
+    private Optional<Double> rechercherNoteEtudiant(Etudiant etudiant, Cours cours, AnneeAcademique annee, Session session) throws DataAccessException {
+         Map<String, Integer> calc = getEvaluationDetails(cours);
+         List<Inscription> inscription = inscriptionDao.findInscriptionByEtudiantOrdered(etudiant);
+         return rechercherNoteEtudiant(etudiant, cours, annee, session, calc).getMoyenne();
+    }
+    
+    private boolean etudiantADejaValider(Etudiant etudiant, Cours cours, AnneeAcademique annee) throws DataAccessException{
+        Optional<Double> moyRattrapageAnneeDernier = rechercherNoteEtudiant(etudiant, cours, Session.rattrapage);
+        Optional<Double> moyNormaleAnneeDernier = rechercherNoteEtudiant(etudiant, cours, Session.normale);
+        Optional<Double> moyNormaleAnneeEnCours = rechercherNoteEtudiant(etudiant, cours, annee, Session.normale);
+        Optional<Double> moyRattrapageAnneeEnCours = rechercherNoteEtudiant(etudiant, cours, annee, Session.normale);        
+        if(moyNormaleAnneeDernier.isPresent() && moyNormaleAnneeDernier.get() >= 10.0)
+            return true;
+        if(moyRattrapageAnneeDernier.isPresent() && moyRattrapageAnneeDernier.get() >= 10.0)
+            return true;
+        if(moyRattrapageAnneeEnCours.isPresent() && moyRattrapageAnneeEnCours.get() >= 10.0)
+            return true;
+        return moyNormaleAnneeEnCours.isPresent() && moyNormaleAnneeEnCours.get() >= 10.0;
+    }
+    
+    private boolean etudiantPeutFaireCeCours(Etudiant etudiant, Cours cours, Niveau n, Option o, AnneeAcademique academique) throws DataAccessException{
+        Inscription inscription = inscriptionDao.findInscriptionByEtudiant(etudiant, academique);
+        Parcours parcours = parcoursDao.findByNiveauOption(n, o);
+        return inscription.getParcours() == parcours;
     }
 
     private Map<String, Integer> getEvaluationDetails(Cours cours) throws DataAccessException {
@@ -310,12 +372,16 @@ public class NoteServiceImpl implements INoteService {
     }
 
     @Override
-    public ImportationResult importNotes(InputStream stream, String Headers, Long coursId, Long anneeId, int session) throws ServiceException {
+    public ImportationResult importNotes(InputStream stream, String Headers, Long coursId, Long niveauId, Long optionId, Long anneeId, String session, boolean importNow) throws ServiceException {
         ImportationResult result = new ImportationResult();
         List<ImportationError> erreurs = new ArrayList<>();
         JSONObject header = new JSONObject(Headers);
+        JSONObject sessionObj = new JSONObject(session);
         try {            
             Cours cours = coursDao.findById(coursId);
+            Option option = optionDao.findById(optionId);
+            Niveau niveau = niveauDao.findById(niveauId);
+//            Session s = Session.values()[session];
             List<Evaluation> evaluations = evaluationDao.evaluationForCourses(cours);
             AnneeAcademique academique = academiqueDao.findById(anneeId);
             XSSFWorkbook workbook = new XSSFWorkbook(stream);
@@ -344,29 +410,43 @@ public class NoteServiceImpl implements INoteService {
                 }
                 etudiant = etudiantDao.findByMatricule(matricule);
                 if(etudiant != null){
-                    for (Evaluation eval : evaluations) {
-                        Note note = new Note();
-                        cell = row.getCell(header.getInt(eval.getCode()));
-                        if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC || (0 <= cell.getNumericCellValue() && cell.getNumericCellValue() >= 20)){
-                            note.setValeur(cell.getNumericCellValue());
-                            note.setActive(1);
-                            note.setAnneeAcademique(academique);
-                            note.setCours(cours);
-                            note.setEtudiant(etudiant);
-                            note.setEvaluation(eval);
-                            Session s = Session.values()[session];
-                            note.setSession(s);
-                            try{
-                                noteDao.create(note);
-                                count++;  
-                            } catch(DataAccessException ex){
-                                ImportationError err = new ImportationError(index, ex.getMessage());
-                                erreurs.add(err);
+                    if(!etudiantADejaValider(etudiant, cours, academique)){
+                        if(etudiantPeutFaireCeCours(etudiant, cours, niveau, option, academique)){
+                            for (Evaluation eval : evaluations) {
+                                Note note = new Note();
+                                if(!header.isNull(eval.getCode())){
+                                    cell = row.getCell(header.getInt(eval.getCode()));
+                                    if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC || (0 <= cell.getNumericCellValue() && cell.getNumericCellValue() >= 20)){
+                                        if(importNow){
+                                            note.setValeur(cell.getNumericCellValue());
+                                            note.setActive(1);
+                                            note.setAnneeAcademique(academique);
+                                            note.setCours(cours);
+                                            note.setEtudiant(etudiant);
+                                            note.setEvaluation(eval);
+                                            if(eval.isExam())
+                                                note.setSession(Session.values()[sessionObj.getInt(eval.getCode())]);
+                                            try{
+                                                noteDao.create(note);
+                                                count++;  
+                                            } catch(DataAccessException ex){
+                                                ImportationError err = new ImportationError(index, ex.getMessage());
+                                                erreurs.add(err);
+                                            }
+                                        }
+                                    } else {
+                                        ImportationError err = new ImportationError(index, "Note invalide");
+                                        erreurs.add(err);
+                                    }
+                                }
                             }
                         } else {
-                            ImportationError err = new ImportationError(index, "Note invalide");
+                            ImportationError err = new ImportationError(index, "Etudiant n'est pas du parcours");
                             erreurs.add(err);
                         }
+                    } else {
+                        ImportationError err = new ImportationError(index, "Etudiant a valide");
+                        erreurs.add(err);
                     }
                 } else {
                     ImportationError err = new ImportationError(index, "Etudiant introuvable");

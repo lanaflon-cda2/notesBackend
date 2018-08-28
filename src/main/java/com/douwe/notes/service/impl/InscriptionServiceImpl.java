@@ -204,6 +204,8 @@ public class InscriptionServiceImpl implements IInscriptionService {
     @Override
     public Inscription findInscriptionByEtudiant(Etudiant etudiant, AnneeAcademique academique) throws ServiceException {
         try {
+            System.out.println("/******************/*****************/************");
+            System.out.println(inscriptionDao.findInscriptionByEtudiantOrdered(etudiant));
             return inscriptionDao.findInscriptionByEtudiant(etudiant, academique);
         } catch (DataAccessException ex) {
             Logger.getLogger(InscriptionServiceImpl.class.getName()).log(Level.SEVERE, null, ex);

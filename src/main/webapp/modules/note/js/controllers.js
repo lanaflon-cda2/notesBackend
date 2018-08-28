@@ -18,6 +18,7 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
 
     }]).controller("NoteImportationController", ["Departement","Niveau", "Annee", "Cours", "Option", "Evaluation", "$scope", "$http", "$log",
     function (Departement, Niveau, Annee, Cours, Option, Evaluation,$scope, $http, $log) {
+
         var deps = Departement.query(function(){
             $scope.departements = deps;
         });
@@ -35,15 +36,18 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
         $scope.evaluations = [];
 
         $scope.importResponse = null;
-        
+
+        $scope.chargementResponse = null;
+
+        $scope.chargementError = null;
+
         $scope.importError = null;
 
         $scope.headerNames = [];
 
-        $scope.sessionShow = false;
-
         $scope.uploadFile = function (fs) {
             $scope.files = fs;
+            $scope.headerNames = [];
             var reader = new FileReader();
             reader.onload = function(){
                 var data = reader.result;
@@ -64,8 +68,6 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
             reader.readAsBinaryString($scope.files[0]);
         };
 
-        console.log()
-
         $scope.changerDepartement = function(){
             if(($scope.departement !== undefined) && ($scope.niveau !== undefined)){
                 $http.get('api/options/' + $scope.departement + '/' + $scope.niveau).success(function(data){
@@ -80,26 +82,36 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
                 });
             }
         };
+
         $scope.changerCours = function(){
             $scope.importResponse = null;
+            $scope.chargementResponse = null;
             if($scope.cour){
                 $http.get('api/cours/'+$scope.cour+'/evaluations').success(function(data){
                    var evals = new Object();
                    evals.name = "Matricules";
-                   evals.index = 0;
+                   evals.index = -1;
+                   evals.isExam = false;
                    $scope.evaluations.push(evals);
                    evals = new Object();
                    evals.name = "Noms & Prenoms";
-                   evals.index = 1;
+                   evals.index = -1;
+                   evals.isExam = false;
                    $scope.evaluations.push(evals);
                    var index = 0;
-                   for(i in data){
+                   for (i in data) {
                        var evals  = new Object();
                        evals.name = data[index].code;
-                       evals.index = 2 + index++;
+                       if (data[index].isExam) {
+                            evals.session = 0;
+                            evals.isExam = true;
+                       } else {
+                            evals.isExam = false;
+                       }
+                       evals.index = -1;
+                       index++;
                        $scope.evaluations.push(evals);
-                       if(evals.name === 'EE')
-                        $scope.sessionShow = true;
+                       console.log($scope.evaluations);
                    }
                 }).error(function(data){
                     console.log(data);
@@ -107,28 +119,45 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
             }
         };
         
-        $scope.valider = function () {
+        $scope.valider = function (bool) {
+            console.log(bool);
             $scope.importResponse = null;
+            $scope.chargementResponse = null;
             var fd = new FormData();
             var header = new Object();
+            var sessionExam = new Object();
             var index = 0;
             for(i in $scope.evaluations){
-                header[$scope.evaluations[index].name] = index++;
+                if($scope.evaluations[index].index != -1){
+                    header[$scope.evaluations[index].name] = index;
+                    if($scope.evaluations[index].isExam){
+                        sessionExam[$scope.evaluations[index].name] = $scope.evaluations[index].session;
+                    }
+                }
+                index++;
             }
             fd.append("fichier", $scope.files[0]);
             fd.append("courId", $scope.cour);
+            fd.append("niveauId", $scope.niveau);
+            fd.append("optionId", $scope.option);
             fd.append("headers", JSON.stringify(header));
             fd.append("anneeId", $scope.annee);
-            if ($scope.session)
-                fd.append("session", $scope.session);
+            fd.append("session", JSON.stringify(sessionExam));
+            fd.append("importNow", bool);
             $http.post('api/notes/import', fd, {
                 withCredentials: true,
                 headers: {'Content-Type': undefined},
                 transformRequest: angular.identity
             }).success(function (data) {
-                $scope.importResponse = data;
+                if(bool)
+                    $scope.importResponse = data;
+                else
+                    $scope.chargementResponse = data;
             }).error(function (data) {
-                $scope.importError = data;
+                if(bool)
+                    $scope.importError = data;
+                else
+                    $scope.chargementError = data;
             });
         };
 

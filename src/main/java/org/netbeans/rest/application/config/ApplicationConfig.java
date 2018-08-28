@@ -50,11 +50,6 @@ public class ApplicationConfig extends Application {
         resources.add(com.douwe.notes.resource.impl.TypeCoursResource.class);
         resources.add(com.douwe.notes.resource.impl.UniteEnseignementResource.class);
         resources.add(com.douwe.notes.resource.impl.UtilisateurResource.class);
-        resources.add(org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.JacksonJaxbJsonProvider.class);
-        resources.add(org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.JacksonJsonProvider.class);
-        resources.add(org.glassfish.jersey.server.spring.SpringLifecycleListener.class);
-        resources.add(org.glassfish.jersey.server.spring.scope.RequestContextFilter.class);
-        resources.add(org.glassfish.jersey.server.wadl.internal.WadlResource.class);
     }
     
 }
