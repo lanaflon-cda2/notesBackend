@@ -31,7 +31,6 @@ import lombok.EqualsAndHashCode;
 @NamedQueries({
     @NamedQuery(name = "Enseignement.deleteActive", query = "update Enseignement e set e.active = 0 where e.id = :idParam"),
     @NamedQuery(name = "Enseignement.findAllActive", query = "select e from Enseignement e where e.active=1")
-
 })
 public class Enseignement implements Serializable {
 
