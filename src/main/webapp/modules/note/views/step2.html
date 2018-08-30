@@ -1,0 +1,42 @@
+<div class="container">
+    <div ng-show="isLoading" class="alert alert-info">
+        <i class="glyphicon glyphicon-time"></i> Chargement des entêtes ...
+    </div>
+    <div ng-show="isError" class="alert alert-danger">
+        Une erreur est survenue lors du chargement de votre fichier {{errorMessage}}
+    </div>
+    <div class="row" ng-show="!isLoading">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Header</th>
+                    <th>Header value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="eval in data.mapping">
+                    <td>{{eval.name}}: </td>
+                    <td>
+                        <div class="form-group">
+                            <div class="col-sm-5">
+                                <select id="hdr" name="head" class="form-control" ng-model="eval.index">
+                                    <option selected value="-1"> -- Veuillez choisir une en-tete --
+                                    </option>
+                                    <option ng-repeat="headerName in headerNames" value="{{headerName.index}}">{{headerName.name}}</option>
+                                </select>
+                            </div>
+                            <div ng-show="eval.isExam" class="col-sm-5">
+                                <select id="sn" name="sessionName" class="form-control" ng-model="eval.session">
+                                    <option selected value=""> -- Veuillez choisir une session --
+                                    </option>
+                                    <option value="0">Normale</option>
+                                    <option value="1">Rattrapage</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

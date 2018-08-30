@@ -107,19 +107,19 @@
                                 <a class="dropdown-toggle" data-dropdown-toggle><i class="glyphicon glyphicon-check"></i> Notes<b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a data-ui-sref="evaluations"><i class="glyphicon glyphicon-edit"></i> Evaluation</a>
+                                        <a data-ui-sref="evaluations"><i class="glyphicon glyphicon-check"></i> Evaluation</a>
                                     </li>
                                     <li ng-show="utilisateur.role != 'ADMINISTRATEUR'">
-                                        <a data-ui-sref="nimportation"><i class="glyphicon glyphicon-download"></i> Importation</a>
+                                        <a data-ui-sref="nimportation.etape1"><i class="glyphicon glyphicon-download"></i> Importation</a>
                                     </li>
                                     <li ng-show="utilisateur.role != 'ADMINISTRATEUR'">
                                         <a data-ui-sref="nexportation"><i class="glyphicon glyphicon-upload"></i> Exportation</a>
                                     </li>
                                     <li ng-show="utilisateur.role != 'ADMINISTRATEUR'">
-                                        <a data-ui-sref="ndeliberation"><i class="glyphicon glyphicon-upload"></i> Déliberations</a>
+                                        <a data-ui-sref="ndeliberation"><i class="glyphicon glyphicon-folder-open"></i> Déliberations</a>
                                     </li>
                                     <li ng-show="utilisateur.role != 'ADMINISTRATEUR'" >
-                                        <a data-ui-sref="nmodification"><i class="glyphicon glyphicon-upload"></i> Modification</a>
+                                        <a data-ui-sref="nmodification"><i class="glyphicon glyphicon-edit"></i> Modification</a>
                                     </li>
                                 </ul>
                             </li>
