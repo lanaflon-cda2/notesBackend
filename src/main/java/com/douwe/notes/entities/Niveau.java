@@ -47,7 +47,7 @@ public class Niveau implements Serializable {
     @ManyToOne(optional = false)
     private Cycle cycle;
     
-     @XmlTransient
+    @XmlTransient
     @Column(columnDefinition = "int default 1")
     private int active;
     
