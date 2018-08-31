@@ -7,9 +7,11 @@
                     <xs:complexType>
                         <xs:sequence>
                             <xs:element name="CoursUeAnnee">
-                                <xs:attribute name="cour" type="xs:string" use="required"/>
-                                <xs:attribute name="uniteEnseignement" type="xs:string" use="required"/>
-                            </xs:element>            
+                                <xs:complexType>
+                                    <xs:attribute name="cour" type="xs:string" use="required"/>
+                                    <xs:attribute name="uniteEnseignement" type="xs:string" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
                             <xs:element name="Credit" type="creditType"/>
                             <xs:element name="Enseignement" type="enseignementType"/>
                             <xs:element name="Inscription" type="inscriptionType"/>
@@ -20,112 +22,112 @@
                     </xs:complexType>
 
                     <xs:key name="coursUeAnneeKey">
-                        <xs:selector xpath="./CoursUeAnnee"/>
+                        <xs:selector xpath="CoursUeAnnee"/>
                         <xs:field xpath="@cour"/>
                         <xs:field xpath="@uniteEnseignement"/>
                     </xs:key>
                     <xs:keyref name="coursUeAnneeKeyCourRef" refer="courKey">
-                        <xs:selector xpath="./CoursUeAnnee"/>
+                        <xs:selector xpath="CoursUeAnnee"/>
                         <xs:field xpath="@cour"/>
                     </xs:keyref>
                     <xs:keyref name="coursUeAnneeKeyUERef" refer="uniteEnsKey">
-                        <xs:selector xpath="./CoursUeAnnee"/>
+                        <xs:selector xpath="CoursUeAnnee"/>
                         <xs:field xpath="@uniteEnseignement"/>
                     </xs:keyref>
 
                     <xs:key name="creditKey">
-                        <xs:selector xpath="./Credit"/>
+                        <xs:selector xpath="Credit"/>
                         <xs:field xpath="@cour"/>
                         <xs:field xpath="@niveau"/>
                         <xs:field xpath="@option"/>
                     </xs:key>
                     <xs:keyref name="creditKeyCourRef" refer="courKey">
-                        <xs:selector xpath="./Credit"/>
+                        <xs:selector xpath="Credit"/>
                         <xs:field xpath="@cour"/>
                     </xs:keyref>
                     <xs:keyref name="creditKeyParcourRef" refer="parcourKey">
-                        <xs:selector xpath="./Credit"/>
+                        <xs:selector xpath="Credit"/>
                         <xs:field xpath="@niveau"/>
                         <xs:field xpath="@option"/>
                     </xs:keyref>
 
                     <xs:key name="enseignementKey">
-                        <xs:selector xpath="./Enseignement"/>
+                        <xs:selector xpath="Enseignement"/>
                         <xs:field xpath="@enseignant"/>
                         <xs:field xpath="@cour"/>
                         <xs:field xpath="@niveau"/>
                         <xs:field xpath="@option"/>
                     </xs:key>
                     <xs:keyref name="enseignementEnseignantKeyRef" refer="enseignantKey">
-                        <xs:selector xpath="./Enseignement"/>
+                        <xs:selector xpath="Enseignement"/>
                         <xs:field xpath="@enseignant"/>
                     </xs:keyref>
                     <xs:keyref name="enseignementCourKeyRef" refer="courKey">
-                        <xs:selector xpath="./Enseignement"/>
+                        <xs:selector xpath="Enseignement"/>
                         <xs:field xpath="@cour"/>
                     </xs:keyref>
                     <xs:keyref name="enseignementNiveauKeyRef" refer="niveauKey">
-                        <xs:selector xpath="./Enseignement"/>
+                        <xs:selector xpath="Enseignement"/>
                         <xs:field xpath="@niveau"/>
                     </xs:keyref>
                     <xs:keyref name="enseignementOptionKeyRef" refer="optionKey">
-                        <xs:selector xpath="./Enseignement"/>
+                        <xs:selector xpath="Enseignement"/>
                         <xs:field xpath="@option"/>
                     </xs:keyref>
-                    
+
                     <xs:key name="inscriptionKey">
-                        <xs:selector xpath="./Inscription"/>
+                        <xs:selector xpath="Inscription"/>
                         <xs:field xpath="@etudiant"/>
                         <xs:field xpath="@niveau"/>
                         <xs:field xpath="@option"/>
                     </xs:key>
                     <xs:keyref name="inscriptionKeyEtudiantRef" refer="etudiantKey">
-                        <xs:selector xpath="./Inscription"/>
-                        <xs:selector xpath="@etudiant"/>
+                        <xs:selector xpath="Inscription"/>
+                        <xs:field xpath="@etudiant"/>
                     </xs:keyref>
                     <xs:keyref name="inscriptionKeyparcourRef" refer="parcourKey">
-                        <xs:selector xpath="./Inscription"/>
-                        <xs:selector xpath="@niveau"/>
-                        <xs:selector xpath="@option"/>
+                        <xs:selector xpath="Inscription"/>
+                        <xs:field xpath="@niveau"/>
+                        <xs:field xpath="@option"/>
                     </xs:keyref>
 
                     <xs:key name="noteKey">
-                        <xs:selector xpath="./Note"/>
+                        <xs:selector xpath="Note"/>
                         <xs:field xpath="@cour"/>
                         <xs:field xpath="@etudiant"/>
                         <xs:field xpath="@evaluation"/>
                         <xs:field xpath="@session"/>
                     </xs:key>
                     <xs:keyref name="noteKeyCourRef" refer="courKey">
-                        <xs:selector xpath="./Note"/>
+                        <xs:selector xpath="Note"/>
                         <xs:field xpath="@cour"/>
                     </xs:keyref>
-                    <xs:keyref name="noteKeyCourRef" refer="etudiantKey">
-                        <xs:selector xpath="./Note"/>
+                    <xs:keyref name="noteKeyEtudiantRef" refer="etudiantKey">
+                        <xs:selector xpath="Note"/>
                         <xs:field xpath="@etudiant"/>
                     </xs:keyref>
-                    <xs:keyref name="noteKeyCourRef" refer="evaluationKey">
-                        <xs:selector xpath="./Note"/>
+                    <xs:keyref name="noteKeyEvaluationRef" refer="evaluationKey">
+                        <xs:selector xpath="Note"/>
                         <xs:field xpath="@evaluation"/>
                     </xs:keyref>
 
                     <xs:key name="programmeKey">
-                        <xs:selector xpath="./Programme"/>
+                        <xs:selector xpath="Programme"/>
                         <xs:field xpath="@semestre"/>
                         <xs:field xpath="@uniteEnseignement"/>
                         <xs:field xpath="@niveau"/>
                         <xs:field xpath="@option"/>
                     </xs:key>
                     <xs:keyref name="programmeKeySemestreRef" refer="semestreKey">
-                        <xs:selector xpath="./Programme"/>
+                        <xs:selector xpath="Programme"/>
                         <xs:field xpath="@semestre"/>
                     </xs:keyref>
                     <xs:keyref name="programmeKeyUniteEnsRef" refer="uniteEnsKey">
-                        <xs:selector xpath="./Programme"/>
+                        <xs:selector xpath="Programme"/>
                         <xs:field xpath="@uniteEnseignement"/>
                     </xs:keyref>
                     <xs:keyref name="programmeKeyParcourRef" refer="parcourKey">
-                        <xs:selector xpath="./Programme"/>
+                        <xs:selector xpath="Programme"/>
                         <xs:field xpath="@niveau"/>
                         <xs:field xpath="@option"/>
                     </xs:keyref>
@@ -139,7 +141,7 @@
                         </xs:sequence>
                     </xs:complexType>
                     <xs:key name="departementKey">
-                        <xs:selector xpath="./Departement"/>
+                        <xs:selector xpath="Departement"/>
                         <xs:field xpath="@code"/>
                     </xs:key>
                 </xs:element>
@@ -151,18 +153,18 @@
                         </xs:sequence>
                     </xs:complexType>
                     <xs:key name="parcourKey">
-                        <xs:selector xpath="./Parcour"/>
+                        <xs:selector xpath="Parcour"/>
                         <xs:field xpath="@niveau"/>
                         <xs:field xpath="@option"/>
                     </xs:key>
                     <xs:keyref name="parcourKeyNiveauRef" refer="niveauKey">
-                        <xs:selector xpath="./Parcour"/>
+                        <xs:selector xpath="Parcour"/>
                         <xs:field xpath="@niveau"/>
-                    </xs:key>
-                    <xs:key name="parcourKeyOptionRef" refer="optionKey">
-                        <xs:selector xpath="./Parcour"/>
+                    </xs:keyref>
+                    <xs:keyref name="parcourKeyOptionRef" refer="optionKey">
+                        <xs:selector xpath="Parcour"/>
                         <xs:field xpath="@option"/>
-                    </xs:key>
+                    </xs:keyref>
                 </xs:element>
 
                 <xs:element name="Niveaux">
@@ -172,7 +174,7 @@
                         </xs:sequence>
                     </xs:complexType>
                     <xs:key name="niveauKey">
-                        <xs:selector xpath="./Niveau"/>
+                        <xs:selector xpath="Niveau"/>
                         <xs:field xpath="@code"/>
                     </xs:key>
                 </xs:element>
@@ -184,7 +186,7 @@
                         </xs:sequence>
                     </xs:complexType>
                     <xs:key name="optionKey">
-                        <xs:selector xpath="./Option"/>
+                        <xs:selector xpath="Option"/>
                         <xs:field xpath="@code"/>
                     </xs:key>
                 </xs:element>
@@ -196,7 +198,7 @@
                         </xs:sequence>
                     </xs:complexType>
                     <xs:key name="cycleKey">
-                        <xs:selector xpath="./Cycle"/>
+                        <xs:selector xpath="Cycle"/>
                         <xs:field xpath="@nom"/>
                     </xs:key>
                 </xs:element>
@@ -208,7 +210,7 @@
                         </xs:sequence>
                     </xs:complexType>
                     <xs:key name="enseignantKey">
-                        <xs:selector xpath="./Enseignant"/>
+                        <xs:selector xpath="Enseignant"/>
                         <xs:field xpath="@nom"/>
                     </xs:key>
                 </xs:element>
@@ -220,7 +222,7 @@
                         </xs:sequence>
                     </xs:complexType>
                     <xs:key name="typeCourKey">
-                        <xs:selector xpath="./TypeCour"/>
+                        <xs:selector xpath="TypeCour"/>
                         <xs:field xpath="@nom"/>
                     </xs:key>
                 </xs:element>
@@ -232,7 +234,7 @@
                         </xs:sequence>
                     </xs:complexType>
                     <xs:key name="semestreKey">
-                        <xs:selector xpath="./Semestre"/>
+                        <xs:selector xpath="Semestre"/>
                         <xs:field xpath="@intitule"/>
                     </xs:key>
                 </xs:element>
@@ -244,11 +246,11 @@
                         </xs:sequence>
                     </xs:complexType>
                     <xs:key name="courKey">
-                        <xs:selector xpath="./Cour"/>
+                        <xs:selector xpath="Cour"/>
                         <xs:field xpath="@intitule"/>
                     </xs:key>
                     <xs:keyref name="courDepartementKey" refer="departementKey">
-                        <xs:selector xpath="./Cour"/>
+                        <xs:selector xpath="Cour"/>
                         <xs:field xpath="@departement"/>
                     </xs:keyref>
                 </xs:element>
@@ -260,11 +262,11 @@
                         </xs:sequence>
                     </xs:complexType>
                     <xs:key name="uniteEnsKey">
-                        <xs:selector xpath="./UniteEnseignement"/>
+                        <xs:selector xpath="UniteEnseignement"/>
                         <xs:field xpath="@code"/>
                     </xs:key>
                     <xs:keyref name="UniteEnsParcourKey" refer="parcourKey">
-                        <xs:selector xpath="./Cour"/>
+                        <xs:selector xpath="Cour"/>
                         <xs:field xpath="@niveau"/>
                         <xs:field xpath="@option"/>
                     </xs:keyref>
@@ -277,7 +279,7 @@
                         </xs:sequence>
                     </xs:complexType>
                     <xs:key name="evaluationKey">
-                        <xs:selector xpath="./Evaluation"/>
+                        <xs:selector xpath="Evaluation"/>
                         <xs:field xpath="@code"/>
                     </xs:key>
                 </xs:element>
@@ -289,7 +291,7 @@
                         </xs:sequence>
                     </xs:complexType>
                     <xs:key name="etudiantKey">
-                        <xs:selector xpath="./Etudiant"/>
+                        <xs:selector xpath="Etudiant"/>
                         <xs:field xpath="@matricule"/>
                     </xs:key>
                 </xs:element>
@@ -431,4 +433,4 @@
         </xs:sequence>
         <xs:attribute name="code" type="xs:string" use="required"/>
     </xs:complexType>
-</xs:schema> 
+</xs:schema>
