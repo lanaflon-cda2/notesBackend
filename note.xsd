@@ -157,6 +157,27 @@
                     </xs:key>
                 </xs:element>
 
+                <xs:element name="EvaluationsDetails" minOccurs="1" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="EvaluationDetail" type="evaluationDetailType"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                    <xs:key name="evaluationDetailKey">
+                        <xs:selector xpath="EvaluationDetail"/>
+                        <xs:field xpath="@evaluation"/>
+                        <xs:field xpath="@typeCour"/>
+                    </xs:key>
+                    <xs:keyref name="evaluationDetailKeyEvaluationRef" refer="evaluationKey">
+                        <xs:selector xpath="EvaluationDetail"/>
+                        <xs:field xpath="@evaluation"/>
+                    </xs:keyref>
+                    <xs:keyref name="evaluationDetailKeyTypeCourRef" refer="optionKey">
+                        <xs:selector xpath="EvaluationDetail"/>
+                        <xs:field xpath="@typeCour"/>
+                    </xs:keyref>
+                </xs:element>
+
                 <xs:element name="Etudiants" minOccurs="1" maxOccurs="1">
                     <xs:complexType>
                         <xs:sequence>
@@ -328,7 +349,14 @@
 
     <xs:complexType name="noteType">
         <xs:sequence>
-            <xs:element name="Valeur" type="xs:integer"/>
+            <xs:element name="Valeur">
+                <xs:simpleType>
+                    <xs:restriction base="xs:integer">
+                        <xs:minInclusive value="0"/>
+                        <xs:maxInclusive value="20"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
         </xs:sequence>
         <xs:attribute name="cour" type="xs:string" use="required"/>
         <xs:attribute name="etudiant" type="xs:string" use="required"/>
@@ -436,5 +464,19 @@
             <xs:element name="Description" type="xs:string" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="code" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="evaluationDetailType">
+        <xs:sequence>
+            <xs:element name="Pourcentage" maxOccurs="1">
+                <xs:simpleType>
+                    <xs:restriction base="xs:integer">
+                        <xs:minInclusive value="0"/>
+                        <xs:maxInclusive value="100"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="evaluation" type="xs:string" use="required"/>
+        <xs:attribute name="typeCour" type="xs:string" use="required"/>
     </xs:complexType>
 </xs:schema>
