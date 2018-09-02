@@ -26,7 +26,6 @@ import com.douwe.notes.entities.Inscription;
 import com.douwe.notes.entities.Niveau;
 import com.douwe.notes.entities.Note;
 import com.douwe.notes.entities.Option;
-import com.douwe.notes.entities.Parcours;
 import com.douwe.notes.entities.Semestre;
 import com.douwe.notes.entities.Session;
 import com.douwe.notes.entities.UniteEnseignement;
@@ -56,15 +55,16 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.NoResultException;
 import javax.ws.rs.WebApplicationException;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 //import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 //import org.apache.poi.ss.usermodel.Sheet;
 //import org.apache.poi.ss.usermodel.Workbook;
 //import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,6 +77,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class NoteServiceImpl implements INoteService {
+
+    @Inject
+    private IAnneeAcademiqueDao anneeAcademiqueDao;
+
     @Inject
     private INoteDao noteDao;
 
@@ -112,26 +116,25 @@ public class NoteServiceImpl implements INoteService {
 
     @Inject
     private IDepartementDao departementDao;
-    
+
     @Inject
     private IInscriptionDao inscriptionDao;
-    
+
     @Inject
     private IParcoursDao parcoursDao;
-    
-    public IParcoursDao getIParcoursDao(){
+
+    public IParcoursDao getIParcoursDao() {
         return parcoursDao;
     }
-    
-    public void setParcoursDao(IParcoursDao parcoursDao){
+
+    public void setParcoursDao(IParcoursDao parcoursDao) {
         this.parcoursDao = parcoursDao;
     }
 
-    public IInscriptionDao getIInscriptionDao(){
+    public IInscriptionDao getIInscriptionDao() {
         return inscriptionDao;
     }
-    
-    
+
     public INoteDao getNoteDao() {
         return noteDao;
     }
@@ -227,8 +230,8 @@ public class NoteServiceImpl implements INoteService {
     public void setCycleDao(ICycleDao cycleDao) {
         this.cycleDao = cycleDao;
     }
-    
-    public void setInscriptionDao(IInscriptionDao inscriptionDao){
+
+    public void setInscriptionDao(IInscriptionDao inscriptionDao) {
         this.inscriptionDao = inscriptionDao;
     }
 
@@ -314,258 +317,212 @@ public class NoteServiceImpl implements INoteService {
         et.setNom(etudiant.getNom());
         Map<String, Double> notes = new HashMap<>();
         List<Note> nn = noteDao.listeNoteCours(etudiant, cours, academique, session);
-        for (Note nn1 : nn) {
-            notes.put(nn1.getEvaluation().getCode(), nn1.getValeur());
-        }
+        nn.forEach((Note nn1) -> {
+            Evaluation e = nn1.getEvaluation();
+            if (e.isExam() && nn1.getSession() == Session.normale) {
+                if (!notes.containsKey(e.getCode())) {
+                    notes.put(nn1.getEvaluation().getCode(), nn1.getValeur());
+                }
+            } else {
+                notes.put(nn1.getEvaluation().getCode(), nn1.getValeur());
+            }
+        });
         et.setNote(notes);
         // TODO I need to review this
         et.setAnnee(academique);
         et.setDetails(calc);
         return et;
     }
-    
+
+    /*
     private Optional<Double> rechercherNoteEtudiant(Etudiant etudiant, Cours cours, Session session) throws DataAccessException {
-         Map<String, Integer> calc = getEvaluationDetails(cours);
-         List<Inscription> inscription = inscriptionDao.findInscriptionByEtudiantOrdered(etudiant);
-         if(inscription.size() > 1){
-             for (Inscription ins : inscription) {
-                 if(rechercherNoteEtudiant(etudiant, cours, ins.getAnneeAcademique(), session, calc).getMoyenne().isPresent())
-                     return rechercherNoteEtudiant(etudiant, cours, ins.getAnneeAcademique(), session, calc).getMoyenne();                 
-             }
-         }
-         return Optional.empty();
+        Map<String, Integer> calc = getEvaluationDetails(cours);
+        List<Inscription> inscription = inscriptionDao.findInscriptionByEtudiantOrdered(etudiant);
+        if (inscription.size() > 1) {
+            for (Inscription ins : inscription) {
+                if (rechercherNoteEtudiant(etudiant, cours, ins.getAnneeAcademique(), session, calc).getMoyenne().isPresent()) {
+                    return rechercherNoteEtudiant(etudiant, cours, ins.getAnneeAcademique(), session, calc).getMoyenne();
+                }
+            }
+        }
+        return Optional.empty();
     }
-    
-    private Optional<Double> rechercherNoteEtudiant(Etudiant etudiant, Cours cours, AnneeAcademique annee, Session session) throws DataAccessException {
-         Map<String, Integer> calc = getEvaluationDetails(cours);
-         List<Inscription> inscription = inscriptionDao.findInscriptionByEtudiantOrdered(etudiant);
-         return rechercherNoteEtudiant(etudiant, cours, annee, session, calc).getMoyenne();
+
+     */
+    private Optional<Double> rechercherNoteEtudiant(Etudiant etudiant, Cours cours, AnneeAcademique annee) throws DataAccessException {
+        Map<String, Integer> calc = getEvaluationDetails(cours);
+        //List<Inscription> inscription = inscriptionDao.findInscriptionByEtudiantOrdered(etudiant);
+        return rechercherNoteEtudiant(etudiant, cours, annee, null, calc).getMoyenne();
     }
-    
-    private boolean etudiantADejaValider(Etudiant etudiant, Cours cours, AnneeAcademique annee) throws DataAccessException{
+
+    private boolean etudiantADejaValider(Etudiant etudiant, Niveau niveau, Option option, Cours cours, AnneeAcademique annee) throws DataAccessException {
+        AnneeAcademique an = anneeAcademiqueDao.findLastYearNote(etudiant, niveau, cours, annee);
+        Optional<Double> moyenne = rechercherNoteEtudiant(etudiant, cours, an);
+        return moyenne.isPresent() && moyenne.get() >= 10;
+
+        /*
+        This implementation is not correct
         Optional<Double> moyRattrapageAnneeDernier = rechercherNoteEtudiant(etudiant, cours, Session.rattrapage);
         Optional<Double> moyNormaleAnneeDernier = rechercherNoteEtudiant(etudiant, cours, Session.normale);
         Optional<Double> moyNormaleAnneeEnCours = rechercherNoteEtudiant(etudiant, cours, annee, Session.normale);
-        Optional<Double> moyRattrapageAnneeEnCours = rechercherNoteEtudiant(etudiant, cours, annee, Session.normale);        
-        if(moyNormaleAnneeDernier.isPresent() && moyNormaleAnneeDernier.get() >= 10.0)
+        Optional<Double> moyRattrapageAnneeEnCours = rechercherNoteEtudiant(etudiant, cours, annee, Session.normale);
+        if (moyNormaleAnneeDernier.isPresent() && moyNormaleAnneeDernier.get() >= 10.0) {
             return true;
-        if(moyRattrapageAnneeDernier.isPresent() && moyRattrapageAnneeDernier.get() >= 10.0)
+        }
+        if (moyRattrapageAnneeDernier.isPresent() && moyRattrapageAnneeDernier.get() >= 10.0) {
             return true;
-        if(moyRattrapageAnneeEnCours.isPresent() && moyRattrapageAnneeEnCours.get() >= 10.0)
+        }
+        if (moyRattrapageAnneeEnCours.isPresent() && moyRattrapageAnneeEnCours.get() >= 10.0) {
             return true;
+        }
         return moyNormaleAnneeEnCours.isPresent() && moyNormaleAnneeEnCours.get() >= 10.0;
+         */
+        
     }
-    
-    private boolean etudiantPeutFaireCeCours(Etudiant etudiant, Cours cours, Niveau n, Option o, AnneeAcademique academique) throws DataAccessException{
+
+    private boolean etudiantPeutFaireCeCours(Etudiant etudiant, Cours cours, Niveau n, Option o, AnneeAcademique academique) throws DataAccessException {
+        /*
+        This implementation was not correct since someone can go an upper level and still pass the course
         Inscription inscription = inscriptionDao.findInscriptionByEtudiant(etudiant, academique);
         Parcours parcours = parcoursDao.findByNiveauOption(n, o);
         return inscription.getParcours() == parcours;
+         */
+        return inscriptionDao.findLastInscription(etudiant, n, o, academique) != null;
     }
 
     private Map<String, Integer> getEvaluationDetails(Cours cours) throws DataAccessException {
         Map<String, Integer> calc = new HashMap<>();
         List<EvaluationDetails> details = evaluationDetailsDao.findByTypeCours(cours.getTypeCours());
-        for (EvaluationDetails detail : details) {
+        details.forEach((detail) -> {
             calc.put(detail.getEvaluation().getCode(), detail.getPourcentage());
-        }
+        });
         return calc;
     }
 
+    // TODO This method is very long. I need to reduce the size somehow
     @Override
     public ImportationResult importNotes(InputStream stream, String Headers, Long coursId, Long niveauId, Long optionId, Long anneeId, String session, boolean importNow) throws ServiceException {
         ImportationResult result = new ImportationResult();
         List<ImportationError> erreurs = new ArrayList<>();
         JSONObject header = new JSONObject(Headers);
         JSONObject sessionObj = new JSONObject(session);
-        try {            
+        try {
             Cours cours = coursDao.findById(coursId);
             Option option = optionDao.findById(optionId);
             Niveau niveau = niveauDao.findById(niveauId);
 //            Session s = Session.values()[session];
             List<Evaluation> evaluations = evaluationDao.evaluationForCourses(cours);
             AnneeAcademique academique = academiqueDao.findById(anneeId);
-            XSSFWorkbook workbook = new XSSFWorkbook(stream);
-            XSSFSheet sheet = workbook.getSheetAt(0);
+            /*XSSFWorkbook workbook = new XSSFWorkbook(stream);
+            XSSFSheet sheet = workbook.getSheetAt(0);*/
+            Workbook workbook = WorkbookFactory.create(stream);
+            Map<String, Evaluation> mapEvaluations = new HashMap<>();
+            evaluations.forEach(e -> mapEvaluations.put(e.getCode(), e));
+            final Sheet sheet = workbook.getSheetAt(0);
             Iterator<Row> rowIterator = sheet.iterator();
             boolean hdr = true;
-            XSSFRow row;
+            Row row;
             String matricule = null;
-            Etudiant etudiant = null;
+            Etudiant etudiant;
             int count = 0, index = 1;
-            while(rowIterator.hasNext()){
-                row = (XSSFRow) rowIterator.next();
-                if(row.getPhysicalNumberOfCells() == 5 && hdr){
-                    row = (XSSFRow) rowIterator.next();
+            while (rowIterator.hasNext()) {
+                row = rowIterator.next();
+                // I don't understand why. The number of columns might not be 5 all the time
+                if (/*row.getPhysicalNumberOfCells() == 5 &&*/hdr) {
+                    row = rowIterator.next();
                     hdr = false;
                 }
-                
-                Cell cell = row.getCell(header.getInt("Matricules"));
-                if(cell.getCellType() == Cell.CELL_TYPE_STRING){
-                    if(cell.getStringCellValue().matches("[0-9]{2}[A-Z][0-9]{3}[S,P]"))
-                        matricule = cell.getStringCellValue();
-                    else{
-                        ImportationError err = new ImportationError(index, "Matricule incorrecte");
-                        erreurs.add(err);
+                Cell cell = row.getCell(header.getInt("Matricule"));
+                if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
+                    matricule = cell.getStringCellValue();
+                    if (!matricule.matches("[0-9]{2}[A-Z][0-9]{3}[S,P]")) {
+                        System.out.println("Le matricule est " + cell.getStringCellValue());
+                        erreurs.add(new ImportationError(index, String.format("Le matricule %s est incorrect", matricule)));
+                        continue;
                     }
                 }
+                // I need to find a better way to deal with this.
                 etudiant = etudiantDao.findByMatricule(matricule);
-                if(etudiant != null){
-                    if(!etudiantADejaValider(etudiant, cours, academique)){
-                        if(etudiantPeutFaireCeCours(etudiant, cours, niveau, option, academique)){
-                            for (Evaluation eval : evaluations) {
-                                Note note = new Note();
-                                if(!header.isNull(eval.getCode())){
-                                    cell = row.getCell(header.getInt(eval.getCode()));
-                                    if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC || (0 <= cell.getNumericCellValue() && cell.getNumericCellValue() >= 20)){
-                                        if(importNow){
-                                            note.setValeur(cell.getNumericCellValue());
-                                            note.setActive(1);
-                                            note.setAnneeAcademique(academique);
-                                            note.setCours(cours);
-                                            note.setEtudiant(etudiant);
-                                            note.setEvaluation(eval);
-                                            if(eval.isExam())
-                                                note.setSession(Session.values()[sessionObj.getInt(eval.getCode())]);
-                                            try{
-                                                noteDao.create(note);
-                                                count++;  
-                                            } catch(DataAccessException ex){
-                                                ImportationError err = new ImportationError(index, ex.getMessage());
-                                                erreurs.add(err);
-                                            }
-                                        }
-                                    } else {
-                                        ImportationError err = new ImportationError(index, "Note invalide");
-                                        erreurs.add(err);
-                                    }
-                                }
-                            }
-                        } else {
-                            ImportationError err = new ImportationError(index, "Etudiant n'est pas du parcours");
-                            erreurs.add(err);
-                        }
-                    } else {
-                        ImportationError err = new ImportationError(index, "Etudiant a valide");
-                        erreurs.add(err);
-                    }
-                } else {
-                    ImportationError err = new ImportationError(index, "Etudiant introuvable");
-                    erreurs.add(err);
+
+                if (etudiant == null) {
+                    System.out.println("The student does not exist");
+                    erreurs.add(new ImportationError(index, String.format("Le matricule %s est incorrect", matricule)));
+                    continue;
                 }
+                // The student might be in the list but does not have any mark
+                // I need to read all the marks available
+                Map<String, Double> map = new HashMap<>();
+                for (String key : header.keySet()) {
+                    System.out.println("This is a key " + key);
+                    if (!"Matricule".equalsIgnoreCase(key)) {
+                        try {
+                            int intIndex = Integer.valueOf(header.getString(key));
+                            Cell c = row.getCell(intIndex);
+                            if ((c == null) || (c.getCellType() == Cell.CELL_TYPE_BLANK)) {
+                                System.out.println("Test null or blank");
+                                continue;
+                            }
+                            if (c.getCellType() != Cell.CELL_TYPE_NUMERIC) {
+                                System.out.println("Test is not numeric");
+                                erreurs.add(new ImportationError(index, String.format("La note de %s de %s  est invalide", key, etudiant.getNom())));
+                                continue;
+                            }
+                            Double note = c.getNumericCellValue();
+                            System.out.println("La note est " + note);
+                            map.put(key, note);
+                        } catch (NumberFormatException nfe) {
+
+                        }
+                    }
+                }
+                if (map.isEmpty()) {
+                    System.out.println("The map is empty");
+                    continue;
+                }
+                // L'étudiant est il inscrit dans le parcours?
+                if (!etudiantPeutFaireCeCours(etudiant, cours, niveau, option, academique)) {
+                    erreurs.add(new ImportationError(index, String.format("Etudiant  %s n'est pas du parcours", etudiant.getNom())));
+                    continue;
+                }
+                // L'étudiant a t il deja validé le cours par le passé?
+                if (etudiantADejaValider(etudiant, niveau, option, cours, academique)) {
+                    erreurs.add(new ImportationError(index, String.format("Etudiant %s a valide", etudiant.getNom())));
+                    continue;
+                }
+                // A ce moment il n'ya aucun souci. L'on peut proceder a l'importation des notes 
+                for (Map.Entry<String, Double> entry : map.entrySet()) {
+                    String codeEvaluation = entry.getKey();
+                    double valeurNote = entry.getValue();
+                    System.out.println(String.format("Traitement de la note %s avec la valeur %.2f", codeEvaluation, valeurNote));
+                    if ((valeurNote < 0) || (valeurNote > 20)) {
+                        erreurs.add(new ImportationError(index, String.format("La valeur %.2f de l'evaluation %s est invalide", valeurNote, codeEvaluation)));
+                        continue;
+                    }
+                    if (importNow) {
+                        Evaluation eval = mapEvaluations.get(codeEvaluation);
+                        Note note = new Note();
+                        note.setValeur(valeurNote);
+                        note.setActive(1);
+                        note.setAnneeAcademique(academique);
+                        note.setCours(cours);
+                        note.setEtudiant(etudiant);
+                        note.setEvaluation(eval);
+                        if (eval.isExam()) {
+                            note.setSession(Session.values()[sessionObj.getInt(eval.getCode())]);
+                        }
+                        try {
+                            noteDao.create(note);
+                        } catch (DataAccessException ex) {
+                            erreurs.add(new ImportationError(index, ex.getMessage()));
+                        }
+                    }
+                }
+                count++;
                 index++;
-//                
-//                    if(json.containsKey("CC")){
-//                        Note note = new Note();
-//                        evaluation = evaluationDao.
-//                        cell = row.getCell(Integer.parseInt(json.get("CC").toString()));
-//                        if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC)
-//                            note.setValeur(cell.getNumericCellValue());
-//                        note.setActive(1);
-//                        note.setAnneeAcademique(academique);
-//                        note.setCours(cours);
-//                        note.setEtudiant(etudiant);
-//                        note.setEvaluation(evaluation);
-//                        System.out.println(note);
-//                        noteDao.create(note);
-//                        count++;
-//                    }
-//                    if(json.containsKey("TPE")){
-//                        Note note = new Note();
-//                        evaluation = evaluationDao.findByCode("TPE");
-//                        cell = row.getCell(Integer.parseInt(json.get("TPE").toString()));
-//                        if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC)
-//                            note.setValeur(cell.getNumericCellValue());
-//                        note.setActive(1);
-//                        note.setAnneeAcademique(academique);
-//                        note.setCours(cours);
-//                        note.setEtudiant(etudiant);
-//                        note.setEvaluation(evaluation);
-//                        noteDao.create(note);
-//                        count++;
-//                    }
-//                    if(json.containsKey("EE")){
-//                        Note note = new Note();
-//                        evaluation = evaluationDao.findByCode("EE");
-//                        cell = row.getCell(Integer.parseInt(json.get("EE").toString()));
-//                        if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC)
-//                            note.setValeur(cell.getNumericCellValue());
-//                        note.setActive(1);
-//                        note.setAnneeAcademique(academique);
-//                        note.setCours(cours);
-//                        note.setEtudiant(etudiant);
-//                        note.setEvaluation(evaluation);
-//                        noteDao.create(note);
-//                        count++;
-//                    }
             }
-//        List<ImportationError> erreurs = new ArrayList<>();
-//        int count = 0;
-//        try {
-//            Cours cours = coursDao.findById(coursId);
-//            Evaluation evaluation = evaluationDao.findById(evaluationId);
-//            AnneeAcademique academique = academiqueDao.findById(anneeId);
-//            Workbook workbook = WorkbookFactory.create(stream);
-//            final Sheet sheet = workbook.getSheetAt(0);
-//            int index = 1;
-//            Row row = sheet.getRow(index++);
-//            String matricule;
-//            String nom;
-//            while (row != null) {
-//                Etudiant etudiant;
-//                if (row.getCell(1) != null) {
-//                    matricule = row.getCell(1).getStringCellValue();
-//                    etudiant = etudiantDao.findByMatricule(matricule);
-//                    /*} else {
-//                     nom = row.getCell(2).getStringCellValue();
-//                     etudiant = etudiantDao.findByName(nom);
-//                     }*/
-//                    if (etudiant != null) {
-//                        if (row.getCell(3) != null) {
-//                            if (row.getCell(3).getCellType() == Cell.CELL_TYPE_NUMERIC) {
-//                                Note note = new Note();
-//                                note.setValeur(row.getCell(3).getNumericCellValue());
-//                                note.setActive(1);
-//                                note.setAnneeAcademique(academique);
-//                                note.setCours(cours);
-//                                note.setEtudiant(etudiant);
-//                                note.setEvaluation(evaluation);
-//                                if (evaluation.isExam()) {
-//                                    Session s = Session.values()[session];
-//                                    note.setSession(s);
-//                                }
-//                                try {
-//                                    noteDao.create(note);
-//                                    count++;
-//                                } catch (DataAccessException ex) {
-//                                    ImportationError err = new ImportationError(index, ex.getMessage());
-//                                    erreurs.add(err);
-//                                }
-//                            } else {
-//                                ImportationError err = new ImportationError(index, "Note invalide");
-//                                erreurs.add(err);
-//                            }
-//                        } else {
-//                            //ImportationError err = new ImportationError(index, "Note indisponible");
-//                            //erreurs.add(err);
-//                        }
-//                    } else {
-//                        ImportationError err = new ImportationError(index, "Matricule indisponible");
-//                        erreurs.add(err);
-//                    }
-//                }
-//                row = sheet.getRow(index++);
-//            }
-//
-//        } catch (IOException | InvalidFormatException ex) {
-//            Logger.getLogger(EtudiantServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (DataAccessException ex) {
-//            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-        result.setNombreImporte(count);
-        result.setErreurs(erreurs);
-        } catch (DataAccessException ex) {
-            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+            result.setNombreImporte(count);
+            result.setErreurs(erreurs);
+        } catch (DataAccessException | IOException | InvalidFormatException ex) {
             Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
@@ -599,8 +556,10 @@ public class NoteServiceImpl implements INoteService {
             note.setSession(s);
             note.setValeur(valeur);
             return noteDao.create(note);
+
         } catch (DataAccessException ex) {
-            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NoteServiceImpl.class
+                    .getName()).log(Level.SEVERE, null, ex);
             return null;
         }
 
@@ -645,9 +604,11 @@ public class NoteServiceImpl implements INoteService {
                 }
                 result.setNote(map);
                 result.setSession(s);
+
             }
         } catch (DataAccessException ex) {
-            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NoteServiceImpl.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         return result;
     }
@@ -674,12 +635,14 @@ public class NoteServiceImpl implements INoteService {
                     if (n.getMoyenne().isPresent()) {
                         result.getNotes().put(cours.getCours().getIntitule(), n.getMoyenne().get());
                         result.getAnnees().add(n.getAnnee());
+
                     }
                 }
 
             }
         } catch (DataAccessException ex) {
-            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NoteServiceImpl.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         return result;
     }
@@ -698,8 +661,10 @@ public class NoteServiceImpl implements INoteService {
                 result.put(liste1.getCode(), res);
             }
             return result;
+
         } catch (DataAccessException ex) {
-            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NoteServiceImpl.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -725,8 +690,10 @@ public class NoteServiceImpl implements INoteService {
             AnneeAcademique a = academiqueDao.findById(anneeId);
             Session s = Session.values()[session];
             return lesDeliberation(c, n, p, a, s, infInclusive, borneInf, supInclusive, borneSup, finale);
+
         } catch (DataAccessException ex) {
-            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NoteServiceImpl.class
+                    .getName()).log(Level.SEVERE, null, ex);
             throw new WebApplicationException(400);
         }
 
@@ -784,9 +751,11 @@ public class NoteServiceImpl implements INoteService {
                 note.setValeur(result1.getNoteApres());
                 noteDao.update(note);
                 res++;
+
             }
         } catch (DataAccessException ex) {
-            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NoteServiceImpl.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         return res;
 
@@ -799,8 +768,10 @@ public class NoteServiceImpl implements INoteService {
             Cours cours = coursDao.findById(coursId);
             AnneeAcademique annee = academiqueDao.findById(anneeId);
             return noteDao.getNoteCours(etudiant, cours, annee);
+
         } catch (DataAccessException ex) {
-            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NoteServiceImpl.class
+                    .getName()).log(Level.SEVERE, null, ex);
             throw new ServiceException(ex);
         }
     }
@@ -830,7 +801,8 @@ public class NoteServiceImpl implements INoteService {
             return noteDao.getNoteCours(etudiant, evaluation, cours, academique, s);
 
         } catch (DataAccessException ex) {
-            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NoteServiceImpl.class
+                    .getName()).log(Level.SEVERE, null, ex);
             throw new ServiceException("Impossible d'effectuer le traitement");
         }
     }
@@ -885,8 +857,10 @@ public class NoteServiceImpl implements INoteService {
                 //System.out.println("Le nombre de credit " + nombreCredit + " MGP " + Math.floor(produitMgp / nombreCredit * 100) / 100);
             }
             return Math.floor(produitMgp / nombreCredit * 100) / 100;
+
         } catch (DataAccessException ex) {
-            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NoteServiceImpl.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
 
         return null;
@@ -942,8 +916,10 @@ public class NoteServiceImpl implements INoteService {
             result.setMatricule(matricule);
             result.setCredit(nombreCredit);
             return result;
+
         } catch (DataAccessException ex) {
-            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NoteServiceImpl.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
 
         return null;
@@ -1011,9 +987,11 @@ public class NoteServiceImpl implements INoteService {
             }
             if (validCycle) {
                 result.setMgp(Math.floor(produitMgp / nombreCredit * 100) / 100);
+
             }
         } catch (DataAccessException ex) {
-            Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NoteServiceImpl.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
 
         return result;

@@ -1,10 +1,10 @@
-<div class=container>
+<div class=container-fluid>
     <div class="alert alert-info" ng-show=isLoading>
         <div class="glyphicon glyphicon-time"></div>Traitement en cours ...</div>
     <div class=row ng-show=!isLoading>
         <div ng-show="chargementResponse !== null">
-            <div class="alert alert-info" ng-show="chargementResponse.erreurs.length === 0">Vous avez correctement charger vos notes</div>
-            <div class="alert alert-danger" ng-show="chargementResponse.erreurs.length !== 0"><span>Les erreurs suivants sont present dans le fichier</span>
+            <div class="alert alert-info">Vous allez importer les notes de {{chargementResponse.nombreImporte}} étudiants</div>
+            <div class="alert alert-danger" ng-show="chargementResponse.erreurs.length !== 0"><span>Les erreurs suivants sont presentes dans le fichier</span>
                 <table class="table table-bordered table-striped">
                     <tr>
                         <th>No de ligne</th>

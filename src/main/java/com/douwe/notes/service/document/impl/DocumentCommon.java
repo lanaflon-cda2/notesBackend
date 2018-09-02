@@ -70,7 +70,7 @@ public class DocumentCommon {
         builder.append("****\n");
         builder.append("Paix -- Travail -- Patrie\n");
         builder.append("****\n");
-        builder.append("Ministère l'Enseignement Supérieur\n");
+        builder.append("Ministère de l'Enseignement Supérieur\n");
         builder.append("****\n");
         builder.append("Université de Maroua\n");
         builder.append("****\n");

@@ -149,7 +149,7 @@ public class EtudiantDaoImpl extends GenericDao<Etudiant, Long> implements IEtud
         Path<Parcours> parcoursPath = inscriptionRoot2.get(Inscription_.parcours);
         // L'etudiant est inscrit en ce moment
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(cb.lessThanOrEqualTo(anneePath.get(AnneeAcademique_.debut), academique.getDebut()));
+        predicates.add(cb.le(anneePath.get(AnneeAcademique_.numeroDebut), academique.getNumeroDebut()));
         predicates.add(cb.equal(parcoursPath, parcours));
         predicates.add(cb.equal(etudiantPath, inscriptionRoot2.get(Inscription_.etudiant)));
         predicates.add(cb.equal(inscriptionRoot2.get(Inscription_.anneeAcademique), academique));
@@ -178,7 +178,7 @@ public class EtudiantDaoImpl extends GenericDao<Etudiant, Long> implements IEtud
         predicates.add(cb.equal(inscriptionRoot2.get(Inscription_.parcours).get(Parcours_.niveau), niveau));
         predicates.add(cb.equal(inscriptionRoot.get(Inscription_.parcours).get(Parcours_.niveau).get(Niveau_.cycle), niveau.getCycle()));
         predicates.add(cb.equal(inscriptionRoot2.get(Inscription_.parcours).get(Parcours_.option), option));
-        predicates.add(cb.lessThanOrEqualTo(inscriptionRoot2.get(Inscription_.anneeAcademique).get(AnneeAcademique_.debut), academique.getDebut()));
+        predicates.add(cb.le(inscriptionRoot2.get(Inscription_.anneeAcademique).get(AnneeAcademique_.numeroDebut), academique.getNumeroDebut()));
         predicates.add(cb.equal(inscriptionRoot.get(Inscription_.anneeAcademique), academique));
         predicates.add(cb.equal(noteRoot.get(Note_.cours), cours));
         predicates.add(cb.equal(noteRoot.get(Note_.anneeAcademique), academique));
@@ -219,7 +219,7 @@ public class EtudiantDaoImpl extends GenericDao<Etudiant, Long> implements IEtud
         predicates.add(cb.equal(etudiantPath, inscriptionRoot2.get(Inscription_.etudiant)));
         predicates.add(cb.equal(inscriptionRoot2.get(Inscription_.parcours).get(Parcours_.niveau), niveau));
         predicates.add(cb.equal(inscriptionRoot2.get(Inscription_.parcours).get(Parcours_.option), option));
-        predicates.add(cb.lessThanOrEqualTo(inscriptionRoot2.get(Inscription_.anneeAcademique).get(AnneeAcademique_.debut), academique.getDebut()));
+        predicates.add(cb.le(inscriptionRoot2.get(Inscription_.anneeAcademique).get(AnneeAcademique_.numeroDebut), academique.getNumeroDebut()));
         predicates.add(cb.equal(inscriptionRoot.get(Inscription_.anneeAcademique), academique));
         predicates.add(cb.equal(programmeRoot.get(Programme_.anneeAcademique), academique));
         predicates.add(cb.equal(programmeRoot.get(Programme_.parcours).get(Parcours_.niveau), niveau));
@@ -342,7 +342,7 @@ public class EtudiantDaoImpl extends GenericDao<Etudiant, Long> implements IEtud
                 cb.equal(inscriptionRoot.get(Inscription_.etudiant), etudiantRoot),
                 cb.equal(niveauPath, n),
                 cb.equal(optionPath, o),
-                cb.lessThanOrEqualTo(anneePath.get(AnneeAcademique_.numeroDebut), a.getNumeroDebut()),
+                cb.le(anneePath.get(AnneeAcademique_.numeroDebut), a.getNumeroDebut()),
                 
                 // L'étudiant est inscrit cette année
                 cb.equal(inscriptionRoot2.get(Inscription_.etudiant), etudiantRoot),
