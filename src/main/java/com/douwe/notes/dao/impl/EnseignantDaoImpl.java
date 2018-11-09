@@ -48,8 +48,8 @@ public class EnseignantDaoImpl extends GenericDao<Enseignant, Long> implements I
         Root<Enseignement> enseigmenentRoot = cq.from(Enseignement.class);
         Join<Enseignement, Cours> coursPath = enseigmenentRoot.join(Enseignement_.cours);
         Path<AnneeAcademique> anneePath = enseigmenentRoot.get(Enseignement_.anneeAcademique);
-        List<Predicate> predicates = new ArrayList<Predicate>();
-        predicates.add(cb.lessThanOrEqualTo(anneePath.get(AnneeAcademique_.debut), annee.getDebut()));
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(cb.le(anneePath.get(AnneeAcademique_.numeroDebut), annee.getNumeroDebut()));
         predicates.add(cb.equal(coursPath, cours));
         predicates.add(cb.equal(enseigmenentRoot.get(Enseignement_.parcours), parcours));
         cq.orderBy(cb.desc(enseigmenentRoot.get(Enseignement_.anneeAcademique).get(AnneeAcademique_.debut)));

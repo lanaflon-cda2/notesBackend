@@ -60,4 +60,9 @@ public class AnneeAcademique implements Serializable {
     @XmlTransient
     @Column(columnDefinition = "int default 1")
     private int active;
+
+    @Override
+    public String toString(){
+        return String.format("%d -%d", numeroDebut, numeroDebut + 1);
+    }
 }

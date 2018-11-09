@@ -1,26 +1,11 @@
-<div class="container">
-    <div class="row">
-        <div class="col-sm-offset-4 col-sm-4">
-            <button type="submit" class="btn btn-success btn-s" onclick="angular.element(this).scope().valider(true)">
-                <span class="glyphicon glyphicon-upload"></span> Charger
-            </button>
-        </div>;
+<div class="container-fluid">
+    <div class="alert alert-info" ng-show="isLoading">
+        <div class="glyphicon glyphicon-time"></div> Traitement en cours ...
     </div>
-    <div class="row">
-        <div class="alert alert-info" ng-show="importResponse !== null">
-            <div>Vous avez correctement importé {{importResponse.nombreImporte}} notes</div>
-            <div ng-show="importResponse.erreurs.length !== 0">
-                <span>Les erreurs suivants sont survenues lors de l'importation du fichier</span>
-                <table class="table table-bordered table-striped">
-                    <tr>
-                        <th>No de ligne</th>
-                        <th>Erreur</th>
-                    </tr>
-                    <tr ng-repeat="erreur in importResponse.erreurs">
-                        <td>{{erreur.ligne}}</td>
-                        <td>{{erreur.raison}}</td>
-                    </tr>
-                </table>
+    <div class="row" ng-show="!isLoading">
+        <div ng-show="chargementResponse !== null">
+            <div class="alert alert-info">
+                Vous avez correctement importé les notes de {{chargementResponse.nombreImporte}} étudiants
             </div>
         </div>
     </div>

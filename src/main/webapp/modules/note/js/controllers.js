@@ -59,18 +59,17 @@ angular
           index: -1,
           isExam: false
         })
-        var index = 0
+        var i = null
         for (i in data) {
           var evals = {}
-          evals.name = data[index].code
-          if (data[index].isExam) {
+          evals.name = data[i].code
+          if (data[i].isExam) {
             evals.session = 0
             evals.isExam = true
           } else {
             evals.isExam = false
           }
           evals.index = -1
-          index++
           $scope.data.mapping.push(evals)
         }
         var reader = new FileReader()
@@ -103,33 +102,16 @@ angular
       })
     }
   }])
-  .controller('NoteImportation3Controller', ['$scope', '$http', 'NoteData', function ($scope, $http, NoteData) {
-    $scope.importResponse = null
+  .controller('NoteImportation3Controller', ['$scope', 'NoteData', 'ImportationService', function ($scope, NoteData, ImportationService) {
     $scope.chargementResponse = null
-    $scope.data = NoteData.data
     $scope.isLoading = true
-    var fd = new FormData()
     var header = {}
     var sessionExam = {}
-    console.log($scope.data.mapping)
+    $scope.data = NoteData.data
     var tmp = $scope.data.mapping.filter(function (a) { return a.index !== -1 })
     tmp.forEach(function (a) { header[a.name] = a.index; return 0 })
     tmp.filter(function (b) { return b.isExam }).forEach(function (c) { sessionExam[c.name] = c.session; return 1 })
-    fd.append('fichier', $scope.data.fichier[0])
-    fd.append('courId', $scope.data.cour)
-    fd.append('niveauId', $scope.data.niveau)
-    fd.append('optionId', $scope.data.option)
-    fd.append('headers', JSON.stringify(header))
-    fd.append('anneeId', $scope.data.annee)
-    fd.append('session', JSON.stringify(sessionExam))
-    fd.append('importNow', false)
-    $http.post('api/notes/import', fd, {
-      withCredentials: true,
-      headers: {
-        'Content-Type': undefined
-      },
-      transformRequest: angular.identity
-    }).success(function (data) {
+    ImportationService.importData(header, sessionExam, false).success(function (data) {
       $scope.chargementResponse = data
       $scope.isLoading = false
     }).error(function (data) {
@@ -137,8 +119,22 @@ angular
       $scope.isLoading = false
     })
   }])
-  .controller('NoteImportation4Controller', ['$scope', 'NoteData', function ($scope, NoteData) {
-    $scope.value = 'Douwe Vincent'
+  .controller('NoteImportation4Controller', ['$scope', 'NoteData', 'ImportationService', function ($scope, NoteData, ImportationService) {
+    $scope.chargementResponse = null
+    $scope.isLoading = true
+    $scope.data = NoteData.data
+    var header = {}
+    var sessionExam = {}
+    var tmp = $scope.data.mapping.filter(function (a) { return a.index !== -1 })
+    tmp.forEach(function (a) { header[a.name] = a.index; return 0 })
+    tmp.filter(function (b) { return b.isExam }).forEach(function (c) { sessionExam[c.name] = c.session; return 1 })
+    ImportationService.importData(header, sessionExam, true).success(function (data) {
+      $scope.chargementResponse = data
+      $scope.isLoading = false
+    }).error(function (data) {
+      $scope.chargementError = data
+      $scope.isLoading = false
+    })
   }])
   .controller('NoteController', [
     'Departement',

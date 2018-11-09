@@ -5,6 +5,8 @@ import com.douwe.generic.dao.IDao;
 import com.douwe.notes.entities.AnneeAcademique;
 import com.douwe.notes.entities.Etudiant;
 import com.douwe.notes.entities.Inscription;
+import com.douwe.notes.entities.Niveau;
+import com.douwe.notes.entities.Option;
 import java.util.List;
 
 /**
@@ -22,5 +24,7 @@ public interface IInscriptionDao extends IDao<Inscription, Long>{
     public List<Inscription> findInscriptionByEtudiantOrdered(Etudiant etudiant) throws DataAccessException;
     
     public Inscription findInscriptionByEtudiant(Etudiant etudiant, AnneeAcademique academique) throws DataAccessException;
+    
+    public Inscription findLastInscription(Etudiant etudiant, Niveau niveau, Option otion, AnneeAcademique annee) throws  DataAccessException;
     
 }

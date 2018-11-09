@@ -69,11 +69,11 @@ public class ProgrammeDaoImpl extends GenericDao<Programme, Long> implements IPr
         Path<UniteEnseignement> uePath = programmeRoot.get(Programme_.uniteEnseignement);
         Expression<List<Cours>> coursPath = uePath.get(UniteEnseignement_.cours);        
         Path<AnneeAcademique> anneePath = programmeRoot.get(Programme_.anneeAcademique);
-        List<Predicate> predicates = new ArrayList<Predicate>();
+        List<Predicate> predicates = new ArrayList<>();
         predicates.add(cb.equal(niveauPath, n));
         predicates.add(cb.equal(optionPath, o));
         predicates.add(cb.isMember(c, coursPath));
-        predicates.add(cb.greaterThanOrEqualTo(anneePath.get(AnneeAcademique_.debut), a.getDebut()));
+        predicates.add(cb.ge(anneePath.get(AnneeAcademique_.numeroDebut), a.getNumeroDebut()));
         if (predicates.size() > 0) {
             cq.where((predicates.size() == 1) ? predicates.get(0) : cb.and(predicates.toArray(new Predicate[0])));
         }

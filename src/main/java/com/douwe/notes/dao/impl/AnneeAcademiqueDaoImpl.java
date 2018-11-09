@@ -59,9 +59,9 @@ public class AnneeAcademiqueDaoImpl extends GenericDao<AnneeAcademique, Long> im
             Path<Cours> coursPath = noteRoot.get(Note_.cours);
             cq.where(cb.and(cb.equal(etudiantPath, etudiant), cb.equal(coursPath, c), 
                     cb.equal(inscriptionRoot.get(Inscription_.etudiant), etudiantPath),
-                    cb.lessThanOrEqualTo(inscriptionRoot.get(Inscription_.anneeAcademique).get(AnneeAcademique_.debut), anneePath.get(AnneeAcademique_.debut)),
+                    cb.le(inscriptionRoot.get(Inscription_.anneeAcademique).get(AnneeAcademique_.numeroDebut), anneePath.get(AnneeAcademique_.numeroDebut)),
                     cb.equal(inscriptionRoot.get(Inscription_.parcours).get(Parcours_.niveau).get(Niveau_.cycle), n.getCycle()),
-                    cb.lessThanOrEqualTo(anneePath.get(AnneeAcademique_.debut), fin.getDebut())));
+                    cb.le(anneePath.get(AnneeAcademique_.numeroDebut), fin.getNumeroDebut())));
             cq.select(anneePath);
             cq.orderBy(cb.desc(anneePath.get(AnneeAcademique_.debut)));
             return getManager().createQuery(cq).setMaxResults(1).getSingleResult();
