@@ -17,6 +17,7 @@ import com.douwe.notes.resource.impl.OptionResource;
 import com.douwe.notes.resource.impl.ParcoursResource;
 import com.douwe.notes.resource.impl.ProgrammeResource;
 import com.douwe.notes.resource.impl.RapportResource;
+import com.douwe.notes.resource.impl.SauvegardeResource;
 import com.douwe.notes.resource.impl.SemestreResource;
 import com.douwe.notes.resource.impl.TypeCoursResource;
 import com.douwe.notes.resource.impl.UniteEnseignementResource;
@@ -61,6 +62,7 @@ public class MyConfig extends ResourceConfig {
         register(ProgrammeResource.class);
         register(RapportResource.class);
         register(SemestreResource.class);
+        register(SauvegardeResource.class);
         register(TypeCoursResource.class);
         register(UniteEnseignementResource.class);
         register(UtilisateurResource.class);

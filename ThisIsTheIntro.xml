@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Root>
+    <Departements>
+        <Departement code="HYMAE">
+            <FrenchDescription>HYMAE</FrenchDescription>
+            <EnglishDescription>HYMAE</EnglishDescription>
+        </Departement>
+        <Departement code="AGEPD">
+            <FrenchDescription>AGEPD</FrenchDescription>
+            <EnglishDescription>AGEPD</EnglishDescription>
+        </Departement>
+        <Departement code="INFOTEL">
+            <FrenchDescription>INFOTEL</FrenchDescription>
+            <EnglishDescription>INFOTEL</EnglishDescription>
+        </Departement>
+    </Departements>
+    <Cycles>
+        <Cycle nom="Ingenieur de Travaux">
+            <DiplomeFr>Diplome d'ingenieur de travaux</DiplomeFr>
+            <DiplomeEn>Bachelor of Engineering degree</DiplomeEn>
+        </Cycle>
+    </Cycles>
+    <Niveaux>
+        <Niveau code="TRV">
+            <Terminal>0</Terminal>
+            <Cycle>Ingenieur de Travaux</Cycle>
+        </Niveau>
+    </Niveaux>
+    <Options>
+        <Option code="GELO">
+            <FrenchDescription>Genie Logiciel</FrenchDescription>
+            <EnglishDescription/>
+            <Departement>INFOTEL</Departement>
+        </Option>
+    </Options>
+    <Parcours>
+        <Parcour niveau="TRV" option="GELO"/>
+    </Parcours>
+    <Enseignants/>
+    <Evaluations>
+        <Evaluation code="CC">
+            <IsExam>0</IsExam>
+            <Description>Control continu</Description>
+        </Evaluation>
+        <Evaluation code="TPE">
+            <IsExam>0</IsExam>
+            <Description>Travail Personnel de l'etudiant</Description>
+        </Evaluation>
+        <Evaluation code="EE">
+            <IsExam>1</IsExam>
+            <Description>Examen Ecrit</Description>
+        </Evaluation>
+    </Evaluations>
+    <TypeCours>
+        <TypeCour nom="UE standard"/>
+        <TypeCour nom="UE projet"/>
+        <TypeCour nom="UE ultime"/>
+    </TypeCours>
+    <Semestres>
+        <Semestre intitule="Semestre 1">
+            <Niveau>TRV</Niveau>
+        </Semestre>
+    </Semestres>
+    <UniteEnseignements>
+        <UniteEnseignement code="CC" niveau="TRV" option="GELO">
+            <Intitule>Calc</Intitule>
+            <HasOptionalChoices>0</HasOptionalChoices>
+        </UniteEnseignement>
+        <UniteEnseignement code="ITEL543" niveau="TRV" option="GELO">
+            <Intitule>Introduction a l'informatique</Intitule>
+            <HasOptionalChoices>0</HasOptionalChoices>
+        </UniteEnseignement>
+        <UniteEnseignement code="ITEL201" niveau="TRV" option="GELO">
+            <Intitule>Calc</Intitule>
+            <HasOptionalChoices>0</HasOptionalChoices>
+        </UniteEnseignement>
+    </UniteEnseignements>
+    <Cours>
+        <Cour departement="INFOTEL" intitule="Calcul">
+            <TypeCours>UE standard</TypeCours>
+            <UniteEnseignement>CC</UniteEnseignement>
+            <UniteEnseignement>ITEL201</UniteEnseignement>
+        </Cour>
+        <Cour departement="INFOTEL" intitule="Introduction a l'informatique">
+            <TypeCours>UE standard</TypeCours>
+            <UniteEnseignement>ITEL543</UniteEnseignement>
+        </Cour>
+        <Cour departement="INFOTEL" intitule="Technologie web">
+            <TypeCours>UE standard</TypeCours>
+        </Cour>
+        <Cour departement="INFOTEL" intitule="Programmation web">
+            <TypeCours>UE standard</TypeCours>
+        </Cour>
+    </Cours>
+    <EvaluationDetails>
+        <EaluationDetail evaluation="CC" typeCour="UE standard"/>
+        <EaluationDetail evaluation="TPE" typeCour="UE standard"/>
+        <EaluationDetail evaluation="EE" typeCour="UE standard"/>
+        <EaluationDetail evaluation="CC" typeCour="UE ultime"/>
+    </EvaluationDetails>
+    <Etudiants>
+        <Etudiant matricule="14A500S">
+            <Nom>Mankreo Philippe</Nom>
+            <DateNaissance>Fri Aug 17 00:00:00 WAT 2018</DateNaissance>
+            <NumeroTelephone>+237658563102</NumeroTelephone>
+            <Email>etudiantToto@enspm.cm</Email>
+            <ValideDate>1</ValideDate>
+            <Genre>masculin</Genre>
+        </Etudiant>
+    </Etudiants>
+    <AnneeAcademique annee="2018" debut="Sat Sep 01 00:00:00 WAT 2018" fin="Wed Jul 31 00:00:00 WAT 2019">
+        <Notes/>
+        <Credits/>
+        <Inscriptions>
+            <Inscription etudiant="14A500S" niveau="TRV" option="GELO"/>
+        </Inscriptions>
+        <Enseignements/>
+        <Programmes/>
+    </AnneeAcademique>
+    <AnneeAcademique annee="2017" debut="Fri Sep 01 00:00:00 WAT 2017" fin="Fri Aug 31 00:00:00 WAT 2018">
+        <Notes>
+            <Note cour="Calcul" etudiant="14A500S" evaluation="TPE">
+                <Valeur>12.0</Valeur>
+            </Note>
+            <Note cour="Calcul" etudiant="14A500S" evaluation="EE" session="normale">
+                <Valeur>11.0</Valeur>
+            </Note>
+            <Note cour="Calcul" etudiant="14A500S" evaluation="CC">
+                <Valeur>10.0</Valeur>
+            </Note>
+        </Notes>
+        <Credits/>
+        <Inscriptions>
+            <Inscription etudiant="14A500S" niveau="TRV" option="GELO"/>
+        </Inscriptions>
+        <Enseignements/>
+        <Programmes/>
+    </AnneeAcademique>
+    <AnneeAcademique annee="2016" debut="Thu Sep 01 00:00:00 WAT 2016" fin="Sun Jul 30 00:00:00 WAT 2017">
+        <Notes/>
+        <Credits/>
+        <Inscriptions>
+            <Inscription etudiant="14A500S" niveau="TRV" option="GELO"/>
+        </Inscriptions>
+        <Enseignements/>
+        <Programmes/>
+    </AnneeAcademique>
+    <AnneeAcademique annee="2015" debut="Tue Sep 01 00:00:00 WAT 2015" fin="Fri Jul 29 00:00:00 WAT 2016">
+        <Notes/>
+        <Credits/>
+        <Inscriptions>
+            <Inscription etudiant="14A500S" niveau="TRV" option="GELO"/>
+        </Inscriptions>
+        <Enseignements/>
+        <Programmes/>
+    </AnneeAcademique>
+</Root>

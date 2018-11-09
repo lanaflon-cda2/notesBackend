@@ -15,6 +15,8 @@ public interface IInscriptionDao extends IDao<Inscription, Long>{
     
     public void deleteActive(Inscription inscription) throws DataAccessException;
     
+    public List<Inscription> findByAnnee(AnneeAcademique annee) throws DataAccessException;
+    
     public List<Inscription> findAllActive() throws DataAccessException;
     
     public List<Inscription> findInscriptionByEtudiantOrdered(Etudiant etudiant) throws DataAccessException;

@@ -48,5 +48,10 @@ public class EnseignementDaoImpl extends GenericDao<Enseignement, Long> implemen
         cq.orderBy(cb.asc(root.get(Enseignement_.cours).get(Cours_.intitule)));
         return getManager().createQuery(cq).getResultList();
     }
+
+    @Override
+    public List<Enseignement> findByAnnee(AnneeAcademique annee) throws DataAccessException {
+        return getManager().createNamedQuery("Enseignement.findByAnnee").setParameter("idParam", annee.getId()).getResultList();
+    }
     
 }

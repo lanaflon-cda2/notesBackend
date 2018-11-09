@@ -20,4 +20,6 @@ public interface IEnseignementDao extends IDao<Enseignement, Long>{
 
     public List<Enseignement> findByOption(AnneeAcademique annee, Niveau niveau, Option option) throws DataAccessException;
     
+    public List<Enseignement> findByAnnee(AnneeAcademique annee) throws DataAccessException;
+    
 }

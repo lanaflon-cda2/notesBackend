@@ -25,5 +25,6 @@ public interface IProgrammeDao extends IDao<Programme, Long>{
     
     Programme findByCours(Cours c, Niveau n, Option o, AnneeAcademique a) throws DataAccessException;
 
+    public List<Programme> findByAnnee(AnneeAcademique annee) throws DataAccessException;
     
 }

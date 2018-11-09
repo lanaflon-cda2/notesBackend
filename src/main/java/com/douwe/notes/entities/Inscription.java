@@ -31,6 +31,7 @@ import lombok.EqualsAndHashCode;
 @XmlAccessorType(XmlAccessType.FIELD)
 @NamedQueries({
     @NamedQuery(name = "Inscription.deleteActive",query = "update Inscription i set i.active = 0 where i.id = :idParam"),
+    @NamedQuery(name = "Inscription.findByAnnee", query = "SELECT i from Inscription i WHERE i.anneeAcademique.id = :idParam"),
     @NamedQuery(name = "Inscription.findAllActive",query = "select i from Inscription i where i.active=1"),
     @NamedQuery(name = "Inscription.findByEtudiant",query = "SELECT i from Inscription i WHERE i.etudiant.id = :param1 and i.anneeAcademique.id = :param2"),
     @NamedQuery(name = "Inscription.findByEtudiantOrdered",query = "select i from Inscription i join i.anneeAcademique a on i.anneeAcademique.id = a.id where i.etudiant.id = :idParam order by a.numeroDebut DESC")

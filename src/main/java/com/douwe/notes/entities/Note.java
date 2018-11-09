@@ -30,7 +30,8 @@ import lombok.EqualsAndHashCode;
 @Data
 @Entity
 @NamedQueries({
-@NamedQuery(name = "Note.findNoteEvaluationCours",query = "SELECT n from Note n WHERE n.etudiant = :param1 and n.evaluation = :param2 and n.cours = :param3 and n.anneeAcademique = :param4")
+    @NamedQuery(name = "Note.findNoteEvaluationCours",query = "SELECT n from Note n WHERE n.etudiant = :param1 and n.evaluation = :param2 and n.cours = :param3 and n.anneeAcademique = :param4"),
+    @NamedQuery(name = "Note.findNoteByAnnee", query = "SELECT n from Note n WHERE n.anneeAcademique.id = :idParam")
 })
 @XmlRootElement(name = "note")
 @XmlAccessorType(XmlAccessType.FIELD)

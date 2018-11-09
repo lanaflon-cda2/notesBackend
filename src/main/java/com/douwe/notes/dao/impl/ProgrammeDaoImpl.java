@@ -81,5 +81,10 @@ public class ProgrammeDaoImpl extends GenericDao<Programme, Long> implements IPr
         cq.orderBy(cb.desc(programmeRoot.get(Programme_.anneeAcademique)));
         return getManager().createQuery(cq).setMaxResults(1).getSingleResult();
     }
+
+    @Override
+    public List<Programme> findByAnnee(AnneeAcademique annee) throws DataAccessException {
+        return getManager().createNamedQuery("Programme.findByAnnee").setParameter("idParam", annee.getId()).getResultList();
+    }
     
 }

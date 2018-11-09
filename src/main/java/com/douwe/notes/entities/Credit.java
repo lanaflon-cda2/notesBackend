@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
@@ -25,6 +26,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @XmlRootElement(name = "credit")
 @XmlAccessorType(XmlAccessType.FIELD)
+@NamedQuery(name = "Credit.findCreditByAnnee", query = "SELECT c FROM Credit c WHERE c.academique.id = :idParam")
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"ANNEEACADEMIQUE_ID","PARCOURS_ID","COURS_ID"}))
 public class Credit implements Serializable {
 
