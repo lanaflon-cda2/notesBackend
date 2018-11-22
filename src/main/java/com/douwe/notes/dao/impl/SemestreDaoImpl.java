@@ -11,6 +11,7 @@ import com.douwe.notes.entities.Semestre;
 import com.douwe.notes.entities.Semestre_;
 import com.douwe.notes.entities.UniteEnseignement;
 import java.util.List;
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
@@ -39,6 +40,16 @@ public class SemestreDaoImpl extends GenericDao<Semestre, Long> implements ISeme
     public Semestre findByAnneeUE(AnneeAcademique annee, UniteEnseignement ue) throws DataAccessException {
         List<Programme> programme = getManager().createNamedQuery("Programme.findByAnneeUE").setParameter("param1", ue.getParcours().getNiveau()).setParameter("param2", ue.getParcours().getOption()).setParameter("param3", annee).setParameter("param4", ue).getResultList();
         return programme.get(programme.size()-1).getSemestre();
+    }
+
+    @Override
+    public Semestre findByIntutle(String intitule) throws DataAccessException {
+        try {
+            return (Semestre) getManager().createNamedQuery("Semestre.findByIntitule").setParameter("param", intitule).getSingleResult();
+        } catch (NoResultException e) {
+        }
+        return null;
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

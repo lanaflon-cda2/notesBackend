@@ -36,23 +36,27 @@ public class ParcoursDaoImpl extends GenericDao<Parcours, Long> implements IParc
 
     @Override
     public Parcours findByNiveauOption(Niveau niveau, Option option) throws DataAccessException {
-        try {
-            CriteriaBuilder cb = getManager().getCriteriaBuilder();
-            CriteriaQuery<Parcours> cq = cb.createQuery(Parcours.class);
-            Root<Parcours> noteRoot = cq.from(Parcours.class);
-            Path<Niveau> niveauPath = noteRoot.get(Parcours_.niveau);
-            Path<Option> optionPath = noteRoot.get(Parcours_.option);
-            cq.where(cb.and(cb.equal(niveauPath, niveau), cb.equal(optionPath, option), cb.equal(noteRoot.get(Parcours_.active), 1)));
-            return getManager().createQuery(cq).getSingleResult();
-        } catch (NoResultException | NonUniqueResultException ex) {
-            throw new DataAccessException("Parcours introuvable", ex);
-        }
+//        try {
+//            CriteriaBuilder cb = getManager().getCriteriaBuilder();
+//            CriteriaQuery<Parcours> cq = cb.createQuery(Parcours.class);
+//            Root<Parcours> noteRoot = cq.from(Parcours.class);
+//            Path<Niveau> niveauPath = noteRoot.get(Parcours_.niveau);
+//            Path<Option> optionPath = noteRoot.get(Parcours_.option);
+//            cq.where(cb.and(cb.equal(niveauPath, niveau), cb.equal(optionPath, option), cb.equal(noteRoot.get(Parcours_.active), 1)));
+//            return getManager().createQuery(cq).getSingleResult();
+//        } catch (NoResultException | NonUniqueResultException ex) {
+////            throw new DataAccessException("Parcours introuvable", ex);
+//        }
+//        return null;
 /*        List<Parcours> listParcours = new ArrayList<>();
         listParcours =  getManager().createNamedQuery("Parcours.findByNiveauOption").setParameter("param1", niveau.getId()).setParameter("param2", option.getId()).getResultList();
         return listParcours.get(0);*/ 
-/*        List<Parcours> listParcours = new ArrayList<>();
-        listParcours =  getManager().createNamedQuery("Parcours.findByNiveauOption").setParameter("param1", niveau.getId()).setParameter("param2", option.getId()).getResultList();
-        return listParcours.get(0);*/
+        try{
+            return (Parcours) getManager().createNamedQuery("Parcours.findByNiveauOption").setParameter("param1", niveau.getId()).setParameter("param2", option.getId()).getSingleResult();
+        } catch(NoResultException ex){
+            
+        }
+        return null;
     }
 
 }

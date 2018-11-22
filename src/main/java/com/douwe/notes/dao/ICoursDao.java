@@ -34,5 +34,5 @@ public interface ICoursDao extends IDao<Cours, Long>{
 
     public List<Cours> findByDepartement(Departement departement) throws DataAccessException;
     
-    
+    public Cours findByIntitule(String intitule) throws DataAccessException;
 }

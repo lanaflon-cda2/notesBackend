@@ -16,8 +16,8 @@ angular.module("notesApp.sauvegardes.controllers", []).controller("SauvegardeCon
                 var contentType = headers['content-type'];
                 var linkElement = document.createElement('a');
                 try {
-                    var blob = new Blob([data], { type: contentType });
-                    var url = window.URL.createObjectURL(blob);
+                    var notes_ENSPM = new Blob([data], { type: contentType });
+                    var url = window.URL.createObjectURL(notes_ENSPM);
                     linkElement.setAttribute('href', url);
                     linkElement.setAttribute("download", filename);
                     var clickEvent = new MouseEvent("click", {

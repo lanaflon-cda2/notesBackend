@@ -6,6 +6,9 @@ import com.douwe.notes.dao.INiveauDao;
 import com.douwe.notes.entities.Cycle;
 import com.douwe.notes.entities.Niveau;
 import com.douwe.notes.entities.Niveau_;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
@@ -21,7 +24,12 @@ public class NiveauDaoImpl extends GenericDao<Niveau, Long> implements INiveauDa
 
     @Override
     public Niveau findByCode(String code) throws DataAccessException {
-        return (Niveau) (getManager().createNamedQuery("Niveau.findByCode").setParameter("param", code).getSingleResult());
+        try{
+            return (Niveau) (getManager().createNamedQuery("Niveau.findByCode").setParameter("param", code).getSingleResult());
+        } catch(NoResultException ex){
+//            Logger.getLogger(NiveauDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     @Override

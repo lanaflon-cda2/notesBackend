@@ -28,9 +28,9 @@ import lombok.Data;
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity(name="cycles")
 @NamedQueries({
-@NamedQuery(name = "Cycle.deleteActive",query ="update cycles c set c.active = 0 where c.id = :idParam"),
-@NamedQuery(name = "Cycle.findAllActive",query = "select c from cycles c where c.active = 1")
-
+    @NamedQuery(name = "Cycle.deleteActive",query ="update cycles c set c.active = 0 where c.id = :idParam"),
+    @NamedQuery(name = "Cycle.findAllActive",query = "select c from cycles c where c.active = 1"),
+    @NamedQuery(name = "Cycle.findByNom", query="select c from cycles c where c.nom = :nameParam")
 })
 public class Cycle implements Serializable {
     

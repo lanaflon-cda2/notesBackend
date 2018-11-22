@@ -42,10 +42,15 @@ public class AnneeAcademiqueDaoImpl extends GenericDao<AnneeAcademique, Long> im
         return getManager().createNamedQuery("Annee.findAllActive").getResultList();
     }
 
-//    @Override
-//    public AnneeAcademique findByString(String date) throws DataAccessException {
-//        return (AnneeAcademique)(getManager().createNamedQuery("Annee.findByString").setParameter("param", date).getSingleResult());
-//    }
+    @Override
+    public AnneeAcademique findByNumeroDebut(Integer date) throws DataAccessException {
+        try{
+            return (AnneeAcademique)(getManager().createNamedQuery("Annee.findByNumeroAnnee").setParameter("param", date).getSingleResult());
+        } catch (NoResultException ex){
+            
+        }
+        return null;
+    }
     @Override
     public AnneeAcademique findLastYearNote(Etudiant etudiant, Niveau n, Cours c, AnneeAcademique fin) throws DataAccessException {
         try {

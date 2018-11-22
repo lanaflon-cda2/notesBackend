@@ -29,8 +29,8 @@ import lombok.EqualsAndHashCode;
 @XmlAccessorType(XmlAccessType.FIELD)
 @NamedQueries({
     @NamedQuery(name = "Enseignant.deleteActive", query = "update Enseignant e set e.active = 0 where e.id = :idParam"),
-    @NamedQuery(name = "Enseignant.findAllActive", query = "select e from Enseignant e where e.active=1")
-
+    @NamedQuery(name = "Enseignant.findAllActive", query = "select e from Enseignant e where e.active=1"),
+    @NamedQuery(name = "Enseignant.findByName", query = "select e from Enseignant e where e.nom = :param")
 })
 public class Enseignant implements Serializable {
 

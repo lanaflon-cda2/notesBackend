@@ -20,6 +20,7 @@ import com.douwe.notes.entities.UniteEnseignement_;
 import com.douwe.notes.projection.CoursCredit;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
@@ -49,11 +50,16 @@ public class CoursDaoImpl extends GenericDao<Cours, Long> implements ICoursDao {
     @Override
     public Cours findByIntituleAndDepartement(String intitule, Departement departement) throws DataAccessException {
         //return (Cours) (getManager().createNamedQuery("Cours.findByIntitule").setParameter("param", intitule).getSingleResult());
-        CriteriaBuilder cb = getManager().getCriteriaBuilder();
-        CriteriaQuery<Cours> cq = cb.createQuery(Cours.class);
-        Root<Cours> coursRoot = cq.from(Cours.class);
-        cq.where(cb.and(cb.like(coursRoot.get(Cours_.intitule), intitule), cb.equal(coursRoot.get(Cours_.departement), departement)));
-        return getManager().createQuery(cq).getSingleResult();
+        try{
+            CriteriaBuilder cb = getManager().getCriteriaBuilder();
+            CriteriaQuery<Cours> cq = cb.createQuery(Cours.class);
+            Root<Cours> coursRoot = cq.from(Cours.class);
+            cq.where(cb.and(cb.like(coursRoot.get(Cours_.intitule), intitule), cb.equal(coursRoot.get(Cours_.departement), departement)));
+            return getManager().createQuery(cq).getSingleResult();  
+        } catch(NoResultException ex){
+            
+        }
+        return null;
     }
 
     @Override
@@ -145,6 +151,16 @@ public class CoursDaoImpl extends GenericDao<Cours, Long> implements ICoursDao {
         Root<Cours> coursRoot = cq.from(Cours.class);
         cq.where(cb.and(cb.equal(coursRoot.get(Cours_.departement), departement), cb.equal(coursRoot.get(Cours_.active), 1)));
         return getManager().createQuery(cq).getResultList();
+    }
+
+    @Override
+    public Cours findByIntitule(String intitule) throws DataAccessException {
+        try {
+            return (Cours) (getManager().createNamedQuery("Cours.findByIntitule").setParameter("param", intitule).getSingleResult());
+        } catch (Exception e) {
+        }
+        return null;
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

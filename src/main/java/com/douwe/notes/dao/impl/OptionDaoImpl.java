@@ -17,6 +17,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import javax.persistence.NoResultException;
+import org.jboss.logging.Logger;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -33,7 +35,12 @@ public class OptionDaoImpl extends GenericDao<Option, Long> implements IOptionDa
 
     @Override
     public Option findByCode(String code) throws DataAccessException {
-        return (Option)(getManager().createNamedQuery("Option.findByCode").setParameter("param", code).getSingleResult());
+        try{
+            return (Option)(getManager().createNamedQuery("Option.findByCode").setParameter("param", code).getSingleResult());
+        } catch(NoResultException ex){
+//            Logger.getLogger(OptionDaoImpl.class.getName()).log(Logger.Level.FATAL, null, ex);
+        }
+        return null;
     }
 
     @Override

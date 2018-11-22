@@ -128,7 +128,7 @@ public class EtudiantDaoImpl extends GenericDao<Etudiant, Long> implements IEtud
     }
 
     @Override
-    public Etudiant findByName(String name) throws DataAccessException {
+    public Etudiant findByName(String name) throws DataAccessException, NoResultException {
         CriteriaBuilder cb = getManager().getCriteriaBuilder();
         CriteriaQuery<Etudiant> cq = cb.createQuery(Etudiant.class);
         Root<Etudiant> etudiantRoot = cq.from(Etudiant.class);

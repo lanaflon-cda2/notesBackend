@@ -18,5 +18,15 @@ public class TypeCoursDaoImpl extends GenericDao<TypeCours, Long> implements ITy
     public List<TypeCours> findAllActive() throws DataAccessException {
         return getManager().createNamedQuery("TypeCours.findAllActive").getResultList();
     }
+
+    @Override
+    public TypeCours findByName(String name) throws DataAccessException {
+        try {
+            return (TypeCours) getManager().createNamedQuery("TypeCours.findBName").setParameter("param", name).getSingleResult();
+        } catch (Exception e) {
+        }
+        return null;
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

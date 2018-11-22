@@ -15,4 +15,6 @@ public interface ICycleDao extends IDao<Cycle, Long>{
     
     public List<Cycle> getAllActive()throws DataAccessException;
     
+    public Cycle findByNom(String nom) throws DataAccessException;
+    
 }

@@ -172,4 +172,14 @@ public class UniteEnseignementDaoImpl extends GenericDao<UniteEnseignement, Long
         return getManager().createNamedQuery("UE.findByNiveauOption").setParameter("idParam", parcours.getId()).getResultList();
     }
 
+    @Override
+    public UniteEnseignement findByCode(String code) throws DataAccessException {
+        try {
+            return (UniteEnseignement) getManager().createNamedQuery("UE.findByCode").setParameter("param", code).getSingleResult();
+        } catch (Exception e) {
+        }
+        return null;
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

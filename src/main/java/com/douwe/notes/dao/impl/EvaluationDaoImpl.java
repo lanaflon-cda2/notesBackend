@@ -11,6 +11,7 @@ import com.douwe.notes.entities.EvaluationDetails_;
 import com.douwe.notes.entities.Evaluation_;
 import com.douwe.notes.entities.TypeCours;
 import java.util.List;
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
@@ -41,12 +42,17 @@ public class EvaluationDaoImpl extends GenericDao<Evaluation, Long> implements I
 
     @Override
     public Evaluation findByCode(String code) throws DataAccessException {
-        CriteriaBuilder cb = getManager().getCriteriaBuilder();
-        CriteriaQuery<Evaluation> cq = cb.createQuery(Evaluation.class);
-        Root<Evaluation> evaluationRoot = cq.from(Evaluation.class);
-        cq.where(cb.and(cb.like(evaluationRoot.get(Evaluation_.code), code),cb.equal(evaluationRoot.get(Evaluation_.active), 1)));
-        cq.select(evaluationRoot);
-        return getManager().createQuery(cq).getSingleResult();
+        try{
+            CriteriaBuilder cb = getManager().getCriteriaBuilder();
+            CriteriaQuery<Evaluation> cq = cb.createQuery(Evaluation.class);
+            Root<Evaluation> evaluationRoot = cq.from(Evaluation.class);
+            cq.where(cb.and(cb.like(evaluationRoot.get(Evaluation_.code), code),cb.equal(evaluationRoot.get(Evaluation_.active), 1)));
+            cq.select(evaluationRoot);
+            return getManager().createQuery(cq).getSingleResult();
+        } catch (NoResultException ex){
+            
+        }
+        return null;
     }
 
     @Override

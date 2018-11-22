@@ -15,6 +15,8 @@ import java.util.List;
 public interface ISemestreDao extends IDao<Semestre, Long> {
 
     public List<Semestre> findByNiveau(Niveau n) throws DataAccessException;
-
+    
+    public Semestre findByIntutle(String intitule) throws DataAccessException;
+    
     public Semestre findByAnneeUE(AnneeAcademique annee, UniteEnseignement ue) throws DataAccessException;
 }

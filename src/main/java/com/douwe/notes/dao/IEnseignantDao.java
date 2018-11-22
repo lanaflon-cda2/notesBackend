@@ -20,4 +20,5 @@ public interface IEnseignantDao extends IDao<Enseignant, Long>{
     
     public List<Enseignant> findByCours(Cours cours, AnneeAcademique annee, Parcours parcours) throws DataAccessException;
     
+    public Enseignant findByName(String name) throws DataAccessException;
 }

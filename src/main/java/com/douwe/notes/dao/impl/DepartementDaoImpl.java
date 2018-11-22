@@ -6,6 +6,9 @@ import com.douwe.notes.dao.IDepartementDao;
 import com.douwe.notes.entities.Departement;
 import com.douwe.notes.entities.Option;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.persistence.NoResultException;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -32,7 +35,12 @@ public class DepartementDaoImpl extends GenericDao<Departement, Long> implements
 
     @Override
     public Departement findByCode(String code) throws DataAccessException {
-        return (Departement)(getManager().createNamedQuery("Departement.findByCode").setParameter("param", code).getSingleResult());
+        try{
+            return (Departement) getManager().createNamedQuery("Departement.findByCode").setParameter("param", code).getSingleResult();
+        } catch(NoResultException ex){
+//            Logger.getLogger(SauvegardeDocument.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
     
 }

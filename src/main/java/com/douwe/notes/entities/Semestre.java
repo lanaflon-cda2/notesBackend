@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Version;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -24,6 +26,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @XmlRootElement(name = "semestre")
 @XmlAccessorType(XmlAccessType.FIELD)
+@NamedQuery(name = "Semestre.findByIntitule", query = "select s from Semestre s where s.intitule = :param")
 public class Semestre implements Serializable {
     
     @Id

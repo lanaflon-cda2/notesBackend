@@ -34,7 +34,8 @@ import lombok.EqualsAndHashCode;
 @NamedQueries({
     @NamedQuery(name = "UE.deleteActive", query = "update UniteEnseignement ue set ue.active = 0 where ue.id = :idParam"),
     @NamedQuery(name = "UE.findAllActive", query = "select ue from UniteEnseignement ue where ue.active=1"),
-    @NamedQuery(name = "UE.findByNiveauOption", query = "SELECT ue from UniteEnseignement ue where ue.parcours.id = :idParam")
+    @NamedQuery(name = "UE.findByNiveauOption", query = "SELECT ue from UniteEnseignement ue where ue.parcours.id = :idParam"),
+    @NamedQuery(name = "UE.findByCode", query = "select ue from UniteEnseignement ue where ue.code = :param")
 })
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"CODE","PARCOURS_ID"}), name = "uniteenseignement")
 public class UniteEnseignement implements Serializable {

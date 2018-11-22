@@ -30,7 +30,7 @@ import lombok.Data;
 @NamedQueries({
 
 @NamedQuery(name = "Annee.findAllActive",query = "SELECT a from AnneeAcademique a WHERE a.active = 1"),
-
+@NamedQuery(name = "Annee.findByNumeroAnnee", query = "select a from AnneeAcademique a where a.numeroDebut = :param")
 //@NamedQuery(name = "Annee.findByString",query = " SELECT a from AnneeAcademique a WHERE a.dateString = :param")
 
 

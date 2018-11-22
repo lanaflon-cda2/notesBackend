@@ -8,7 +8,6 @@ import com.douwe.notes.entities.Utilisateur;
 import com.douwe.notes.service.IEtudiantService;
 import com.douwe.notes.service.IUtilisateurService;
 import com.douwe.notes.service.ServiceException;
-import com.douwe.notes.service.document.ISauvegardeDocument;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
@@ -96,8 +95,8 @@ public class Main extends JpaBaseConfiguration {
             e.setVersion(0);
             etudiantDao.saveOrUpdateEtudiant(e);
         }
-//        ISauvegardeDocument sauve = cxt.getBean(ISauvegardeDocument.class);
-//        sauve.sauvegardeBD(Long.parseLong("56"));
+//        IDatabaseBackingUpDocument sauve = cxt.getBean(IDatabaseBackingUpDocument.class);
+//        sauve.restauration(null);
         
     }
 }
