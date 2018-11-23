@@ -50,6 +50,10 @@ public class InscriptionDaoImpl extends GenericDao<Inscription, Long> implements
     }
 
     @Override
+    public List<Inscription> findByAnnee(AnneeAcademique annee) throws DataAccessException {
+        return getManager().createNamedQuery("Inscription.findByAnnee").setParameter("idParam", annee.getId()).getResultList();
+    }
+
     public Inscription findLastInscription(Etudiant etudiant, Niveau niveau, Option option, AnneeAcademique annee) throws DataAccessException {
         try{CriteriaBuilder cb = getManager().getCriteriaBuilder();
         CriteriaQuery<Inscription> cq = cb.createQuery(Inscription.class);

@@ -1,0 +1,24 @@
+<form action="">
+    <div class="row">
+        <div class="form-group">
+            <label for="annee" class="col-sm-1 control-label">Année Académique</label>
+            <div class="col-sm-4">
+                <select name="annee" id="annee" class="form-control" ng-model="year" ng-required="true">
+                    <option value="" disabled>Select one</option>
+                    <option ng-repeat="annee in annees|orderBy:'-debut'" value="{{annee.id}}">{{annee.debut.substring(0, 4)}}-{{annee.fin.substring(0, 4)}}</option>                      
+                </select>
+                <span class="error" ng-show="form.annee.$dirty && form.annee.$error.required">L'année est obligatoire</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <label for="indication" class="col-sm-2 control-label">
+                Cliquer sur le button sauvegarder vous permettra d'enregistrer le contenue de votre base de donnees sous le format <em><strong>.xml</strong></em>
+            </label>
+            <div class="col-sm-6">
+                <button class="btn btn-primary" ng-click="sauvegarde()">Sauvegarder</button>
+            </div>
+        </div>
+    </div>
+</form>

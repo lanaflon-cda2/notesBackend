@@ -56,5 +56,5 @@ public class ApplicationConfig extends Application {
         resources.add(org.glassfish.jersey.server.spring.scope.RequestContextFilter.class);
         resources.add(org.glassfish.jersey.server.wadl.internal.WadlResource.class);
     }
-    
+
 }

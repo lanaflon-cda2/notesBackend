@@ -150,4 +150,9 @@ public class NoteDaoImpl extends GenericDao<Note, Long> implements INoteDao {
                 cb.equal(anneePath, annee)));
         return getManager().createQuery(cq).getResultList();
     }
+
+    @Override
+    public List<Note> getNoteByAnnee(AnneeAcademique annee) throws DataAccessException {
+        return getManager().createNamedQuery("Note.findNoteByAnnee").setParameter("idParam", annee.getId()).getResultList();
+    }
 }

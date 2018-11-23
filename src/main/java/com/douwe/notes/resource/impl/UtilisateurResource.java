@@ -24,6 +24,7 @@ public class UtilisateurResource implements IUtilisateurResource{
 
     @Override
     public List<Utilisateur> find() {
+        System.out.println("totototototototo");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Utilisateur utilisateur = (auth == null)? null: (Utilisateur)auth.getPrincipal();
         if(utilisateur.getRole() == Role.ADMINISTRATEUR)

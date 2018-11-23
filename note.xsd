@@ -26,6 +26,7 @@
                         <xs:field xpath="@nom"/>
                     </xs:key>
                 </xs:element>
+                
                 <xs:element name="Niveaux"  minOccurs="1" maxOccurs="1">
                     <xs:complexType>
                         <xs:sequence>
@@ -87,6 +88,18 @@
                     </xs:key>
                 </xs:element>
 
+                <xs:element name="Evaluations" minOccurs="1" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="Evaluation" type="evaluationType"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                    <xs:key name="evaluationKey">
+                        <xs:selector xpath="Evaluation"/>
+                        <xs:field xpath="@code"/>
+                    </xs:key>
+                </xs:element>
+
                 <xs:element name="TypeCours"  minOccurs="1" maxOccurs="1">
                     <xs:complexType>
                         <xs:sequence>
@@ -110,24 +123,7 @@
                         <xs:field xpath="@intitule"/>
                     </xs:key>
                 </xs:element>
-
-                <xs:element name="Cours" minOccurs="1" maxOccurs="1">
-                    <xs:complexType>
-                        <xs:sequence>
-                            <xs:element name="Cour" type="courType"/>
-                        </xs:sequence>
-                    </xs:complexType>
-                    <xs:key name="courKey">
-                        <xs:selector xpath="Cour"/>
-                        <xs:field xpath="@intitule"/>
-                        <xs:field xpath="@departement"/>
-                    </xs:key>
-                    <xs:keyref name="courDepartementKey" refer="departementKey">
-                        <xs:selector xpath="Cour"/>
-                        <xs:field xpath="@departement"/>
-                    </xs:keyref>
-                </xs:element>
-
+                
                 <xs:element name="UniteEnseignements" minOccurs="1" maxOccurs="1">
                     <xs:complexType>
                         <xs:sequence>
@@ -145,16 +141,21 @@
                     </xs:keyref>
                 </xs:element>
 
-                <xs:element name="Evaluations" minOccurs="1" maxOccurs="1">
+                <xs:element name="Cours" minOccurs="1" maxOccurs="1">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="Evaluation" type="evaluationType"/>
+                            <xs:element name="Cour" type="courType"/>
                         </xs:sequence>
                     </xs:complexType>
-                    <xs:key name="evaluationKey">
-                        <xs:selector xpath="Evaluation"/>
-                        <xs:field xpath="@code"/>
+                    <xs:key name="courKey">
+                        <xs:selector xpath="Cour"/>
+                        <xs:field xpath="@intitule"/>
+                        <xs:field xpath="@departement"/>
                     </xs:key>
+                    <xs:keyref name="courDepartementKey" refer="departementKey">
+                        <xs:selector xpath="Cour"/>
+                        <xs:field xpath="@departement"/>
+                    </xs:keyref>
                 </xs:element>
 
                 <xs:element name="EvaluationsDetails" minOccurs="1" maxOccurs="1">
@@ -206,6 +207,8 @@
                             <xs:element name="Programme" type="programmeType"/>
                         </xs:sequence>
                         <xs:attribute name="annee" type="xs:integer"/>
+                        <xs:attribute name="debut" type="xs:string"/>
+                        <xs:attribute name="fin" type="xs:string"/>
                     </xs:complexType>
 
                     <xs:key name="coursUeAnneeKey">
@@ -337,8 +340,8 @@
             <xs:element name="Valeur" type="xs:integer"/>
         </xs:sequence>
         <xs:attribute name="cour" type="xs:string" use="required"/>
-        <xs:attribute name="niveau" type="xs:integer" use="required"/>
-        <xs:attribute name="option" type="xs:integer" use="required"/>
+        <xs:attribute name="niveau" type="xs:string" use="required"/>
+        <xs:attribute name="option" type="xs:string" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="inscriptionType">
@@ -451,7 +454,7 @@
     <xs:complexType name="uniteEnseignementType">
         <xs:sequence>
             <xs:element name="Intitule" type="xs:string"/>
-            <xs:element name="HasOptionalChoices" type="xs:integer"/>
+            <xs:element name="HasOptionalChoices" type="xs:string"/>
         </xs:sequence>
         <xs:attribute name="code" type="xs:string" use="required"/>
         <xs:attribute name="niveau" type="xs:string" use="required"/>
