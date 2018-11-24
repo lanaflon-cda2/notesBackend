@@ -1,7 +1,9 @@
 <div class="panel panel-primary">
     <div class=panel-heading>IMPORTATION DES NOTES</div>
     <div class=panel-body>
-        <div id=form-views ui-view=importation>A simple content here</div>
+        <form id=form name=form novalidate>
+            <div id=form-views data-ui-view=importation>A simple content here</div>
+        </form>
     </div>
-    <div class=panel-footer><button class="btn btn-primary" ng-click=handlePrevious() ng-show=!isFirstStep()>Back</button> <button class="btn btn-primary" ng-click=handleNext(dismiss)>{{getNextLabel()}}</button></div>
+    <div class=panel-footer ng-hide=isLastStep()><button class="btn btn-primary" ng-click=handlePrevious() ng-show=!isFirstStep()>Back</button> <button class="btn btn-primary" ng-click="handleNext(form, dismiss)"><span class="glyphicon glyphicon-circle-arrow-right"></span> {{getNextLabel()}}</button></div>
 </div>

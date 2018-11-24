@@ -139,11 +139,10 @@ angular
   .controller('NoteController', [
     'Departement',
     'Cours',
-    'Evaluation',
     'Annee',
     '$scope',
     '$log',
-    function (Departement, Cours, Evaluation, Annee, $scope, $log) {
+    function (Departement, Cours, Annee, $scope, $log) {
       var ans = Annee.query(function () {
         $scope.annees = ans
       })
@@ -163,16 +162,14 @@ angular
   ])
   .controller('NoteImportationController', [
     '$state',
-    'Evaluation',
     '$scope',
-    '$http',
     'NoteData',
+    '$log',
     function (
       $state,
-      Evaluation,
       $scope,
-      $http,
-      NoteData
+      NoteData,
+      $log
     ) {
       // $state.go('nimportation.etape1')
 
@@ -189,6 +186,20 @@ angular
       $scope.getCurrentStep = function () {
         return $scope.wizard.currentStep
       }
+      NoteData.data = {}
+      $scope.data = {
+      annee: null,
+      departement: null,
+      niveau: null,
+      option: null,
+      cour: null,
+      fichier: null,
+      mapping: []
+    }
+      
+      $scope.status = false
+      
+      $scope.fichier = false
 
       $scope.isFirstStep = function () {
         return $scope.wizard.currentStep === 0
@@ -206,7 +217,11 @@ angular
         $scope.wizard.currentStep -= $scope.isFirstStep() ? 0 : 1
         $state.go($scope.wizard.steps[$scope.wizard.currentStep])
       }
-      $scope.handleNext = function (dismiss) {
+      $scope.handleNext = function (form, dismiss) {
+          $scope.status = !form.$valid
+          $scope.fichier = true
+          if(!$scope.status && (($scope.data.fichier === null) || ($scope.data.fichier === undefined))){
+              $scope.fichier = false
         if ($scope.isLastStep()) {
           dismiss()
         } else {
@@ -214,65 +229,7 @@ angular
           $state.go($scope.wizard.steps[$scope.wizard.currentStep])
         }
       }
-
-      $scope.evaluations = []
-
-      $scope.importResponse = null
-
-      $scope.chargementResponse = null
-
-      $scope.chargementError = null
-
-      $scope.importError = null
-
-      $scope.headerNames = []
-
-      $scope.cour = null
-
-      /*
-              $scope.valider = function (bool) {
-                  console.log(bool);
-                  $scope.importResponse = null;
-                  $scope.chargementResponse = null;
-                  var fd = new FormData();
-                  var header = new Object();
-                  var sessionExam = new Object();
-                  var index = 0;
-                  for (i in $scope.evaluations) {
-                      if ($scope.evaluations[index].index != -1) {
-                          header[$scope.evaluations[index].name] = index;
-                          if ($scope.evaluations[index].isExam) {
-                              sessionExam[$scope.evaluations[index].name] = $scope.evaluations[index].session;
-                          }
-                      }
-                      index++;
-                  }
-                  fd.append("fichier", $scope.files[0]);
-                  fd.append("courId", $scope.cour);
-                  fd.append("niveauId", $scope.niveau);
-                  fd.append("optionId", $scope.option);
-                  fd.append("headers", JSON.stringify(header));
-                  fd.append("anneeId", $scope.annee);
-                  fd.append("session", JSON.stringify(sessionExam));
-                  fd.append("importNow", bool);
-                  $http.post('api/notes/import', fd, {
-                      withCredentials: true,
-                      headers: {
-                          'Content-Type': undefined
-                      },
-                      transformRequest: angular.identity
-                  }).success(function (data) {
-                      if (bool)
-                          $scope.importResponse = data;
-                      else
-                          $scope.chargementResponse = data;
-                  }).error(function (data) {
-                      if (bool)
-                          $scope.importError = data;
-                      else
-                          $scope.chargementError = data;
-                  });
-              }; */
+  }
     }
   ])
   .controller('NoteModificationController', [

@@ -424,7 +424,7 @@ public class NoteServiceImpl implements INoteService {
             Row row;
             String matricule = null;
             Etudiant etudiant;
-            int count = 0, index = 1;
+            int count = 0;
             while (rowIterator.hasNext()) {
                 row = rowIterator.next();
                 // I don't understand why. The number of columns might not be 5 all the time
@@ -437,7 +437,7 @@ public class NoteServiceImpl implements INoteService {
                     matricule = cell.getStringCellValue();
                     if (!matricule.matches("[0-9]{2}[A-Z][0-9]{3}[S,P]")) {
                         System.out.println("Le matricule est " + cell.getStringCellValue());
-                        erreurs.add(new ImportationError(index, String.format("Le matricule %s est incorrect", matricule)));
+                        erreurs.add(new ImportationError(row.getRowNum(), String.format("Le matricule %s est incorrect", matricule)));                        
                         continue;
                     }
                 }
@@ -446,7 +446,7 @@ public class NoteServiceImpl implements INoteService {
 
                 if (etudiant == null) {
                     System.out.println("The student does not exist");
-                    erreurs.add(new ImportationError(index, String.format("Le matricule %s est incorrect", matricule)));
+                    erreurs.add(new ImportationError(row.getRowNum(), String.format("Le matricule %s est incorrect", matricule)));
                     continue;
                 }
                 // The student might be in the list but does not have any mark
@@ -464,8 +464,7 @@ public class NoteServiceImpl implements INoteService {
                             }
                             if (c.getCellType() != Cell.CELL_TYPE_NUMERIC) {
                                 System.out.println("Test is not numeric");
-                                erreurs.add(new ImportationError(index, String.format("La note de %s de %s  est invalide", key, etudiant.getNom())));
-                                continue;
+                                erreurs.add(new ImportationError(row.getRowNum(), String.format("La note de %s de %s  est invalide", key, etudiant.getNom())));
                             }
                             Double note = c.getNumericCellValue();
                             System.out.println("La note est " + note);
@@ -481,12 +480,12 @@ public class NoteServiceImpl implements INoteService {
                 }
                 // L'étudiant est il inscrit dans le parcours?
                 if (!etudiantPeutFaireCeCours(etudiant, cours, niveau, option, academique)) {
-                    erreurs.add(new ImportationError(index, String.format("Etudiant  %s n'est pas du parcours", etudiant.getNom())));
+                    erreurs.add(new ImportationError(row.getRowNum(), String.format("Etudiant  %s n'est pas du parcours", etudiant.getNom())));
                     continue;
                 }
                 // L'étudiant a t il deja validé le cours par le passé?
                 if (etudiantADejaValider(etudiant, niveau, option, cours, academique)) {
-                    erreurs.add(new ImportationError(index, String.format("Etudiant %s a valide", etudiant.getNom())));
+                    erreurs.add(new ImportationError(row.getRowNum(), String.format("Etudiant %s a valide", etudiant.getNom())));
                     continue;
                 }
                 // A ce moment il n'ya aucun souci. L'on peut proceder a l'importation des notes 
@@ -495,7 +494,7 @@ public class NoteServiceImpl implements INoteService {
                     double valeurNote = entry.getValue();
                     System.out.println(String.format("Traitement de la note %s avec la valeur %.2f", codeEvaluation, valeurNote));
                     if ((valeurNote < 0) || (valeurNote > 20)) {
-                        erreurs.add(new ImportationError(index, String.format("La valeur %.2f de l'evaluation %s est invalide", valeurNote, codeEvaluation)));
+                        erreurs.add(new ImportationError(row.getRowNum(), String.format("La valeur %.2f de l'evaluation %s est invalide", valeurNote, codeEvaluation)));
                         continue;
                     }
                     if (importNow) {
@@ -513,12 +512,11 @@ public class NoteServiceImpl implements INoteService {
                         try {
                             noteDao.create(note);
                         } catch (DataAccessException ex) {
-                            erreurs.add(new ImportationError(index, ex.getMessage()));
+                            erreurs.add(new ImportationError(row.getRowNum(), ex.getMessage()));
                         }
                     }
                 }
                 count++;
-                index++;
             }
             result.setNombreImporte(count);
             result.setErreurs(erreurs);

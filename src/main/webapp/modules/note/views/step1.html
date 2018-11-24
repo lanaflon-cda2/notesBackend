@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container-fluid">
     <div class="row">
         <div class="form-group col-sm-10">
             <label for="annee" class="col-sm-2 control-label">Année Académique</label>
@@ -6,38 +6,44 @@
                 <select name="annee" id="annee" class="form-control" ng-model="data.annee" ng-required="true">
                     <option disabled selected value=""> -- Veuillez selectionner une année -- </option>
                     <option ng-repeat="annee in annees|orderBy:'-debut'" value="{{annee.id}}">{{annee.debut.substring(0,
-                        4)}}-{{annee.fin.substring(0, 4)}}</option>
+                                        4)}}-{{annee.fin.substring(0, 4)}}</option>
                 </select>
-                <span class="error" ng-show="form.cycle.$dirty && form.cycle.$error.required">L'Ann&eacute;e
+                <span class="error" ng-show="status && form.annee.$error.required">L'ann&eacute;e
                     est obligatoire</span>
             </div>
         </div>
         <div class="form-group col-sm-10">
             <label for="departement" class="col-sm-2 control-label">Département</label>
             <div class="col-sm-6">
-                <select name="departement" id="departement" class="form-control" ng-model="data.departement" ng-change="changerDepartement()">
+                <select name="departement" id="departement" class="form-control" ng-model="data.departement" ng-change="changerDepartement()" ng-required="true">
                     <option disabled selected value=""> -- Veuillez selectionner un département --
                     </option>
                     <option ng-repeat="departement in departements|orderBy:'code'" value="{{departement.id}}">{{departement.code}}</option>
                 </select>
+                <span class="error" ng-show="status && form.departement.$error.required">Le département est
+                    obligatoire</span>
             </div>
         </div>
         <div class="form-group col-sm-10">
             <label for="niveau" class="col-sm-2 control-label">Niveau</label>
             <div class="col-sm-6">
-                <select name="niveau" id="niveau" class="form-control" ng-model="data.niveau" ng-change="changerDepartement()">
+                <select name="niveau" id="niveau" class="form-control" ng-model="data.niveau" ng-change="changerDepartement()" ng-required="true">
                     <option disabled selected value=""> -- Veuillez selectionner un niveau -- </option>
                     <option ng-repeat="niveau in niveaux|orderBy:'code' track by niveau.id" value="{{niveau.id}}">{{niveau.code}}</option>
                 </select>
+                <span class="error" ng-show="status && form.niveau.$error.required">Le niveau est
+                    obligatoire</span>
             </div>
         </div>
         <div class="form-group  col-sm-10">
             <label for="option" class="col-sm-2 control-label">Option</label>
             <div class="col-sm-6">
-                <select name="option" id="option" class="form-control" ng-model="data.option" ng-change="changerOption()">
+                <select name="option" id="option" class="form-control" ng-model="data.option" ng-change="changerOption()"  ng-required="true">
                     <option disabled selected value=""> -- Veuillez selectionner une option -- </option>
                     <option ng-repeat="option in options|orderBy:'code'" value="{{option.id}}">{{option.code}}</option>
                 </select>
+                <span class="error" ng-show="status && form.option.$error.required">L'option est
+                    obligatoire</span>
             </div>
         </div>
         <div class="form-group  col-sm-10">
@@ -47,15 +53,15 @@
                     <option disabled selected value=""> -- Veuillez selectionner un cours -- </option>
                     <option ng-repeat="cors in cours" value="{{cors.id}}">{{cors.intitule}}-{{cors.departement.code}}</option>
                 </select>
-                <span class="error" ng-show="form.cycle.$dirty && form.cycle.$error.required">Le cours
+                <span class="error" ng-show="status && form.cours.$error.required">Le cours
                     est obligatoire</span>
             </div>
         </div>
         <div class="form-group col-sm-10">
-            <label for="code" class="col-sm-2 control-label">Fichier</label>
+            <label for="fichier" class="col-sm-2 control-label">Fichier</label>
             <div class="col-sm-6">
-            <input type="file" name="fichier" id="file" class="form-control-file form-control-lg" onchange="angular.element(this).scope().uploadFile(this.files)"/>
-                <span class="error" ng-show="form.code.$dirty && form.code.$error.required">Le fichier
+                <input type="file" name="fichier" id="fichier" class="form-control-file form-control-lg" onchange="angular.element(this).scope().uploadFile(this.files)" ng-required="true"/>
+                <span class="error" ng-show="fichier && !data.fichier">Le fichier
                     est obligatoire</span>
             </div>
         </div>
