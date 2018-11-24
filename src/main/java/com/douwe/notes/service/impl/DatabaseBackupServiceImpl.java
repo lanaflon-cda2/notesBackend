@@ -306,7 +306,7 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
             dateNaissance.appendChild(document.createTextNode(replaceIfNull(etdnt.getDateDeNaissance().toString())));
             etudiant.appendChild(dateNaissance);
             Element lieuNaissance = document.createElement("LieuNaissance");
-            dateNaissance.appendChild(document.createTextNode(replaceIfNull(etdnt.getLieuDeNaissance().toString())));
+            dateNaissance.appendChild(document.createTextNode(replaceIfNull(etdnt.getLieuDeNaissance())));
             etudiant.appendChild(lieuNaissance);
             Element numeroTel = document.createElement("NumeroTelephone");
             numeroTel.appendChild(document.createTextNode(replaceIfNull(etdnt.getNumeroTelephone())));
@@ -345,7 +345,7 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
         }
         Element credits = document.createElement("Credits");
         List<Credit> crdts = creditDao.findCreditByAnnee(annee);
-        for(Credit crdt: crdts){
+        crdts.stream().map((crdt) -> {
             Element credit = document.createElement("Credit");
             Element valeur = document.createElement("Valeur");
             valeur.appendChild(document.createTextNode(Double.toString(crdt.getValeur())));
@@ -353,8 +353,10 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
             credit.setAttribute("cour", crdt.getCours().getIntitule());                    
             credit.setAttribute("niveau", crdt.getParcours().getNiveau().getCode());
             credit.setAttribute("option", crdt.getParcours().getOption().getCode());
+            return credit;
+        }).forEachOrdered((credit) -> {
             credits.appendChild(credit);
-        }
+        });
         Element inscriptions = document.createElement("Inscriptions");
         List<Inscription> inscrptns = inscriptionDao.findByAnnee(annee);
         for(Inscription inscrptn: inscrptns){
@@ -486,9 +488,6 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                         dept.setFrenchDescription(frenchDescription);
                         departementDao.create(dept);
                     }
-//                    System.out.println("Code : "+code);
-//                    System.out.println("FrenchDescription : "+frenchDescription);
-//                    System.out.println("EnglishDescription : "+englishDescription);
                 }
 
             }
@@ -496,10 +495,10 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
             NodeList cycle = cycles.getChildNodes();
             for(int i = 0; i < cycle.getLength(); i++){
                 if(cycle.item(i).getNodeType() == Node.ELEMENT_NODE){
-                    String nom = new String(cycle.item(i).getAttributes().getNamedItem("nom").getNodeValue());
+                    String nom = cycle.item(i).getAttributes().getNamedItem("nom").getNodeValue();
                     Element cycl = (Element) cycle.item(i);
-                    String diplomeFr = new String(cycl.getElementsByTagName("DiplomeFr").item(0).getTextContent());
-                    String diplomeEn = new String(cycl.getElementsByTagName("DiplomeEn").item(0).getTextContent());
+                    String diplomeFr = cycl.getElementsByTagName("DiplomeFr").item(0).getTextContent();
+                    String diplomeEn = cycl.getElementsByTagName("DiplomeEn").item(0).getTextContent();
                     if (cycleDao.findByNom(nom) == null) {
                         Cycle cyc = new Cycle();
                         cyc.setDiplomeEn(diplomeEn);
@@ -507,9 +506,6 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                         cyc.setNom(nom);
                         cycleDao.create(cyc);
                     }
-//                    System.out.println("Nom : "+nom);
-//                    System.out.println("DiplomeFr : "+diplomeFr);
-//                    System.out.println("DiplomeEn : "+diplomeEn);
                 }
 
             }
@@ -519,8 +515,8 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                 if (niveau.item(i).getNodeType() == Node.ELEMENT_NODE) {
                     Element nv = (Element) niveau.item(i);
                     String code = nv.getAttribute("code");
-                    boolean terminal = new Boolean(nv.getElementsByTagName("Terminal").item(0).getTextContent().equals(1));
-                    String cycl = new String(nv.getElementsByTagName("Cycle").item(0).getTextContent());
+                    boolean terminal = nv.getElementsByTagName("Terminal").item(0).getTextContent().equals(1);
+                    String cycl = nv.getElementsByTagName("Cycle").item(0).getTextContent();
                     if (niveauDao.findByCode(code) == null) {
                         Niveau niv = new Niveau();
                         niv.setCode(code);
@@ -528,9 +524,6 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                         niv.setTerminal(terminal);
                         niveauDao.create(niv);
                     }
-//                    System.out.println("Code : "+code);
-//                    System.out.println("Terminal : "+terminal);
-//                    System.out.println("Cycle : "+cycl);
                 }
             }
             Element options = (Element) root.getElementsByTagName("Options").item(0);
@@ -539,9 +532,9 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                 if (option.item(i).getNodeType() == Node.ELEMENT_NODE) {
                     String code = option.item(i).getAttributes().getNamedItem("code").getNodeValue();
                     Element opt = (Element) option.item(i);
-                    String frenchDescription = new String(opt.getElementsByTagName("FrenchDescription").item(0).getTextContent());
-                    String englishDescription = new String(opt.getElementsByTagName("EnglishDescription").item(0).getTextContent());
-                    String dprtmnt = new String(opt.getElementsByTagName("Departement").item(0).getTextContent());
+                    String frenchDescription = opt.getElementsByTagName("FrenchDescription").item(0).getTextContent();
+                    String englishDescription = opt.getElementsByTagName("EnglishDescription").item(0).getTextContent();
+                    String dprtmnt = opt.getElementsByTagName("Departement").item(0).getTextContent();
                     if (optionDao.findByCode(code) == null) {
                         Option optn = new Option();
                         optn.setCode(code);
@@ -550,10 +543,6 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                         optn.setDescriptionEnglish(englishDescription);
                         optionDao.create(optn);
                     }
-//                    System.out.println("Code : "+code);
-//                    System.out.println("FrenchDescription : "+frenchDescription);
-//                    System.out.println("EnglishDescription : "+englishDescription);
-//                    System.out.println("Departement : "+dprtmnt);
                 }
             }
             Element parcours = (Element) root.getElementsByTagName("Parcours").item(0);
@@ -568,8 +557,6 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                         prcrs.setOption(optionDao.findByCode(opt));
                         parcoursDao.create(prcrs);
                     }
-//                    System.out.println("Niveau : "+nv);
-//                    System.out.println("Option : "+opt);
                 }
             }
             Element enseignants = (Element) root.getElementsByTagName("Enseignants").item(0);
@@ -582,7 +569,6 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                         ens.setNom(nom);
                         enseignantDao.create(ens);
                     }
-//                    System.out.println("Nom : "+nom);
                 }
             }
             Element evaluations = (Element) root.getElementsByTagName("Evaluations").item(0);
@@ -600,9 +586,6 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                         evalu.setExam(isExam);
                         evaluationDao.create(evalu);
                     }
-//                    System.out.println("Code : "+code);
-//                    System.out.println("IsExam : "+isExam);
-//                    System.out.println("Description : "+description);
                 }
             }
             Element typeCours = (Element) root.getElementsByTagName("TypeCours").item(0);
@@ -615,7 +598,6 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                         typCr.setNom(nom);
                         typeCoursDao.create(typCr);
                     }
-//                    System.out.println("Nom :"+nom);
                 }
             }
             
@@ -632,9 +614,6 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                         sem.setNiveau(niveauDao.findByCode(nv));
                         semestreDao.create(sem);
                     }
-//                    System.out.println("Semestre");
-//                    System.out.println("Niveau: "+nv);
-//                    System.out.println("intitule: "+in);
                 }
             }
             
@@ -664,9 +643,9 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
             for (int i = 0; i < cour.getLength(); i++) {
                 if (cour.item(i).getNodeType() == Node.ELEMENT_NODE) {
                     Element cr = (Element) cour.item(i);
-                    String intitule = new String(cr.getAttribute("intitule"));
-                    String dprtmnt = new String(cr.getAttribute("departement"));
-                    String typCr = new String(cr.getElementsByTagName("TypeCours").item(0).getTextContent());
+                    String intitule = cr.getAttribute("intitule");
+                    String dprtmnt = cr.getAttribute("departement");
+                    String typCr = cr.getElementsByTagName("TypeCours").item(0).getTextContent();
                     List<UniteEnseignement> uniteEns = new ArrayList();
                     NodeList uniteEnsgnmnt = root.getElementsByTagName("UniteEnseignement");
                     for (int j = 0; j < uniteEnsgnmnt.getLength(); j++) {
@@ -682,7 +661,6 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                         c.setUniteEnseignements(uniteEns);
                         coursDao.create(c);
                     }
-//                    System.out.println(intitule+" : "+dprtmnt+" : "+typCr);
                 }
             }
             Element evalDetails = (Element) root.getElementsByTagName("EvaluationDetails").item(0);
@@ -700,7 +678,6 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                         evalDet.setTypeCours(typeCoursDao.findByName(typCour));
                         evaluationDetailsDao.create(evalDet);
                     }
-//                    System.out.println(eval+" : "+typCour+" : "+pcent);
                 }
             }
             Element etudiants = (Element) root.getElementsByTagName("Etudiants").item(0);
@@ -728,13 +705,11 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                         et.setValidDate(valideDate);
                         etudiantDao.create(et);
                     }
-                    System.out.println(nom+" : "+dateNaissance+" : "+numeroTelephone+" : "+email+" : "+valideDate+" : "+genre+" : "+matricule);      
                 }
             }
             NodeList anneeAcademiques = root.getElementsByTagName("AnneeAcademique");
             for (int i = 0; i < anneeAcademiques.getLength(); i++) {
                 if (anneeAcademiques.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                    System.out.println(anneeAcademiques.item(i).getNodeName());
                     Element annee = (Element) anneeAcademiques.item(i);
                     String an = annee.getAttribute("annee");
                     String db = annee.getAttribute("debut");
@@ -748,7 +723,6 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                     } else {
                         aa = academiqueDao.findByNumeroDebut(Integer.parseInt(an));
                     }
-//                    System.out.println(an+" : "+db+" : "+fn);
                     int j = 0;
                     NodeList notes = annee.getElementsByTagName("Note");
                     //TODO find a better means to deal with this
@@ -772,7 +746,6 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                                 n.setSession(Session.valueOf(session));
                             n.setValeur(Double.parseDouble(val));
                             noteDao.create(n);
-//                            System.out.println(cr+" : "+etdnt+" : "+eval+" : "+session+" : "+val);
                         }
                                
                     }
@@ -795,7 +768,6 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                             cred.setParcours(parcoursDao.findByNiveauOption(niveauDao.findByCode(nv), optionDao.findByCode(opt)));
                             cred.setValeur(Integer.parseInt(val));
                             creditDao.create(cred);
-//                            System.out.println(cr+" : "+nv+" : "+opt+" : "+val);
                         }
                                
                     }
@@ -815,7 +787,6 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                             insc.setEtudiant(etudiantDao.findByMatricule(etdnt));
                             insc.setParcours(parcoursDao.findByNiveauOption(niveauDao.findByCode(nv), optionDao.findByCode(opt)));
                             inscriptionDao.create(insc);
-//                            System.out.println(etdnt+" : "+nv+" : "+opt);
                         }
                                
                     }
@@ -843,7 +814,6 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                             ensg.setEnseignants(ens);
                             ensg.setParcours(parcoursDao.findByNiveauOption(niveauDao.findByCode(nv), optionDao.findByCode(opt)));
                             enseignementDao.create(ensg);
-//                            System.out.println(cr+" : "+nv+" : "+opt);
                         }
                                
                     }
@@ -865,22 +835,14 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                             pgrmm.setUniteEnseignement(uniteEnseignementDao.findByCode(uni));
                             pgrmm.setParcours(parcoursDao.findByNiveauOption(niveauDao.findByCode(nv), optionDao.findByCode(opt)));
                             programmeDao.create(pgrmm);
-//                            System.out.println(smstr+" : "+uni+" : "+nv+" : "+opt);
                         }
                                
                     }
                 }
             }
-//            RestaurationError erreur = new RestaurationError(0, null);
             erreur.setNombresErreurs(nombresErreurs);
             return erreur;
-        } catch (ParserConfigurationException ex) {
-            Logger.getLogger(DatabaseBackupServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SAXException ex) {
-            Logger.getLogger(DatabaseBackupServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(DatabaseBackupServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (DataAccessException ex) {
+        } catch (ParserConfigurationException | SAXException | IOException | DataAccessException ex) {
             Logger.getLogger(DatabaseBackupServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
