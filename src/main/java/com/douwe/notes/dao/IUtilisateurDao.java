@@ -12,7 +12,9 @@ public interface IUtilisateurDao extends IDao<Utilisateur, Long>{
     
     public Utilisateur findUtilisateurByLoginAndPassword(String login, String password) throws DataAccessException;
     
-    public Utilisateur findByUsernameAndAuthToken(String username, String token) throws DataAccessException;
-    
-    public Utilisateur findByAuthToken(String token) throws DataAccessException;
+//    public Utilisateur findByUsernameAndAuthToken(String username, String token) throws DataAccessException;
+//    
+//    public Utilisateur findByAuthToken(String token) throws DataAccessException;
+
+    public Utilisateur findByLogin(String username);
 }

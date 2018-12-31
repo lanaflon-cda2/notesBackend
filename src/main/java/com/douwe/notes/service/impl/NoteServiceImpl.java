@@ -471,8 +471,11 @@ public class NoteServiceImpl implements INoteService {
                     result.getCredits().put(cours.getCours().getIntitule(), cours.getCredit());
                     result.getSessions().add(n.getSession());
                     // TODO I need to review something here
-                    result.getNotes().put(cours.getCours().getIntitule(), n.getMoyenne());
-                    result.getAnnees().add(n.getAnnee());
+
+                    if (n.getMoyenne().isPresent()) {
+                        result.getNotes().put(cours.getCours().getIntitule(), n.getMoyenne());
+                        result.getAnnees().add(n.getAnnee());
+                    }
                 }
 
             }

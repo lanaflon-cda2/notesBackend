@@ -13,7 +13,7 @@ public class ApplicationConfig extends Application {
 
     @Override
     public Set<Class<?>> getClasses() {
-        Set<Class<?>> resources = new java.util.HashSet<Class<?>>();
+        Set<Class<?>> resources = new java.util.HashSet<>();
         resources.add(MultiPartFeature.class);
         addRestResourceClasses(resources);
         return resources;
@@ -28,7 +28,6 @@ public class ApplicationConfig extends Application {
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(com.douwe.notes.resource.JAXBMarshaller.class);
         resources.add(com.douwe.notes.resource.impl.AnneeResource.class);
-        resources.add(com.douwe.notes.resource.impl.AuthSecurityInterceptor.class);
         resources.add(com.douwe.notes.resource.impl.CoursResource.class);
         resources.add(com.douwe.notes.resource.impl.CreditResource.class);
         resources.add(com.douwe.notes.resource.impl.CycleResource.class);
@@ -50,7 +49,6 @@ public class ApplicationConfig extends Application {
         resources.add(com.douwe.notes.resource.impl.TypeCoursResource.class);
         resources.add(com.douwe.notes.resource.impl.UniteEnseignementResource.class);
         resources.add(com.douwe.notes.resource.impl.DatabaseBackupResource.class);
-        resources.add(com.douwe.notes.resource.impl.UtilisateurResource.class);
     }
     
 }

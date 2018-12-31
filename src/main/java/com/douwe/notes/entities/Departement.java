@@ -60,9 +60,9 @@ public class Departement implements Serializable {
     @Column(columnDefinition = "int default 1")
     private int active;
     
-    @XmlTransient
-    @OneToMany(mappedBy = "departement")
-    private List<Utilisateur> utilisateurs;
+//    @XmlTransient
+//    @OneToMany(mappedBy = "departement")
+//    private List<Utilisateur> utilisateurs;
     
     public Departement(){
         
@@ -120,13 +120,13 @@ public class Departement implements Serializable {
         this.englishDescription = englishDescription;
     }
 
-    public List<Utilisateur> getUtilisateurs() {
-        return utilisateurs;
-    }
-
-    public void setUtilisateurs(List<Utilisateur> utilisateurs) {
-        this.utilisateurs = utilisateurs;
-    }
+//    public List<Utilisateur> getUtilisateurs() {
+//        return utilisateurs;
+//    }
+//
+//    public void setUtilisateurs(List<Utilisateur> utilisateurs) {
+//        this.utilisateurs = utilisateurs;
+//    }
     
     
 
