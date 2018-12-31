@@ -57,6 +57,8 @@ import java.util.logging.Logger;
 import javax.inject.Named;
 import com.douwe.notes.service.IDatabaseBackupService;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
@@ -81,6 +83,8 @@ import org.xml.sax.SAXException;
  */
 @Named
 public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
+    
+    private transient DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
     
     @Inject
     private IAnneeAcademiqueDao academiqueDao;
@@ -408,7 +412,7 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
 
         t.transform(source, result);
         Date date = new Date();
-        String filename = "sauvegarde_du_"+date.toGMTString().replaceFirst(" GMT", "").replaceAll(" ", "/");
+        String filename = "sauvegarde_du_"+df.format(date);
         return filename;
     }
 
