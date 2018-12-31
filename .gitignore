@@ -12,3 +12,5 @@ target/
 /src/main/webapp/WEB-INF/beans.xml
 /src/main/setup/glassfish-resources.xml
 /src/main/resources/META-INF/persistence.xml
+/src/main/webapp/node/
+/src/main/webapp/node_modules/
