@@ -115,7 +115,7 @@ public class RelevetDocument implements IRelevetDocument {
     private final DateFormat dateFormatter;
 
     private final DateFormat anneeFormatter;
-    
+
     MessageHelper msgHelper = new MessageHelper();
 
     public RelevetDocument() {
@@ -256,25 +256,26 @@ public class RelevetDocument implements IRelevetDocument {
             PdfWriter writer = PdfWriter.getInstance(doc, stream);
             writer.setPageEvent(new ReleveDecorator());
             doc.setPageSize(PageSize.A4);
-            doc.setMargins(24, 24, 24, 24);
+            doc.setMargins(24, 24, 20, 20);
+            //doc.setma
             doc.open();
             AnneeAcademique annee = academiqueDao.findById(anneeId);
             Option option = optionDao.findById(optionId);
             Niveau niveau = niveauDao.findById(niveauId);
             // Nouvel algorithm
             List<Etudiant> etudiants;
-            if(niveau.isTerminal()){
+            if (niveau.isTerminal()) {
                 etudiants = etudiantDao.listeEtudiantParDepartementEtNiveau(option.getDepartement(), annee, niveau, option);
-            }else{
+            } else {
                 etudiants = etudiantDao.listeEtudiantsAnnee(niveau, option, annee);
             }
             Map<String, RelevetEtudiantNotesInfos> infos = computeInfosOfAllStudents(etudiants, annee, niveau, option);
-             // Il faut vérifier si l'id de l"tudiant est null
+            // Il faut vérifier si l'id de l"tudiant est null
             if (etudiantId != null) {
                 Etudiant etudiant = etudiantDao.findById(etudiantId);
-                if(etudiant != null){
+                if (etudiant != null) {
                     RelevetEtudiantNotesInfos inf = infos.get(etudiant.getMatricule());
-                    if (/*inf.isaToutValide() && */(!niveau.isTerminal() || inf.getMgpCycle() != null)) {
+                    if (/*inf.isaToutValide() &&*/ (!niveau.isTerminal() || inf.getMgpCycle() != null)) {
                         produceRelevetEtudiant(doc, etudiant, niveau, option, annee, inf);
                         //doc.newPage();
                     }
@@ -285,7 +286,7 @@ public class RelevetDocument implements IRelevetDocument {
                     if (/*inf.isaToutValide() && */(!niveau.isTerminal() || inf.getMgpCycle() != null)) {
                         doc.newPage();
                         produceRelevetEtudiant(doc, etudiant, niveau, option, annee, inf);
-                        
+
                     }
                 }
             }
@@ -346,12 +347,16 @@ public class RelevetDocument implements IRelevetDocument {
     private void produceRelevetTitle(Document doc, int annee) {
         try {
             Font font = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD);
-            doc.add(new Phrase("\n", new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)));
+            doc.add(new Phrase("\n", new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.NORMAL)));
             StringBuilder str = new StringBuilder();
 
             str.append(msgHelper.getProperty("releve.releveTitle.titre"));
             str.append(msgHelper.getProperty("releve.releveTitle.no"));
-            str.append(msgHelper.getProperty("releve.releveTitle.daacr"));
+            if (annee <= 2016) {
+                str.append(msgHelper.getProperty("releve.releveTitle.daacr"));
+            } else {
+                str.append(msgHelper.getProperty("releve.releveTitle.daacr2"));
+            }
             str.append(annee);
             Phrase phrase = new Phrase(str.toString(), font);
             doc.add(phrase);
@@ -548,15 +553,17 @@ public class RelevetDocument implements IRelevetDocument {
             Map<String, String> semtrs = infos.getSemestres();
             int nombreCours = ues.size();
             float padding = 6f * 16 / nombreCours;
-            
+            if(nombreCours > 20)
+                padding = 5f * 16 / nombreCours;
+
             if (estTerminale) {
-               // padding = 5.8f * 16 / nombreCours;
+                // padding = 5.8f * 16 / nombreCours;
                 padding = 4.0f * 16 / nombreCours;
             }
             for (UEnseignementCredit ue : ues) {
                 if (ue.getCredit() != 0) {
                     Double value = notes.get(ue.getCodeUE());
-                    if (value < 10) {
+                    if ((value == null) ||(value < 10)) {
                         aToutValide = false;
                     }
                     //nombreCredit += ue.getCredit();
@@ -730,12 +737,13 @@ public class RelevetDocument implements IRelevetDocument {
             cell1.setHorizontalAlignment(Element.ALIGN_LEFT);
             //cell1.setVerticalAlignment(Element.ALIGN_LEFT);
             cell1.setBorderColor(BaseColor.WHITE);
-            cell1.setPaddingBottom(15f);
+            cell1.setPaddingBottom(5f);
             date.addCell(cell1);
             date.addCell(removeBorder(new PdfPCell()));
             date.addCell(removeBorder(new PdfPCell()));
 
             PdfPCell cell2 = new PdfPCell();
+            
             cell2.addElement(new Phrase(msgHelper.getProperty("releve.releveFooter.date"), font2));
             cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell2.setHorizontalAlignment(Element.ALIGN_RIGHT);
@@ -800,10 +808,11 @@ public class RelevetDocument implements IRelevetDocument {
             } else {
                 aa = academiqueDao.findLastInscriptionYear(etudiant, niveau, option);
             }
-            
-            System.out.println("Etudiant "+ etudiant.getNom()+" first is null "+(aa==null)+" second is null "+(annee == null)+" le niveau "+niveau.getCode());
-            if(aa == null)
+
+            System.out.println("Etudiant " + etudiant.getNom() + " first is null " + (aa == null) + " second is null " + (annee == null) + " le niveau " + niveau.getCode());
+            if (aa == null) {
                 return infos;
+            }
             if (aa.getNumeroDebut() > annee.getNumeroDebut()) {
                 aa = annee;
             }
@@ -825,27 +834,29 @@ public class RelevetDocument implements IRelevetDocument {
             for (Semestre semestre : semestres) {
                 List<UniteEnseignement> uniteEns = uniteEnsDao.findByUniteNiveauOptionSemestre(niveau, option, semestre, aa);
                 List<UEnseignementCredit> ues1 = uniteEnsDao.findByNiveauOptionSemestre(niveau, option, semestre, aa);
-                Map<String, MoyenneUniteEnseignement> note = noteService.listeNoteUniteEnseignement(etudiant.getMatricule(),niveau.getId(), annee.getId(), aa.getId(), uniteEns);
+                Map<String, MoyenneUniteEnseignement> note = noteService.listeNoteUniteEnseignement(etudiant.getMatricule(), niveau.getId(), annee.getId(), aa.getId(), uniteEns);
                 //unites.addAll(uniteEns);
                 //credits.addAll(ues1);
                 for (UEnseignementCredit ue : ues1) {
                     MoyenneUniteEnseignement mue = note.get(ue.getCodeUE());
-                    Double value = mue.getMoyenne();
-                    Double noteMgp = DocumentUtil.transformNoteMgpUE(value);
-                    Session session = mue.getSession();
-                    mgp.put(ue.getCodeUE(), noteMgp);
-                    String sem = "";
-                    if (mue.getAnneeAcademique() != null) {
-                        sem = semestreToRoman(semestre) + "(" + mue.getAnneeAcademique().toString() + ")";
-                    }
-                    semes.put(ue.getCodeUE(), sem);
-                    notes.put(ue.getCodeUE(), value);
-                    sessions.put(ue.getCodeUE(), session);
-                    produit += value * ue.getCredit();
-                    produitMgp += noteMgp * ue.getCredit();
-                    nombreCredit += ue.getCredit();
-                    if (value >= 10) {
-                        nombreCreditValide += ue.getCredit();
+                    Double value = mue.getMoyenne().orElseGet(() -> null);
+                    if (value != null) {
+                        Double noteMgp = DocumentUtil.transformNoteMgpUE(value);
+                        Session session = mue.getSession();
+                        mgp.put(ue.getCodeUE(), noteMgp);
+                        String sem = "";
+                        if (mue.getAnneeAcademique() != null) {
+                            sem = semestreToRoman(semestre) + "(" + mue.getAnneeAcademique().toString() + ")";
+                        }
+                        semes.put(ue.getCodeUE(), sem);
+                        notes.put(ue.getCodeUE(), value);
+                        sessions.put(ue.getCodeUE(), session);
+                        produit += value * ue.getCredit();
+                        produitMgp += noteMgp * ue.getCredit();
+                        nombreCredit += ue.getCredit();
+                        if (value >= 10) {
+                            nombreCreditValide += ue.getCredit();
+                        }
                     }
                 }
             }
@@ -913,8 +924,8 @@ public class RelevetDocument implements IRelevetDocument {
         infos.setMoyenne((Math.round(((produit * 1.0) / nombreCredit) * 100.0) / 100.0));
         } catch (ServiceException ex) {
         Logger.getLogger(RelevetDocument.class.getName()).log(Level.SEVERE, null, ex);
-        }*/ 
-        /*  try {
+        }*/
+ /*  try {
 
             Map<String, MoyenneUniteEnseignement> notes1 = noteService.listeNoteUniteEnseignement(e.getMatricule(), a.getId(), a.getId(), uniteEns1);
             Map<String, MoyenneUniteEnseignement> notes2 = noteService.listeNoteUniteEnseignement(e.getMatricule(), a.getId(), a.getId(), uniteEns2);

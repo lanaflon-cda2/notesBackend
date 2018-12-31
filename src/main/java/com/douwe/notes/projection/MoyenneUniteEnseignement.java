@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -24,24 +25,24 @@ public class MoyenneUniteEnseignement {
 
     private Map<String, Integer> credits;
 
-    private Map<String, Double> notes;
-    
+    private Map<String, Optional<Double>> notes;
+
     private final boolean avecComposantesOptionnelles;
-    
-    public MoyenneUniteEnseignement(){
+
+    public MoyenneUniteEnseignement() {
         this(false);
     }
 
     public MoyenneUniteEnseignement(boolean type) {
-        annees = new ArrayList<AnneeAcademique>();
-        sessions = new ArrayList<Session>();
-        credits = new HashMap<String, Integer>();
-        notes = new HashMap<String, Double>();
+        annees = new ArrayList<>();
+        sessions = new ArrayList<>();
+        credits = new HashMap<>();
+        notes = new HashMap<>();
         avecComposantesOptionnelles = type;
     }
 
     public Session getSession() {
-        Session result = null;
+        Session result = null;//Session.normale;
         if (!sessions.isEmpty()) {
             result = sessions.get(0);
             for (Session sess : sessions) {
@@ -55,38 +56,51 @@ public class MoyenneUniteEnseignement {
 
     public AnneeAcademique getAnneeAcademique() {
         AnneeAcademique result = null;
-        if(!annees.isEmpty()){
+        if (!annees.isEmpty()) {
             result = annees.get(0);
             for (AnneeAcademique annee : annees) {
-                if(result.getDebut().after(annee.getDebut()))
+                if (result.getDebut().after(annee.getDebut())) {
                     result = annee;
+                }
             }
         }
         return result;
     }
 
-    public double getMoyenne() {
+    public Optional<Double> getMoyenne() {
         double result = 0.0;
+        if (notes.size() == 1) {
+            return notes.values().iterator().next();
+        }
         int creditTotal = getNombreCredit();
-        for (Map.Entry<String, Double> entrySet : notes.entrySet()) {
+        for (Map.Entry<String, Optional<Double>> entrySet : notes.entrySet()) {
             String key = entrySet.getKey();
-            Double value = entrySet.getValue();
+            Optional<Double> val = entrySet.getValue();
             int credit = credits.get(key);
-            if(avecComposantesOptionnelles){
-                if(result < value * credit)
+            if (avecComposantesOptionnelles) {
+                if (!val.isPresent()) {
+                    continue;
+                }
+                double value = val.get();
+                if (result < value * credit) {
                     result = value * credit;
-            }else{
-                result += value  * credit;
+                }
+            } else {
+                if ((!val.isPresent()) && (credit != 0)) {
+                    return Optional.empty();
+                }
+
+                result += val.get() * credit;
             }
         }
-        return (creditTotal != 0)? result / creditTotal: result;
+        return Optional.of((creditTotal != 0) ? result / creditTotal : result);
     }
-    
-    private int getNombreCredit(){
+
+    private int getNombreCredit() {
         int result = 0;
         for (Map.Entry<String, Integer> entrySet : credits.entrySet()) {
             Integer value = entrySet.getValue();
-            if(avecComposantesOptionnelles){
+            if (avecComposantesOptionnelles) {
                 result = value;
                 break;
             }
@@ -94,15 +108,16 @@ public class MoyenneUniteEnseignement {
         }
         return result;
     }
-    
-    public int getCredit(){
+
+    public int getCredit() {
         int result = 0;
-        if(!credits.isEmpty()){
+        if (!credits.isEmpty()) {
             for (Map.Entry<String, Integer> entrySet : credits.entrySet()) {
                 Integer value = entrySet.getValue();
                 result += value;
-                if(avecComposantesOptionnelles)
+                if (avecComposantesOptionnelles) {
                     break;
+                }
             }
         }
         return result;
@@ -120,7 +135,7 @@ public class MoyenneUniteEnseignement {
         this.credits = credits;
     }
 
-    public void setNotes(Map<String, Double> notes) {
+    public void setNotes(Map<String, Optional<Double>> notes) {
         this.notes = notes;
     }
 
@@ -136,8 +151,8 @@ public class MoyenneUniteEnseignement {
         return credits;
     }
 
-    public Map<String, Double> getNotes() {
+    public Map<String, Optional<Double>> getNotes() {
         return notes;
     }
-    
+
 }

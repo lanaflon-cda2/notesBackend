@@ -10,8 +10,12 @@ angular.module("notesApp.deliberations.controllers", []).controller("Deliberatio
         var anns = Annee.query(function () {
             $scope.annees = anns;
         });
-        $scope.infInclusive = false;
+        $scope.infInclusive = true;
         $scope.supInclusive = false;
+        $scope.strict = true;
+        $scope.borneInf =  9;
+        $scope.borneSup = 10;
+        $scope.moyenneFinale = 10;
         $scope.updateOptions = function () {
             if (($scope.departement) && ($scope.niveau)) {
                 $http.get('api/options/' + $scope.departement.id + '/' + $scope.niveau.id).success(function (data, status, config, headers) {
@@ -40,6 +44,7 @@ angular.module("notesApp.deliberations.controllers", []).controller("Deliberatio
             fd.append("infInclusive", $scope.infInclusive);
             fd.append("supInclusive", $scope.supInclusive);
             fd.append("moyenne", $scope.moyenneFinale);
+            fd.append("strict", $scope.strict);
             if ($scope.session)
                 fd.append("session", $scope.session);
             $http.post('api/notes/deliberation', fd, {
@@ -67,6 +72,7 @@ angular.module("notesApp.deliberations.controllers", []).controller("Deliberatio
             fd.append("infInclusive", $scope.infInclusive);
             fd.append("supInclusive", $scope.supInclusive);
             fd.append("moyenne", $scope.moyenneFinale);
+            fd.append("strict", $scope.strict);
             if ($scope.session)
                 fd.append("session", $scope.session);
             $http.put('api/notes/deliberation', fd, {

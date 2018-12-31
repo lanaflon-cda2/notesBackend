@@ -74,7 +74,8 @@ public interface INoteResource {
                                                 @DefaultValue("true") @FormDataParam("infInclusive")boolean isInfInclusive, 
                                                 @FormDataParam("borneSup")double borneSup, 
                                                 @DefaultValue("false") @FormDataParam("supInclusive")boolean isSupInclusive, 
-                                                @DefaultValue("10") @FormDataParam("moyenne")double finale);
+                                                @DefaultValue("10") @FormDataParam("moyenne")double finale,
+                                                @DefaultValue("false") @FormDataParam("strict") boolean strict);
     
     @PUT
     @Path("deliberation")
@@ -88,7 +89,8 @@ public interface INoteResource {
                                                 @DefaultValue("true") @FormDataParam("infInclusive")boolean isInfInclusive, 
                                                 @FormDataParam("borneSup")double borneSup, 
                                                 @DefaultValue("false") @FormDataParam("supInclusive")boolean isSupInclusive, 
-                                                @DefaultValue("10") @FormDataParam("moyenne")double finale);
+                                                @DefaultValue("10") @FormDataParam("moyenne")double finale,
+                                                @DefaultValue("false") @FormDataParam("strict") boolean strict);
     
     // Debut mes tests. A supprimer a la fin bien sur
     @GET

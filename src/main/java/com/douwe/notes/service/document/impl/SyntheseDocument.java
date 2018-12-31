@@ -42,6 +42,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -376,7 +377,7 @@ public class SyntheseDocument implements ISyntheseDocument {
                     for (UEnseignementCredit ue : ues) {
                         MoyenneUniteEnseignement mue = notes.get(ue.getCodeUE());
 
-                        double value = mue.getMoyenne();
+                        double value = mue.getMoyenne().orElseGet(() -> null);
                         sumMoyenne += value * ue.getCredit();
                         nombreCredit += ue.getCredit();
                         if (value >= 10) {
@@ -559,20 +560,32 @@ public class SyntheseDocument implements ISyntheseDocument {
                         //Double value = notes.get(ue)
                         MoyenneUniteEnseignement mue = notes.get(ue.getCodeUE());
 
-                        double value = 0.0;
+                        Double value = 0.0;
                         if (mue != null) {
-                            value = mue.getMoyenne();
-                            if ((mue.getAnneeAcademique() != a) && (value < 10)) {
-                                value = 0.0;
-                            }
-                            sumMoyenne1 += value * ue.getCredit();
-                            produitMgp += DocumentUtil.transformNoteMgpUE(value) * ue.getCredit();
-                            if (value >= 10) {
-                                nbrCreditValide1 += ue.getCredit();
+                            value = mue.getMoyenne().orElseGet(() -> null);
+                            if (value != null) {
+                                System.out.println(String.format("1 - Valeur %.2f et session %s\n", value, mue.getSession()));
+                                if ((value >= 10) || (mue.getSession() != Session.normale)) {
+                                    System.out.println("2 - Hello");
+                                    if ((mue.getAnneeAcademique() != a) && (value < 10)) {
+                                        value = null;
+                                    }
+                                    if (value != null) {
+                                        sumMoyenne1 += value * ue.getCredit();
+                                        produitMgp += DocumentUtil.transformNoteMgpUE(value) * ue.getCredit();
+
+                                        if (value >= 10) {
+                                            nbrCreditValide1 += ue.getCredit();
+                                        }
+                                    }
+                                } else {
+                                    System.out.println("2 - Bonsoir");
+                                    value = null;
+                                }
                             }
                         }
 
-                        table.addCell(DocumentUtil.createSyntheseDefaultBodyCell((value == 0.0) ? "" : String.format("%.2f", value), (mue.getSession() == Session.normale) ? bf1 : rattra, false, true));
+                        table.addCell(DocumentUtil.createSyntheseDefaultBodyCell((value == null) ? "" : String.format("%.2f", value), (mue.getSession() == Session.normale) ? bf1 : rattra, false, true));
                     }
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", Math.ceil(sumMoyenne1 * 100 / creditSem1) / 100), bf1, true, true));
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.valueOf(nbrCreditValide1), bf1, true, true));
@@ -582,16 +595,30 @@ public class SyntheseDocument implements ISyntheseDocument {
                     Map<String, MoyenneUniteEnseignement> notes2 = noteService.listeNoteUniteEnseignement(etudiant.getMatricule(), n.getId(), a.getId(), annee.getId(), uniteEns2);
                     for (UEnseignementCredit ue : ues2) {
                         MoyenneUniteEnseignement mue = notes2.get(ue.getCodeUE());
-                        double value = 0.0;
+                        Double value = 0.0;
                         if (mue != null) {
-                            value = mue.getMoyenne();
-                            sumMoyenne2 += value * ue.getCredit();
-                            produitMgp += DocumentUtil.transformNoteMgpUE(value) * ue.getCredit();
-                            if (value >= 10) {
-                                nbrCreditValide2 += ue.getCredit();
+                            value = mue.getMoyenne().orElseGet(() -> null);
+                            if (value != null) {
+                                System.out.println(String.format("2 - Valeur %.2f et session %s\n", value, mue.getSession()));
+                                if ((value >= 10) || (mue.getSession() != Session.normale)) {
+                                    System.out.println("2 - Hello");
+                                    if ((mue.getAnneeAcademique() != a) && (value < 10)) {
+                                        value = null;
+                                    }
+                                    if (value != null) {
+                                        sumMoyenne2 += value * ue.getCredit();
+                                        produitMgp += DocumentUtil.transformNoteMgpUE(value) * ue.getCredit();
+                                        if (value >= 10) {
+                                            nbrCreditValide2 += ue.getCredit();
+                                        }
+                                    }
+                                } else {
+                                    System.out.println("2 - Bonsoir");
+                                    value = null;
+                                }
                             }
                         }
-                        table.addCell(DocumentUtil.createSyntheseDefaultBodyCell((value == 0.0) ? "" : String.format("%.2f", value), (mue.getSession() == Session.normale) ? bf1 : rattra, false, true));
+                        table.addCell(DocumentUtil.createSyntheseDefaultBodyCell((value == null) ? "" : String.format("%.2f", value), (mue.getSession() == Session.normale) ? bf1 : rattra, false, true));
                     }
                     produitMgp /= (creditSem1 + creditSem2);
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", (sumMoyenne2 / creditSem2)), bf1, true, true));
@@ -604,26 +631,31 @@ public class SyntheseDocument implements ISyntheseDocument {
                     //table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", ((((nbrCreditValide1 + nbrCreditValide2) * 1.0 / (creditSem1 + creditSem2))) * 100)), bf1, true, true));
                     String decision = msgHelper.getProperty("synthese.annuelleBody.decisionRedouble");
                     int totalCredits = nbrCreditValide1 + nbrCreditValide2;
-                    switch(n.getCode()){
-                        case "Licence 1":
-                            if ((totalCredits >= 45) || (nbrCreditValide1 == 30) || (nbrCreditValide2 == 30))
+                    switch (n.getCode()) {
+                        case "Niveau 1":
+                            if ((totalCredits >= 45) || (nbrCreditValide1 == 30) || (nbrCreditValide2 == 30)) {
                                 decision = msgHelper.getProperty("synthese.annuelleBody.decisionAdmis");
+                            }
                             break;
-                        case "Licence 2":
-                            if (totalCredits >= 40)
+                        case "Niveau 2":
+                            if (totalCredits >= 40) {
                                 decision = msgHelper.getProperty("synthese.annuelleBody.decisionAdmis");
+                            }
                             break;
-                        case "Licence 3":
-                            if (totalCredits >= 60)
+                        case "Niveau 3":
+                            if (totalCredits >= 60) {
                                 decision = msgHelper.getProperty("synthese.annuelleBody.decisionAdmis");
+                            }
                             break;
-                        case "Master 1":
-                            if ((nbrCreditValide2 == 30) && (totalCredits >= 46))
+                        case "Niveau 4":
+                            if ((nbrCreditValide2 == 30) && (totalCredits >= 46)) {
                                 decision = msgHelper.getProperty("synthese.annuelleBody.decisionAdmis");
+                            }
                             break;
-                        case "Master 2":
-                            if (totalCredits >= 60)
+                        case "Niveau 5":
+                            if (totalCredits >= 60) {
                                 decision = msgHelper.getProperty("synthese.annuelleBody.decisionAdmis");
+                            }
                     }
                     table.addCell(DocumentUtil.createSyntheseDefaultBodyCell(String.format("%.2f", produitMgp), bf1, true, true));
                     table.addCell(DocumentUtil.createDefaultBodyCell(decision, bf1, false));

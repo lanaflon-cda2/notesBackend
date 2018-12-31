@@ -119,43 +119,52 @@ public class SyntheseDiplomationDocument implements ISyntheseDiplomationDocument
             Font bf12 = new Font(Font.FontFamily.TIMES_ROMAN, 8);
             Font bf = new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD);
             // Définition de l'entete du document
+            // Définition de l'entete du document
             StringBuilder builder = new StringBuilder("République du Cameroun\n");
-            builder.append("****\n");
             builder.append("Paix -- Travail -- Patrie\n");
             builder.append("****\n");
-            builder.append("Ministère l'Enseignement Supérieur\n");
+            builder.append("Ministère de l'Enseignement Supérieur\n");
             builder.append("****\n");
             builder.append("Université de Maroua\n");
             builder.append("****\n");
-            builder.append("Institut Supérieur du Sahel");
-            if (departement != null) {
-                builder.append("\n****\n");
-                builder.append(departement.getFrenchDescription());
+            if (annee.getNumeroDebut() < 2017) {
+                builder.append("Institut Supérieur du Sahel");
+            } else {
+                builder.append("École Nationale Supérieure Polytechnique de Maroua");
             }
+
             Paragraph frecnch = new Paragraph(new Phrase(builder.toString(), bf12));
             frecnch.setAlignment(Element.ALIGN_CENTER);
             builder = new StringBuilder();
             builder.append("Republic of Cameroon\n");
-            builder.append("****\n");
             builder.append("Peace -- Work -- Fatherland\n");
             builder.append("****\n");
             builder.append("The Ministry of Higher Education\n");
             builder.append("****\n");
             builder.append("The University of Maroua\n");
             builder.append("****\n");
-            builder.append("The Higher Institute of the Sahel");
-            if (departement != null) {
-                builder.append("\n****\n");
-                builder.append(departement.getEnglishDescription());
+            if (annee.getNumeroDebut() < 2017) {
+                builder.append("The Higher Institute of the Sahel");
+            } else {
+                builder.append("National Advanced School of Engineering of Maroua");
             }
+
             Paragraph eng = new Paragraph(new Phrase(builder.toString(), bf12));
             eng.setAlignment(Element.ALIGN_CENTER);
             builder = new StringBuilder();
             builder.append(msgHelper.getProperty("header.adress"));
+
             builder.append(msgHelper.getProperty("header.tel"));
             builder.append(msgHelper.getProperty("header.fax"));
-            builder.append(msgHelper.getProperty("header.mail"));
-            builder.append(msgHelper.getProperty("header.site"));
+            /*builder.append(msgHelper.getProperty("header.mail"));
+            builder.append(msgHelper.getProperty("header.site"));*/
+            if (annee.getNumeroDebut() < 2017) {
+                builder.append(msgHelper.getProperty("header.mail"));
+                builder.append(msgHelper.getProperty("header.site"));
+            } else {
+                builder.append(msgHelper.getProperty("header.mail2"));
+                builder.append(msgHelper.getProperty("header.site2"));
+            }
             Paragraph coordonnees = new Paragraph(new Phrase(builder.toString(), bf12));
             coordonnees.setAlignment(Element.ALIGN_CENTER);
             float widths2[] = {3, 4, 3};
@@ -308,7 +317,7 @@ public class SyntheseDiplomationDocument implements ISyntheseDiplomationDocument
                     if (eNiveau) {
                         // I need to work hard here or maybe before
                         if (status != 0) {
-                            cell = new PdfPCell(new Phrase("Admis en "+niv.getCode().toLowerCase(), bf));
+                            cell = new PdfPCell(new Phrase("Admis au " + niv.getCode().toLowerCase(), bf));
                             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                             cell.setColspan(status);
@@ -321,12 +330,12 @@ public class SyntheseDiplomationDocument implements ISyntheseDiplomationDocument
                         cell.setPadding(4f);
                         cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
                         ptable.addCell(cell);
-                        cell = new PdfPCell(new Phrase((mgp == null) ? " ":String.format("%.2f", mgp), bf12));
+                        cell = new PdfPCell(new Phrase((mgp == null) ? " " : String.format("%.2f", mgp), bf12));
                         cell.setPadding(4f);
                         cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
                         ptable.addCell(cell);
                     } else {
-                        status+=2;
+                        status += 2;
                     }
                 }
                 cell = new PdfPCell(new Phrase(String.valueOf(nombreCredit), bf12));
@@ -334,19 +343,21 @@ public class SyntheseDiplomationDocument implements ISyntheseDiplomationDocument
                 cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
                 ptable.addCell(cell);
                 Double val = etudiantCycle.getMgp();
-                cell = new PdfPCell(new Phrase(val== null ? " ": String.format("%.2f", val), bf12));
+                cell = new PdfPCell(new Phrase(val == null ? " " : String.format("%.2f", val), bf12));
                 cell.setPadding(4f);
                 ptable.addCell(cell);
-                if(val != null)
+                if (val != null) {
                     cell = new PdfPCell(new Phrase("Admis", bf12));
-                else
+                } else {
                     cell = new PdfPCell(new Phrase("Refusé", bf12));
+                }
                 cell.setPadding(4f);
                 ptable.addCell(cell);
-                if(val != null)
+                if (val != null) {
                     cell = new PdfPCell(new Phrase(DocumentUtil.transformMoyenneMgpToMentionRelevet(val), bf12));
-                else
+                } else {
                     cell = new PdfPCell(new Phrase("", bf12));
+                }
                 cell.setPadding(4f);
                 ptable.addCell(cell);
 

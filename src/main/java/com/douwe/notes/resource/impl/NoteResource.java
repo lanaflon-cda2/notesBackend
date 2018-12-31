@@ -268,9 +268,9 @@ public class NoteResource implements INoteResource {
     }
 
     @Override
-    public List<DeliberationItem> listeDeliberation(long niveauId, long optionId, long coursId, long anneeId, int session, double borneInf, boolean isInfInclusive, double borneSup, boolean isSupInclusive, double finale) {
+    public List<DeliberationItem> listeDeliberation(long niveauId, long optionId, long coursId, long anneeId, int session, double borneInf, boolean isInfInclusive, double borneSup, boolean isSupInclusive, double finale, boolean strict) {
         try {
-            return noteService.listeDeliberation(niveauId, optionId, coursId, anneeId, session, borneInf, isInfInclusive, borneSup, isSupInclusive, finale);
+            return noteService.listeDeliberation(niveauId, optionId, coursId, anneeId, session, borneInf, isInfInclusive, borneSup, isSupInclusive, finale, strict);
         } catch (ServiceException ex) {
             Logger.getLogger(NoteResource.class.getName()).log(Level.SEVERE, null, ex);
             throw new WebApplicationException(400);
@@ -278,9 +278,9 @@ public class NoteResource implements INoteResource {
     }
 
     @Override
-    public String deliberer(long niveauId, long optionId, long coursId, long anneeId, int session, double borneInf, boolean isInfInclusive, double borneSup, boolean isSupInclusive, double finale) {
+    public String deliberer(long niveauId, long optionId, long coursId, long anneeId, int session, double borneInf, boolean isInfInclusive, double borneSup, boolean isSupInclusive, double finale, boolean strict) {
         try {
-            return String.valueOf(noteService.delibererCours(niveauId, optionId, coursId, anneeId, session, borneInf, isInfInclusive, borneSup, isSupInclusive, finale));
+            return String.valueOf(noteService.delibererCours(niveauId, optionId, coursId, anneeId, session, borneInf, isInfInclusive, borneSup, isSupInclusive, finale, strict));
         } catch (ServiceException ex) {
             Logger.getLogger(NoteResource.class.getName()).log(Level.SEVERE, null, ex);
             throw new WebApplicationException(400);
@@ -289,7 +289,7 @@ public class NoteResource implements INoteResource {
 
     @Override
     public List<NoteTransfer> getNoteEtudiantCours(String matricule, long coursId, long anneeId) {
-        List<NoteTransfer> result = new ArrayList<NoteTransfer>();
+        List<NoteTransfer> result = new ArrayList<>();
         try {
             List<Note> notes =  noteService.listeNoteEtudiant(matricule, coursId, anneeId);
             for (Note note : notes) {

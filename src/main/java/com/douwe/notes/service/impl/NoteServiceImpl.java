@@ -410,7 +410,7 @@ public class NoteServiceImpl implements INoteService {
             Niveau niveau = niveauDao.findById(niveauId);
             try {
                 annee = academiqueDao.findLastYearNote(etudiant, niveau, c, annee);
-                
+
             } catch (NoResultException nre) {
                 annee = null;
             }
@@ -461,10 +461,17 @@ public class NoteServiceImpl implements INoteService {
             for (CoursCredit cours : liste) {
                 EtudiantNotes n = getNoteEtudiant(matricule, niveauId, cours.getCours().getId(), anneeId);
                 if (n != null) {
+                    /*if (n.getMoyenne().isPresent()) {
+                        result.getCredits().put(cours.getCours().getIntitule(), cours.getCredit());
+                        result.getSessions().add(n.getSession());
+                        // TODO I need to review something here
+                        result.getNotes().put(cours.getCours().getIntitule(), n.getMoyenne());
+                        result.getAnnees().add(n.getAnnee());
+                    }*/
                     result.getCredits().put(cours.getCours().getIntitule(), cours.getCredit());
                     result.getSessions().add(n.getSession());
                     // TODO I need to review something here
-                    result.getNotes().put(cours.getCours().getIntitule(), n.getMoyenne().get());
+                    result.getNotes().put(cours.getCours().getIntitule(), n.getMoyenne());
                     result.getAnnees().add(n.getAnnee());
                 }
 
@@ -500,14 +507,14 @@ public class NoteServiceImpl implements INoteService {
         Map<String, MoyenneUniteEnseignement> result = new HashMap<>();
 
         for (UniteEnseignement liste1 : ues) {
-            MoyenneUniteEnseignement res = getMoyenneUEEtudiant(matricule, niveauId,liste1.getId(), anneeId, aCourantId);
+            MoyenneUniteEnseignement res = getMoyenneUEEtudiant(matricule, niveauId, liste1.getId(), anneeId, aCourantId);
             result.put(liste1.getCode(), res);
         }
         return result;
     }
 
     @Override
-    public List<DeliberationItem> listeDeliberation(long niveauId, long optionId, long coursId, long anneeId, int session, double borneInf, boolean infInclusive, double borneSup, boolean supInclusive, double finale) throws ServiceException {
+    public List<DeliberationItem> listeDeliberation(long niveauId, long optionId, long coursId, long anneeId, int session, double borneInf, boolean infInclusive, double borneSup, boolean supInclusive, double finale, boolean strict) throws ServiceException {
 
         try {
             Cours c = coursDao.findById(coursId);
@@ -515,7 +522,7 @@ public class NoteServiceImpl implements INoteService {
             Option p = optionDao.findById(optionId);
             AnneeAcademique a = academiqueDao.findById(anneeId);
             Session s = Session.values()[session];
-            return lesDeliberation(c, n, p, a, s, infInclusive, borneInf, supInclusive, borneSup, finale);
+            return lesDeliberation(c, n, p, a, s, infInclusive, borneInf, supInclusive, borneSup, finale, strict);
         } catch (DataAccessException ex) {
             Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new WebApplicationException(400);
@@ -523,15 +530,16 @@ public class NoteServiceImpl implements INoteService {
 
     }
 
-    private List<DeliberationItem> lesDeliberation(Cours c, Niveau n, Option o, AnneeAcademique a, Session s, boolean infInclusive, double borneInf, boolean supInclusive, double borneSup, double finale) throws DataAccessException {
+    private List<DeliberationItem> lesDeliberation(Cours c, Niveau n, Option o, AnneeAcademique a, Session s, boolean infInclusive, double borneInf, boolean supInclusive, double borneSup, double finale, boolean strict) throws DataAccessException {
         List<DeliberationItem> result = new ArrayList<>();
 
         List<EtudiantNotes> toto = listeNoteEtudiant(c, a, n, o, s);
         for (EtudiantNotes toto1 : toto) {
             // I need to keep only those with values that belongs to the right interval
             // I need to review something here
-            if(!toto1.getMoyenne().isPresent())
+            if (!toto1.getMoyenne().isPresent()) {
                 continue;
+            }
             double moyenne = toto1.getMoyenne().get();
             boolean test1 = infInclusive ? moyenne >= borneInf : moyenne > borneInf;
             boolean test2 = supInclusive ? moyenne <= borneSup : moyenne < borneSup;
@@ -544,7 +552,9 @@ public class NoteServiceImpl implements INoteService {
                 // TODO Il fqut chercher un moyen pour recuperer le code de l'examen de la base de données
                 double noteAvant = toto1.getNote().get("EE");
                 double noteApres = ((finale - moyenne) * 100 / toto1.getDetails().get("EE")) + noteAvant;
-                noteApres = Math.ceil(noteApres * 4) / 4.0;
+                if (!strict) {
+                    noteApres = Math.ceil(noteApres * 4) / 4.0;
+                }
                 // TODO je dois surement eviter de faire ce genre de chose
                 toto1.getNote().put("EE", noteApres);
                 // TODO I need to review this code
@@ -558,7 +568,7 @@ public class NoteServiceImpl implements INoteService {
     }
 
     @Override
-    public int delibererCours(long niveauId, long optionId, long coursId, long anneeId, int session, double borneInf, boolean infInclusive, double borneSup, boolean supInclusive, double finale) throws ServiceException {
+    public int delibererCours(long niveauId, long optionId, long coursId, long anneeId, int session, double borneInf, boolean infInclusive, double borneSup, boolean supInclusive, double finale, boolean strict) throws ServiceException {
         int res = 0;
         try {
             Cours c = coursDao.findById(coursId);
@@ -566,7 +576,7 @@ public class NoteServiceImpl implements INoteService {
             Option p = optionDao.findById(optionId);
             AnneeAcademique a = academiqueDao.findById(anneeId);
             Session s = Session.values()[session];
-            List<DeliberationItem> result = lesDeliberation(c, n, p, a, s, infInclusive, borneInf, supInclusive, borneSup, finale);
+            List<DeliberationItem> result = lesDeliberation(c, n, p, a, s, infInclusive, borneInf, supInclusive, borneSup, finale, strict);
             Evaluation evaluation = evaluationDao.findExamen();
             for (DeliberationItem result1 : result) {
                 Etudiant e = etudiantDao.findByMatricule(result1.getMatricule());
@@ -659,7 +669,7 @@ public class NoteServiceImpl implements INoteService {
                     for (UEnseignementCredit ue : ues1) {
                         if (ue.getCredit() != 0) {
                             MoyenneUniteEnseignement mue = note.get(ue.getCodeUE());
-                            Double value = mue.getMoyenne();
+                            Double value = mue.getMoyenne().orElseGet(() -> 0.0);
                             //System.out.println("UE " + ue.getIntituleUE() + " et le MGP " + value);
                             Double noteMgp = DocumentUtil.transformNoteMgpUE(value);
                             int credit = ue.getCredit();
@@ -691,7 +701,7 @@ public class NoteServiceImpl implements INoteService {
     @Override
     public EtudiantNiveau calculerPerformanceNiveau(String matricule, long niveauId, long anneeId) throws ServiceException {
         EtudiantNiveau result = new EtudiantNiveau();
-        try {            
+        try {
             Etudiant etudiant = etudiantDao.findByMatricule(matricule);
             Niveau niveau = niveauDao.findById(niveauId);
             double produitMgp = 0;
@@ -713,11 +723,11 @@ public class NoteServiceImpl implements INoteService {
             List<UniteEnseignement> uniteEns = uniteEnseignementDao.findByUniteNiveauOptionSemestre(niveau, option, null, an);
             List<UEnseignementCredit> ues1 = uniteEnseignementDao.findByNiveauOptionSemestre(niveau, option, null, an);
             //System.out.println("*********** est null "+(an == null)+" et l'étudiant est "+etudiant.getNom());
-            Map<String, MoyenneUniteEnseignement> note = listeNoteUniteEnseignement(etudiant.getMatricule(), niveauId, anneeId, (an == null)?anneeId: an.getId(), uniteEns);
+            Map<String, MoyenneUniteEnseignement> note = listeNoteUniteEnseignement(etudiant.getMatricule(), niveauId, anneeId, (an == null) ? anneeId : an.getId(), uniteEns);
             for (UEnseignementCredit ue : ues1) {
                 if (ue.getCredit() != 0) {
                     MoyenneUniteEnseignement mue = note.get(ue.getCodeUE());
-                    Double value = mue.getMoyenne();
+                    Double value = mue.getMoyenne().orElseGet(() -> 0.0);
                     Double noteMgp = DocumentUtil.transformNoteMgpUE(value);
                     int credit = ue.getCredit();
                     if (value >= 10) {
@@ -752,7 +762,7 @@ public class NoteServiceImpl implements INoteService {
             double produitMgp = 0;
             int nombreCredit = 0;
             boolean validCycle = true;
-            for (Niveau niveau : niveaux) {                
+            for (Niveau niveau : niveaux) {
                 int creditCapitalise = 0;
                 int creditNiveau = 0;
                 double produitMgpNiveau = 0;
@@ -778,7 +788,7 @@ public class NoteServiceImpl implements INoteService {
                     for (UEnseignementCredit ue : ues1) {
                         if (ue.getCredit() != 0) {
                             MoyenneUniteEnseignement mue = note.get(ue.getCodeUE());
-                            Double value = mue.getMoyenne();
+                            Double value = mue.getMoyenne().orElseGet(() -> 0.0);
                             Double noteMgp = DocumentUtil.transformNoteMgpUE(value);
                             int credit = ue.getCredit();
                             if (value < 10) {
@@ -795,11 +805,13 @@ public class NoteServiceImpl implements INoteService {
                 nombreCredit += creditNiveau;
                 produitMgp += produitMgpNiveau;
                 result.addCreditNiveau(niveau.getCode(), creditCapitalise);
-                if(validNiveau)
+                if (validNiveau) {
                     result.addMGPNiveau(niveau.getCode(), Math.floor(produitMgpNiveau / creditNiveau * 100) / 100);
+                }
             }
-            if(validCycle)
+            if (validCycle) {
                 result.setMgp(Math.floor(produitMgp / nombreCredit * 100) / 100);
+            }
         } catch (DataAccessException ex) {
             Logger.getLogger(NoteServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }

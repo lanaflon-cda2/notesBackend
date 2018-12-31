@@ -65,14 +65,13 @@ public class DocumentCommon {
         Font fontEntete = new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD);
         // Définition de l'entete du document
         StringBuilder builder = new StringBuilder("République du Cameroun\n");
-        builder.append("****\n");
         builder.append("Paix -- Travail -- Patrie\n");
         builder.append("****\n");
-        builder.append("Ministère l'Enseignement Supérieur\n");
+        builder.append("Ministère de l'Enseignement Supérieur\n");
         builder.append("****\n");
         builder.append("Université de Maroua\n");
         builder.append("****\n");
-        if (a.getNumeroDebut() < 2017) {
+        if (a.getNumeroDebut() < 2016) {
             builder.append("Institut Supérieur du Sahel");
         } else {
             builder.append("École Nationale Supérieure Polytechnique de Maroua");
@@ -85,14 +84,13 @@ public class DocumentCommon {
         frecnch.setAlignment(Element.ALIGN_CENTER);
         builder = new StringBuilder();
         builder.append("Republic of Cameroon\n");
-        builder.append("****\n");
         builder.append("Peace -- Work -- Fatherland\n");
         builder.append("****\n");
         builder.append("The Ministry of Higher Education\n");
         builder.append("****\n");
         builder.append("The University of Maroua\n");
         builder.append("****\n");
-        if (a.getNumeroDebut() < 2017) {
+        if (a.getNumeroDebut() < 2016) {
             builder.append("The Higher Institute of the Sahel");
         } else {
             builder.append("National Advanced School of Engineering of Maroua");
@@ -109,7 +107,7 @@ public class DocumentCommon {
             builder.append(msgHelper.getProperty("header.tel"));
             builder.append(msgHelper.getProperty("header.fax"));
         }
-        if (a.getNumeroDebut() < 2017) {
+        if (a.getNumeroDebut() < 2016) {
             builder.append(msgHelper.getProperty("header.mail"));
             builder.append(msgHelper.getProperty("header.site"));
         } else {

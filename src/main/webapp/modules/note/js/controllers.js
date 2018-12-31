@@ -110,7 +110,7 @@ angular.module("notesApp.notes.controllers", []).controller("NoteController", ["
         };
         $scope.afficher = function(){
             if($scope.matricule){
-                $http.get('notes/'+$scope.matricule+'/'+$scope.cour.id+'/'+$scope.annee).success(function(data){
+                $http.get('api/notes/'+$scope.matricule+'/'+$scope.cour.id+'/'+$scope.annee).success(function(data){
                    $scope.notes = data; 
                 });
             }

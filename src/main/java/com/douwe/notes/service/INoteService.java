@@ -49,9 +49,9 @@ public interface INoteService {
     Map<String, MoyenneUniteEnseignement> listeNoteUniteEnseignement(String matricule, long niveauId, long optionId, long semestreId, long anneeId) throws ServiceException;
     Map<String, MoyenneUniteEnseignement> listeNoteUniteEnseignement(String matricule,long niveauId, long anneeId, long anneeCourant, List<UniteEnseignement> ues) throws ServiceException;
 
-    public List<DeliberationItem> listeDeliberation(long niveauId, long optionId, long coursId, long anneeId, int session, double borneInf, boolean infInclusive, double borneSup, boolean supInclusive, double finale)throws ServiceException;
+    public List<DeliberationItem> listeDeliberation(long niveauId, long optionId, long coursId, long anneeId, int session, double borneInf, boolean infInclusive, double borneSup, boolean supInclusive, double finale, boolean strict)throws ServiceException;
 
-    public int delibererCours(long niveauId, long optionId, long coursId, long anneeId, int session, double borneInf, boolean infInclusive, double borneSup, boolean supInclusive, double finale) throws ServiceException;
+    public int delibererCours(long niveauId, long optionId, long coursId, long anneeId, int session, double borneInf, boolean infInclusive, double borneSup, boolean supInclusive, double finale, boolean strict) throws ServiceException;
 
     public List<Note> listeNoteEtudiant(String matricule, long coursId, long anneeId) throws ServiceException;
     

@@ -52,8 +52,8 @@ public class ReleveDecorator extends PdfPageEventHelper {
             PdfContentByte canvas = writer.getDirectContentUnder();
             //ColumnText.showTextAligned(canvas, Element.ALIGN_CENTER, watermark, 298, 421, 45);
             //ColumnText.s
-            ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, pied, 40, 50, 0);
-            ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, pied2, 40, 46, 0);
+            ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, pied, 40, 44, 0);
+            ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, pied2, 40, 38, 0);
             canvas.addImage(anotherWatermark, anotherWatermark.getWidth(), 0, 0, anotherWatermark.getHeight(), 110, 310);
             ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, GPA, 575, 690, 270);
         } catch (DocumentException ex) {

@@ -84,6 +84,12 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label for="strict" class="col-sm-2 control-label">Est strict</label>
+                    <div class="col-sm-6">
+                        <input type="checkbox" id="strict" ng-model="strict" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         <button type="submit" class="btn btn-success btn-s" ng-click="form.$valid && proceder()">
                             <span class="glyphicon glyphicon-upload"></span> Procéder
