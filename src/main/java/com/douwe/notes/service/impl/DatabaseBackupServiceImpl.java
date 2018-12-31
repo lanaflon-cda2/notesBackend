@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.douwe.notes.service.impl;
 
 import com.douwe.generic.dao.DataAccessException;
@@ -229,7 +224,7 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
         for(Evaluation eval: evals){
             Element evaluation = document.createElement("Evaluation");
             Element is_exam = document.createElement("IsExam");
-            is_exam.appendChild(document.createTextNode(replaceIfNull(eval.isExam()? "1":"0")));
+            is_exam.appendChild(document.createTextNode(replaceIfNull(eval.isIsExam()? "1":"0")));
             evaluation.appendChild(is_exam);
             Element description = document.createElement("Description");
             description.appendChild(document.createTextNode(replaceIfNull(eval.getDescription())));
@@ -339,7 +334,7 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
             note.setAttribute("cour", nt.getCours().getIntitule());
             note.setAttribute("etudiant", nt.getEtudiant().getMatricule());
             note.setAttribute("evaluation", nt.getEvaluation().getCode());
-            if(nt.getEvaluation().isExam())
+            if(nt.getEvaluation().isIsExam())
                 note.setAttribute("session", nt.getSession().name());
             notes.appendChild(note);
         }
@@ -583,7 +578,7 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                         Evaluation evalu = new Evaluation();
                         evalu.setCode(code);
                         evalu.setDescription(description);
-                        evalu.setExam(isExam);
+                        evalu.setIsExam(isExam);
                         evaluationDao.create(evalu);
                     }
                 }
@@ -608,7 +603,7 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                     Element smstr = (Element) semestre.item(i);
                     String nv = new String(smstr.getElementsByTagName("Niveau").item(0).getTextContent());
                     String in = new String(smstr.getAttribute("intitule"));
-                    if (semestreDao.findByIntutle(in) == null) {
+                    if (semestreDao.findByIntitule(in) == null) {
                         Semestre sem = new Semestre();
                         sem.setIntitule(in);
                         sem.setNiveau(niveauDao.findByCode(nv));
@@ -742,7 +737,7 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                             n.setCours(coursDao.findByIntitule(cr));
                             n.setEtudiant(etudiantDao.findByMatricule(etdnt));
                             n.setEvaluation(evaluationDao.findByCode(eval));
-                            if(evaluationDao.findByCode(eval).isExam())
+                            if(evaluationDao.findByCode(eval).isIsExam())
                                 n.setSession(Session.valueOf(session));
                             n.setValeur(Double.parseDouble(val));
                             noteDao.create(n);
@@ -831,7 +826,7 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
                             String nv = inscription.getAttribute("niveau");
                             String opt = inscription.getAttribute("option");
                             Programme pgrmm = new Programme();
-                            pgrmm.setSemestre(semestreDao.findByIntutle(smstr));
+                            pgrmm.setSemestre(semestreDao.findByIntitule(smstr));
                             pgrmm.setUniteEnseignement(uniteEnseignementDao.findByCode(uni));
                             pgrmm.setParcours(parcoursDao.findByNiveauOption(niveauDao.findByCode(nv), optionDao.findByCode(opt)));
                             programmeDao.create(pgrmm);

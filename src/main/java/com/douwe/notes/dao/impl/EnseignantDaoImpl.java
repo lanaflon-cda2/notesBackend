@@ -60,4 +60,14 @@ public class EnseignantDaoImpl extends GenericDao<Enseignant, Long> implements I
         }
         return Collections.EMPTY_LIST;
     }
+
+    @Override
+    public Enseignant findByName(String name) throws DataAccessException {
+        try{
+            return (Enseignant) getManager().createNamedQuery("Enseignant.findByName").setParameter("param", name).getSingleResult();
+        } catch(NoResultException ex){
+            
+        }
+        return null;
+    }
 }

@@ -51,5 +51,10 @@ public class CreditDaoImpl extends GenericDao<Credit, Long> implements ICreditDa
         cq.distinct(true);
         return getManager().createQuery(cq).setMaxResults(1).getSingleResult();
     }
+
+    @Override
+    public List<Credit> findCreditByAnnee(AnneeAcademique annee) throws DataAccessException {
+        return getManager().createNamedQuery("Credit.findCreditByAnnee").setParameter("idParam", annee.getId()).getResultList();
+    }
     
 }

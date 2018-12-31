@@ -5,6 +5,7 @@ import com.douwe.generic.dao.impl.GenericDao;
 import com.douwe.notes.dao.ICycleDao;
 import com.douwe.notes.entities.Cycle;
 import java.util.List;
+import javax.persistence.NoResultException;
 
 /**
  *
@@ -20,6 +21,16 @@ public class CycleDaoImpl extends GenericDao<Cycle, Long> implements ICycleDao{
     @Override
     public List<Cycle> getAllActive() throws DataAccessException {
         return getManager().createNamedQuery("Cycle.findAllActive").getResultList();
+    }
+
+    @Override
+    public Cycle findByNom(String nom) throws DataAccessException {
+        try{
+            return (Cycle) getManager().createNamedQuery("Cycle.findByNom").setParameter("nameParam", nom).getSingleResult();
+        } catch(NoResultException ex){
+//            Logger.getLogger(CycleDaoImpl.class.getName()).log(Logger.Level.FATAL, ex);
+        }
+        return null;
     }
     
 }

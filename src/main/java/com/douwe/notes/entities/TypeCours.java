@@ -26,7 +26,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement(name = "typeCours")
 @XmlAccessorType(XmlAccessType.FIELD)
 @NamedQueries({
-@NamedQuery(name = "TypeCours.findAllActive",query = "SELECT t FROM TypeCours t WHERE t.active = 1")
+    @NamedQuery(name = "TypeCours.findAllActive",query = "SELECT t FROM TypeCours t WHERE t.active = 1"),
+    @NamedQuery(name = "TypeCours.findBName", query = "SELECT t FROM TypeCours t WHERE t.nom = :param")
 
 })
 public class TypeCours implements Serializable {

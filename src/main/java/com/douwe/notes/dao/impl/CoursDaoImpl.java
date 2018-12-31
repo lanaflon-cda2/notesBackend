@@ -145,4 +145,13 @@ public class CoursDaoImpl extends GenericDao<Cours, Long> implements ICoursDao {
         return getManager().createQuery(cq).getResultList();
     }
 
+    @Override
+    public Cours findByIntitule(String intitule) throws DataAccessException {
+        try {
+            return (Cours) (getManager().createNamedQuery("Cours.findByIntitule").setParameter("param", intitule).getSingleResult());
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
 }

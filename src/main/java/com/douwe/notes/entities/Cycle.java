@@ -23,41 +23,44 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @XmlRootElement(name = "cycle")
 @XmlAccessorType(XmlAccessType.FIELD)
-@Entity(name="cycles")
+@Entity(name = "cycles")
 @NamedQueries({
-@NamedQuery(name = "Cycle.deleteActive",query ="update cycles c set c.active = 0 where c.id = :idParam"),
-@NamedQuery(name = "Cycle.findAllActive",query = "select c from cycles c where c.active = 1")
+    @NamedQuery(name = "Cycle.deleteActive", query = "update cycles c set c.active = 0 where c.id = :idParam")
+    ,
+@NamedQuery(name = "Cycle.findAllActive", query = "select c from cycles c where c.active = 1")
+    ,
+    @NamedQuery(name = "Cycle.findByNom", query = "select c from cycles c where c.nom = :nameParam")
 
 })
 public class Cycle implements Serializable {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
     @Version
     @XmlTransient
     private int version;
-    
-    @Column (unique = true)
+
+    @Column(unique = true)
     private String nom;
-    
+
     @Column(unique = true)
     private String diplomeFr;
-    
+
     @Column(unique = true)
     private String diplomeEn;
-    
+
     @OneToMany(mappedBy = "cycle")
     @XmlTransient
     private List<Niveau> niveaux;
-    
-     @XmlTransient
+
+    @XmlTransient
     @Column(columnDefinition = "int default 1")
     private int active;
-    
-    public Cycle(){
-        
+
+    public Cycle() {
+
     }
 
     public Long getId() {
@@ -91,8 +94,6 @@ public class Cycle implements Serializable {
     public void setDiplomeEn(String diplomeEn) {
         this.diplomeEn = diplomeEn;
     }
-    
-    
 
     @JsonIgnore
     public List<Niveau> getNiveaux() {
@@ -114,7 +115,6 @@ public class Cycle implements Serializable {
         this.version = version;
     }
 
-
     @JsonIgnore
     public int getActive() {
         return active;
@@ -127,6 +127,6 @@ public class Cycle implements Serializable {
 
     @Override
     public String toString() {
-        return "Cycle{" + "id=" + id + ", version=" + version + ", nom=" + nom +  '}';
+        return "Cycle{" + "id=" + id + ", version=" + version + ", nom=" + nom + '}';
     }
 }

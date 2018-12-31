@@ -126,6 +126,17 @@
                             <li>
                                 <a ui-sref="passage"><i class="glyphicon glyphicon-retweet"></i> Passage Niveau</a>
                             </li>
+                            <li class="dropdown" data-dropdown data-on-toggle="toggled(open)">
+                                <a class="dropdown-toggle" data-dropdown-toggle><i class="glyphicon glyphicon-tower"></i> Administration<b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a data-ui-sref="sauvegardes"><i class="glyphicon glyphicon-download"></i> Sauvegarde</a>
+                                    </li>
+                                    <li>
+                                        <a data-ui-sref="restaurations"><i class="glyphicon glyphicon-upload"></i> Restauration</a>
+                                    </li>
+                                </ul>
+                            </li>
                         </ul>
                     </nav>
                     <div id="content">
@@ -139,8 +150,8 @@
                 </footer>
             </div>
         </div>
-<!--        <script src="lib/bootstrap.js"></script>
-        <script src="lib/npm.js"></script>-->
+        <!--        <script src="lib/bootstrap.js"></script>
+                <script src="lib/npm.js"></script>-->
         <script src="lib/jquery.js"></script>
         <script src="lib/angular.js"></script>
         <script src="lib/angular-route.js"></script>
@@ -154,77 +165,77 @@
         <script src="lib/ng-infinite-scroll.min.js"></script>
         <script src="lib/checklist-model.js"></script>
         <!--    fin d'inclusion des libreries                             -->
-        
+
         <script src="js/app.js"></script>
         <script src="js/filters.js"></script>
         <script src="js/controllers.js"></script>
         <script src="js/directives.js"></script>
         <script src="js/services.js"></script>
-        
+
         <script src="modules/annee/anneeModule.js"></script>
         <script src="modules/annee/js/controllers.js"></script>
         <script src="modules/annee/js/services.js"></script>
-        
+
         <script src="modules/typecours/typecoursModule.js"></script>
         <script src="modules/typecours/js/controllers.js"></script>
         <script src="modules/typecours/js/services.js"></script>
-        
+
         <script src="modules/departement/departementModule.js"></script>
         <script src="modules/departement/js/controllers.js"></script>
         <script src="modules/departement/js/services.js"></script>
-        
+
         <script src="modules/cours/coursModule.js"></script>
         <script src="modules/cours/js/controllers.js"></script>
         <script src="modules/cours/js/services.js"></script>
-        
+
         <script src="modules/cycle/cycleModule.js"></script>
         <script src="modules/cycle/js/controllers.js"></script>
         <script src="modules/cycle/js/services.js"></script>
-        
+
         <script src="modules/enseignant/enseignantModule.js"></script>
         <script src="modules/enseignant/js/controllers.js"></script>
         <script src="modules/enseignant/js/services.js"></script>
-        
+
         <script src="modules/evaluation/evaluationModule.js"></script>
         <script src="modules/evaluation/js/controllers.js"></script>
         <script src="modules/evaluation/js/services.js"></script>
-        
+
         <script src="modules/niveau/niveauModule.js"></script>
         <script src="modules/niveau/js/controllers.js"></script>
         <script src="modules/niveau/js/services.js"></script>
-        
+
         <script src="modules/option/optionModule.js"></script>
         <script src="modules/option/js/controllers.js"></script>
         <script src="modules/option/js/services.js"></script>
-        
+
         <script src="modules/semestre/semestreModule.js"></script>
         <script src="modules/semestre/js/controllers.js"></script>
         <script src="modules/semestre/js/services.js"></script>
-        
+
         <script src="modules/etudiant/etudiantModule.js"></script>
         <script src="modules/etudiant/js/controllers.js"></script>
         <script src="modules/etudiant/js/services.js"></script>
-        
+
         <script src="modules/uniteEnseignement/uniteenseignementModule.js"></script>
         <script src="modules/uniteEnseignement/js/controllers.js"></script>
         <script src="modules/uniteEnseignement/js/services.js"></script>
-        
+
         <script src="modules/parcours/parcoursModule.js"></script>
         <script src="modules/parcours/js/controllers.js"></script>
         <script src="modules/parcours/js/services.js"></script>
-        
+
         <script src="modules/programme/programmeModule.js"></script>
         <script src="modules/programme/js/controllers.js"></script>
         <script src="modules/programme/js/services.js"></script>
-        
+
         <script src="modules/evaluation/evaluationModule.js"></script>
         <script src="modules/evaluation/js/controllers.js"></script>
         <script src="modules/evaluation/js/services.js"></script>
-        
+
         <script src="modules/note/noteModule.js"></script>
         <script src="modules/note/js/controllers.js"></script>
         <script src="modules/note/js/services.js"></script>
-        
+
         <script src="modules/rapport/rapportModule.js"></script>
         <script src="modules/rapport/js/controllers.js"></script>
         <script src="modules/rapport/js/services.js"></script>
@@ -232,14 +243,22 @@
         <script src="modules/enseignement/enseignementModule.js"></script>
         <script src="modules/enseignement/js/controllers.js"></script>
         <script src="modules/enseignement/js/services.js"></script>
-        
-        
+
+
         <script src="modules/credit/creditModule.js"></script>
         <script src="modules/credit/js/controllers.js"></script>
         <script src="modules/credit/js/services.js"></script>
-        
+
         <script src="modules/deliberation/deliberationModule.js"></script>
         <script src="modules/deliberation/js/controllers.js"></script>
         <script src="modules/deliberation/js/services.js"></script>
+        
+        <script src="modules/restauration/restaurationModule.js"></script>
+        <script src="modules/restauration/js/controllers.js"></script>
+        <script src="modules/restauration/js/services.js"></script>
+        
+        <script src="modules/sauvegarde/sauvegardeModule.js"></script>
+        <script src="modules/sauvegarde/js/controllers.js"></script>
+        <script src="modules/sauvegarde/js/services.js"></script>
     </body>
 </html>

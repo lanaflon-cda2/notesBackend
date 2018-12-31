@@ -19,4 +19,6 @@ public interface ICreditDao extends IDao<Credit, Long>{
 
     public Credit findByCours(Cours cours, Niveau niveau, Option option, AnneeAcademique anne) throws DataAccessException;
     
+    public List<Credit> findCreditByAnnee(AnneeAcademique annee) throws DataAccessException;
+    
 }

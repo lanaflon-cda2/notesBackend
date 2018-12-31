@@ -30,4 +30,6 @@ public interface IUniteEnseignementDao extends IDao<UniteEnseignement, Long>{
     
     public List<UniteEnseignement> findUniteByNiveauOption(Niveau niveau, Option option) throws DataAccessException;
     
+    public UniteEnseignement findByCode(String code) throws DataAccessException;
+    
 }

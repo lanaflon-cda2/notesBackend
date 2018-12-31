@@ -13,4 +13,6 @@ public interface ITypeCoursDao extends IDao<TypeCours, Long>{
     
     public List<TypeCours> findAllActive() throws DataAccessException;
     
+    public TypeCours findByName(String name) throws DataAccessException;
+    
 }

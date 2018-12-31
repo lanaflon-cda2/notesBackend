@@ -188,4 +188,14 @@ public class AnneeAcademiqueDaoImpl extends GenericDao<AnneeAcademique, Long> im
             return null;
         }
     }
+
+    @Override
+    public AnneeAcademique findByNumeroDebut(Integer date) throws DataAccessException {
+        try{
+            return (AnneeAcademique)(getManager().createNamedQuery("Annee.findByNumeroAnnee").setParameter("param", date).getSingleResult());
+        } catch (NoResultException ex){
+            
+        }
+        return null;
+    }
 }

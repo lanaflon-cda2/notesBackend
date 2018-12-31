@@ -29,4 +29,6 @@ public interface IAnneeAcademiqueDao extends IDao<AnneeAcademique, Long>{
     public List<AnneeAcademique> findAllYearWthNote(Etudiant etudiant, Niveau niveau, Option o) throws DataAccessException;
     
     //public AnneeAcademique findByString(String date) throws DataAccessException;
+    
+    public AnneeAcademique findByNumeroDebut(Integer date) throws DataAccessException;
 }
