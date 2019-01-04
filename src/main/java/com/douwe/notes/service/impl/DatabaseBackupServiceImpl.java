@@ -142,6 +142,14 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
         return (string == null)? "": string;
     }
     
+    private String replaceIfNull(Date date){
+        return (date == null)? "": date.toString();
+    }
+    
+    private String replaceIfNull(Genre genre){
+        return (genre == null)? "": genre.name();
+    }
+    
     private void build(Document document, Element root) throws DataAccessException {
         List<Departement> dpt = departementDao.findAll();
         Element departements = document.createElement("Departements");
@@ -298,10 +306,10 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
             nom.appendChild(document.createTextNode(replaceIfNull(etdnt.getNom())));
             etudiant.appendChild(nom);
             Element dateNaissance = document.createElement("DateNaissance");
-            dateNaissance.appendChild(document.createTextNode(replaceIfNull(etdnt.getDateDeNaissance().toString())));
+            dateNaissance.appendChild(document.createTextNode(replaceIfNull(etdnt.getDateDeNaissance())));
             etudiant.appendChild(dateNaissance);
             Element lieuNaissance = document.createElement("LieuNaissance");
-            dateNaissance.appendChild(document.createTextNode(replaceIfNull(etdnt.getLieuDeNaissance())));
+            lieuNaissance.appendChild(document.createTextNode(replaceIfNull(etdnt.getLieuDeNaissance())));
             etudiant.appendChild(lieuNaissance);
             Element numeroTel = document.createElement("NumeroTelephone");
             numeroTel.appendChild(document.createTextNode(replaceIfNull(etdnt.getNumeroTelephone())));
@@ -313,7 +321,7 @@ public class DatabaseBackupServiceImpl implements IDatabaseBackupService{
             valideDate.appendChild(document.createTextNode(replaceIfNull(etdnt.isValidDate()? "1": "0")));
             etudiant.appendChild(valideDate);
             Element genre = document.createElement("Genre");
-            genre.appendChild(document.createTextNode(replaceIfNull(etdnt.getGenre().name())));
+            genre.appendChild(document.createTextNode(replaceIfNull(etdnt.getGenre())));
             etudiant.appendChild(genre);
             etudiant.setAttribute("matricule", replaceIfNull(etdnt.getMatricule()));
             etudiants.appendChild(etudiant);

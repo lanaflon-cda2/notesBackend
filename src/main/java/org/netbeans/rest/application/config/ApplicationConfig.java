@@ -49,6 +49,7 @@ public class ApplicationConfig extends Application {
         resources.add(com.douwe.notes.resource.impl.TypeCoursResource.class);
         resources.add(com.douwe.notes.resource.impl.UniteEnseignementResource.class);
         resources.add(com.douwe.notes.resource.impl.DatabaseBackupResource.class);
+
     }
     
 }
